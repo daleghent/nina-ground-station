@@ -1,0 +1,201 @@
+﻿<!--
+    Copyright Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.Options"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DataTemplate x:Key="Ground Station_Options">
+        <StackPanel DataContext="{Binding}" Orientation="Vertical">
+            
+            <GroupBox Header="IFTTT Webhooks">
+                <StackPanel Orientation="Vertical">
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>IFTTT Webhooks key</TextBlock.Text>
+                            <TextBlock.ToolTip>Your IFTTT Webhooks API key</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="IFTTTWebhookKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Pushover">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Pushover app key</TextBlock.Text>
+                            <TextBlock.ToolTip>The application key assigned for NINA</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="PushoverAppKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Pushover user key</TextBlock.Text>
+                            <TextBlock.ToolTip>The user key for your Pushover account</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="PushoverUserKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Email">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>From address</TextBlock.Text>
+                            <TextBlock.ToolTip>The email address which will be used as the From address of the email being sent</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpFromAddress" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Default recipient(s)</TextBlock.Text>
+                            <TextBlock.ToolTip>The default email address that email will be addressed to. Multiple addresses may be specified, separated by a comma</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpDefaultRecipients" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>SMTP host</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP/outgoing mail server hostname or IP address</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpHostName" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>SMTP port</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP/outgoing mail server service port. Commmonly 25 or 587. Sometimes 465. Default: 587</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="75"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpHostPort" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Username</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP service username</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpUsername" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Password</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP service password</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpPassword" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

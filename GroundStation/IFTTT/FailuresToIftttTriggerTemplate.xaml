@@ -1,0 +1,43 @@
+﻿<!--
+    Copyright © Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.FailuresToIftttTrigger.FailuresToIftttTriggerTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.FailuresToIftttTrigger"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    <GeometryGroup x:Key="IFTTT_SVG">
+        <PathGeometry Figures="M0 188.1h43.2v135.7H0V188.1z M246.7 188.1h-74v43.2h30.8v92.5h43.2v-92.5h30.8v-43.2H246.7z M364 188.1h-74v43.2h30.8   v92.5H364v-92.5h30.8v-43.2H364z M481.2 188.1h-74v43.2H438v92.5h43.2v-92.5H512v-43.2H481.2z M160.4 231.3v-43.2H61.7v135.7h43.2   v-37h37v-43.2h-37v-12.3H160.4z" FillRule="NonZero" />
+    </GeometryGroup>
+    
+    <DataTemplate DataType="{x:Type local:FailuresToIftttTrigger}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Event name" />
+                    <TextBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        Text="{Binding EventName}"
+                        TextAlignment="Left" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DaleGhent.NINA.GroundStation.FailuresToIftttTrigger.FailuresToIftttTrigger_Mini">
+        <mini:MiniTrigger DataContext="{Binding}">
+            <mini:MiniTrigger.TriggerProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Failures to IFTTT" />
+                </StackPanel>
+            </mini:MiniTrigger.TriggerProgressContent>
+        </mini:MiniTrigger>
+    </DataTemplate>
+</ResourceDictionary>
