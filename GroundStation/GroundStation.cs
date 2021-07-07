@@ -18,6 +18,7 @@ using System.ComponentModel.Composition;
 using System.Runtime.CompilerServices;
 
 namespace DaleGhent.NINA.GroundStation {
+
     [Export(typeof(IPluginManifest))]
     public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
 
@@ -35,11 +36,9 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             }
             set {
-                if (!string.IsNullOrEmpty(value)) {
-                    Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value);
-                    Properties.Settings.Default.Save();
-                    RaisePropertyChanged();
-                }
+                Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value);
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
 
@@ -48,11 +47,9 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             }
             set {
-                if (!string.IsNullOrEmpty(value)) {
-                    Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value);
-                    Properties.Settings.Default.Save();
-                    RaisePropertyChanged();
-                }
+                Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value);
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
 
@@ -61,11 +58,9 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
             }
             set {
-                if (!string.IsNullOrEmpty(value)) {
-                    Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value);
-                    Properties.Settings.Default.Save();
-                    RaisePropertyChanged();
-                }
+                Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value);
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
 
@@ -118,11 +113,9 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.SmtpUsername);
             }
             set {
-                if (!string.IsNullOrEmpty(value)) {
-                    Properties.Settings.Default.SmtpUsername = Security.Encrypt(value);
-                    Properties.Settings.Default.Save();
-                    RaisePropertyChanged();
-                }
+                Properties.Settings.Default.SmtpUsername = Security.Encrypt(value);
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
 
@@ -131,11 +124,9 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             }
             set {
-                if (!string.IsNullOrEmpty(value)) {
-                    Properties.Settings.Default.SmtpPassword = Security.Encrypt(value);
-                    Properties.Settings.Default.Save();
-                    RaisePropertyChanged();
-                }
+                Properties.Settings.Default.SmtpPassword = Security.Encrypt(value);
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
             }
         }
 
