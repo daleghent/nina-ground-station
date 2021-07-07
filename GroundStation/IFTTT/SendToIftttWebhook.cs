@@ -38,7 +38,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         [ImportingConstructor]
         public SendToIftttWebhook() {
-            WebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
+            IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
@@ -92,7 +92,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                 { "value3", value3 }
             };
 
-            await IftttCommon.IftttCommon.SendIftttTrigger(JsonConvert.SerializeObject(dict), EventName, WebhookKey, ct);
+            await IftttCommon.IftttCommon.SendIftttTrigger(JsonConvert.SerializeObject(dict), EventName, IFTTTWebhookKey, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -100,7 +100,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(WebhookKey)) {
+            if (string.IsNullOrEmpty(IFTTTWebhookKey)) {
                 i.Add("IFTTT Webhook key is missing");
             }
 
@@ -120,7 +120,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
             return new SendToIftttWebhook() {
                 Icon = Icon,
                 Name = Name,
-                WebhookKey = WebhookKey,
+                IFTTTWebhookKey = IFTTTWebhookKey,
                 EventName = EventName,
                 Category = Category,
                 Description = Description,
@@ -131,12 +131,12 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
             return $"Category: {Category}, Item: {nameof(SendToIftttWebhook)}";
         }
 
-        private string WebhookKey { get; set; }
+        private string IFTTTWebhookKey { get; set; }
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "IFTTTWebhookKey":
-                    WebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
+                    IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
                     break;
             }
         }
