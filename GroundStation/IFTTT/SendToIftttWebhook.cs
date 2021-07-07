@@ -108,7 +108,11 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                 i.Add("IFTTT Webhook event name is missing");
             }
 
-            Issues = i;
+            if (i != Issues) {
+                Issues = i;
+                RaisePropertyChanged("Issues");
+            }
+
             return i.Count == 0;
         }
 

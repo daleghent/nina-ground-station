@@ -143,7 +143,11 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 i.Add("SMTP port is invalid");
             }
 
-            Issues = i;
+            if (i != Issues) {
+                Issues = i;
+                RaisePropertyChanged("Issues");
+            }
+
             return i.Count == 0;
         }
 
