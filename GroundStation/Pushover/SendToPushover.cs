@@ -41,8 +41,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
         [ImportingConstructor]
         public SendToPushover() {
-            PushoverAppKey = Properties.Settings.Default.PushoverAppKey;
-            PushoverUserKey = Properties.Settings.Default.PushoverUserKey;
+            PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
+            PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
@@ -141,10 +141,10 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "PushoverAppKey":
-                    PushoverAppKey = Properties.Settings.Default.PushoverAppKey;
+                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
                     break;
                 case "PushoverUserKey":
-                    PushoverAppKey = Properties.Settings.Default.PushoverUserKey;
+                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
                     break;
             }
         }

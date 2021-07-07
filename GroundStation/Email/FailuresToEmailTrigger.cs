@@ -17,18 +17,15 @@ using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
-using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
-using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,8 +49,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
             SmtpHostName = Properties.Settings.Default.SmtpHostName;
             SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-            SmtpUsername = Properties.Settings.Default.SmtpUsername;
-            SmtpPassword = Properties.Settings.Default.SmtpPassword;
+            SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
+            SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             Recipient = SmtpDefaultRecipients;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
@@ -72,9 +69,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             }
         }
 
-        public Priority[] Priorities => (Priority[])Enum.GetValues(typeof(Priority)).Cast<Priority>();
-        public NotificationSound[] NotificationSounds => (NotificationSound[])Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>();
-
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             string subject = $"Failure running {previousItem.Name}!";
             string body = $"Time: {DateTime.Now}\nStatus: \"{previousItem.Name}\" did not complete successfully after {previousItem.Attempts} attempts!";
@@ -89,7 +83,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             message.Subject = subject;
             message.Body = new TextPart("plain") { Text = body };
 
-            var xMailerHeader = new Header("X-Mailer", "NINA");
+            var xMailerHeader = new Header("X-Mailer", $"Ground Station/{GroundStation.GetVersion()}, NINA/{CoreUtil.Version}");
             message.Headers.Add(xMailerHeader);
 
             var smtp = new SmtpClient();
@@ -104,17 +98,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 await smtp.SendAsync(message, ct);
                 await smtp.DisconnectAsync(true, ct);
             } catch (SocketException ex) {
-                Logger.Error($"SmtpToEmail: Connection to {SmtpHostPort}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
+                Logger.Error($"FailuresToEmail: Connection to {SmtpHostPort}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
                 throw ex;
             } catch (AuthenticationException ex) {
-                Logger.Error($"SendToEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
+                Logger.Error($"FailuresToEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
                 throw ex;
             }
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             if (previousItem == null) {
-                Logger.Debug("PushoverTrigger: Previous item is null. Asserting false");
+                Logger.Debug("FailuresToEmail: Previous item is null. Asserting false");
                 return false;
             }
 
@@ -125,11 +119,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             }
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
-                Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
+                Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
                 return true;
             }
 
-            Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+            Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             return false;
         }
 
@@ -188,10 +182,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                     SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
                     break;
                 case "SmtpUsername":
-                    SmtpUsername = Properties.Settings.Default.SmtpUsername;
+                    SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
                     break;
                 case "SmtpPassword":
-                    SmtpPassword = Properties.Settings.Default.SmtpPassword;
+                    SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
                     break;
                 case "SmtpFromAddress":
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;

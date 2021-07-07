@@ -46,8 +46,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
             SmtpHostName = Properties.Settings.Default.SmtpHostName;
             SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-            SmtpUsername = Properties.Settings.Default.SmtpUsername;
-            SmtpPassword = Properties.Settings.Default.SmtpPassword;
+            SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
+            SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             Recipient = SmtpDefaultRecipients;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
@@ -91,7 +91,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             message.Subject = Subject;
             message.Body = new TextPart("plain") { Text = Body };
 
-            var xMailerHeader = new Header("X-Mailer", "NINA");
+            var xMailerHeader = new Header("X-Mailer", $"Ground Station/{GroundStation.GetVersion()}, NINA/{CoreUtil.Version}");
             message.Headers.Add(xMailerHeader);
 
             var smtp = new SmtpClient();
@@ -106,10 +106,10 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 await smtp.SendAsync(message, ct);
                 await smtp.DisconnectAsync(true, ct);
             } catch (SocketException ex) {
-                Logger.Error($"SmtpToEmail: Connection to {SmtpHostPort}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
+                Logger.Error($"SmtpEmail: Connection to {SmtpHostPort}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
                 throw ex;
             } catch (AuthenticationException ex) {
-                Logger.Error($"SendToEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
+                Logger.Error($"SendEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
                 throw ex;
             }
         }
@@ -179,10 +179,10 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                     SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
                     break;
                 case "SmtpUsername":
-                    SmtpUsername = Properties.Settings.Default.SmtpUsername;
+                    SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
                     break;
                 case "SmtpPassword":
-                    SmtpPassword = Properties.Settings.Default.SmtpPassword;
+                    SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
                     break;
                 case "SmtpFromAddress":
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;

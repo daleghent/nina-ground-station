@@ -43,8 +43,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         [ImportingConstructor]
         public FailuresToPushoverTrigger() {
-            PushoverAppKey = Properties.Settings.Default.PushoverAppKey;
-            PushoverUserKey = Properties.Settings.Default.PushoverUserKey;
+            PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
+            PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
@@ -144,10 +144,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "PushoverAppKey":
-                    PushoverAppKey = Properties.Settings.Default.PushoverAppKey;
+                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
                     break;
                 case "PushoverUserKey":
-                    PushoverUserKey = Properties.Settings.Default.PushoverUserKey;
+                    PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
                     break;
             }
         }

@@ -32,34 +32,40 @@ namespace DaleGhent.NINA.GroundStation {
 
         public string IFTTTWebhookKey {
             get {
-                return Properties.Settings.Default.IFTTTWebhookKey;
+                return Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             }
             set {
-                Properties.Settings.Default.IFTTTWebhookKey = value;
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged();
+                if (!string.IsNullOrEmpty(value)) {
+                    Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value);
+                    Properties.Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
             }
         }
 
         public string PushoverAppKey {
             get {
-                return Properties.Settings.Default.PushoverAppKey;
+                return Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             }
             set {
-                Properties.Settings.Default.PushoverAppKey = value;
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged();
+                if (!string.IsNullOrEmpty(value)) {
+                    Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value);
+                    Properties.Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
             }
         }
 
         public string PushoverUserKey {
             get {
-                return Properties.Settings.Default.PushoverUserKey;
+                return Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
             }
             set {
-                Properties.Settings.Default.PushoverUserKey = value;
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged();
+                if (!string.IsNullOrEmpty(value)) {
+                    Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value);
+                    Properties.Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -109,24 +115,34 @@ namespace DaleGhent.NINA.GroundStation {
 
         public string SmtpUsername {
             get {
-                return Properties.Settings.Default.SmtpUsername;
+                return Security.Decrypt(Properties.Settings.Default.SmtpUsername);
             }
             set {
-                Properties.Settings.Default.SmtpUsername = value;
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged();
+                if (!string.IsNullOrEmpty(value)) {
+                    Properties.Settings.Default.SmtpUsername = Security.Encrypt(value);
+                    Properties.Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
             }
         }
 
         public string SmtpPassword {
             get {
-                return Properties.Settings.Default.SmtpPassword;
+                return Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             }
             set {
-                Properties.Settings.Default.SmtpPassword = value;
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged();
+                if (!string.IsNullOrEmpty(value)) {
+                    Properties.Settings.Default.SmtpPassword = Security.Encrypt(value);
+                    Properties.Settings.Default.Save();
+                    RaisePropertyChanged();
+                }
             }
+        }
+
+        public static string GetVersion() {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+            return fvi.FileVersion;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Security.cs" />
     <Compile Include="Email\FailuresToEmailTrigger.cs" />
     <Compile Include="Email\FailuresToEmailTriggerTemplate.xaml.cs">
       <DependentUpon>FailuresToEmailTriggerTemplate.xaml</DependentUpon>

@@ -38,7 +38,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         [ImportingConstructor]
         public SendToIftttWebhook() {
-            WebhookKey = Properties.Settings.Default.IFTTTWebhookKey;
+            WebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
@@ -132,7 +132,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "IFTTTWebhookKey":
-                    WebhookKey = Properties.Settings.Default.IFTTTWebhookKey;
+                    WebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
                     break;
             }
         }
