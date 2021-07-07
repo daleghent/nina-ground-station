@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 // The following attributes are optional for the official manifest meta data
 
 //[Optional] Your plugin homepage - omit if not applicaple
-[assembly: AssemblyMetadata("Homepage", "")]
+[assembly: AssemblyMetadata("Homepage", "https://daleghent.com/ground-station")]
 
 //[Optional] Common tags that quickly describe your plugin
 [assembly: AssemblyMetadata("Tags", "notifications,alerts,ifttt,email,pushover")]
