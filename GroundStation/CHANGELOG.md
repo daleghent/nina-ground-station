@@ -14,3 +14,8 @@
 
 ## 1.0.0.2 - 2021-7-7 (pre-release)
 * Store all passwords and API key settings using the `ProtectedData` class
+
+## 1.0.0.3 - 2021-7-7 (beta)
+* Minimum NINA version: 1.11.0.1106
+* Fix the saving of empty encrypted settings
+* Ensure that the validator signals an update of any validation issues
