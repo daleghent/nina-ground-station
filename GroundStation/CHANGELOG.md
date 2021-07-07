@@ -19,3 +19,6 @@
 * Minimum NINA version: 1.11.0.1106
 * Fix the saving of empty encrypted settings
 * Ensure that the validator signals an update of any validation issues
+
+## 1.0.0.4 - 2021-7-7 (beta)
+* Fix installation issue
