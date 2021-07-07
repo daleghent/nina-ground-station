@@ -11,9 +11,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DataTemplate x:Key="Ground Station_Options">
         <StackPanel DataContext="{Binding}" Orientation="Vertical">
-            
+
             <GroupBox Header="IFTTT Webhooks">
                 <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">
+                        Website: <Hyperlink NavigateUri="https://ifttt.com/maker_webhooks" RequestNavigate="Hyperlink_RequestNavigate">https://ifttt.com/maker_webhooks</Hyperlink>
+                    </TextBlock>
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                         <TextBlock
@@ -38,6 +41,10 @@
 
             <GroupBox Header="Pushover">
                 <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">
+                        Website: <Hyperlink NavigateUri="https://pushover.net/" RequestNavigate="Hyperlink_RequestNavigate">https://pushover.net/</Hyperlink>
+                    </TextBlock>
+
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                         <TextBlock
                             VerticalAlignment="Center"

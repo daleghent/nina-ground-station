@@ -61,9 +61,9 @@ The provided instructions and triggers can be broken down in to two general cate
 
 The external services that are currently supported are:
 
-- Pushover: desktop and mobile device messaging. https://pushover.com/
-- IFTTT: If This Then That. An easy to use configurable gateway to messaging platforms, including SMS, and for automating popular home IoT systems
-- Email: Who doesn't love plain old email?
+- Pushover: desktop and mobile device messaging
+- IFTTT Webhooks: If This Then That. An easy to use configurable webhooks-based gateway to a wide variety of messaging platforms and IoT services for automating popular home IoT systems
+- Email: Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
 
 Use of these services is done in conjunction with your own personal accounts with them. Some services might require a subscription to use. I do not provide technical support or trainig for using the services.")]
 

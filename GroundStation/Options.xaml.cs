@@ -11,7 +11,9 @@
 #endregion "copyright"
 
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace DaleGhent.NINA.GroundStation {
 
@@ -20,6 +22,11 @@ namespace DaleGhent.NINA.GroundStation {
 
         public Options() {
             InitializeComponent();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
+            _ = Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }
