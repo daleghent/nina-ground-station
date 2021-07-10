@@ -114,7 +114,11 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 i.Add("Pushover user key is missing");
             }
 
-            Issues = i;
+            if (i != Issues) {
+                Issues = i;
+                RaisePropertyChanged("Issues");
+            }
+
             return i.Count == 0;
         }
 
