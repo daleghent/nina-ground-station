@@ -4,7 +4,6 @@ using System.Text;
 
 namespace DaleGhent.NINA.GroundStation {
     public class Security {
-
         public static string Encrypt(string secret) {
             if (string.IsNullOrEmpty(secret)) {
                 return string.Empty;
@@ -21,10 +20,14 @@ namespace DaleGhent.NINA.GroundStation {
                 return string.Empty;
             }
 
-            byte[] cipherBytes = Convert.FromBase64String(cipher);
-            byte[] passwordBytes = ProtectedData.Unprotect(cipherBytes, null, DataProtectionScope.CurrentUser);
+            try {
+                byte[] cipherBytes = Convert.FromBase64String(cipher);
+                byte[] passwordBytes = ProtectedData.Unprotect(cipherBytes, null, DataProtectionScope.CurrentUser);
 
-            return Encoding.ASCII.GetString(passwordBytes);
+                return Encoding.ASCII.GetString(passwordBytes);
+            } catch {
+                return string.Empty;
+            }
         }
     }
 }
