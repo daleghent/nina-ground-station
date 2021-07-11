@@ -64,32 +64,40 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var dict = new Dictionary<string, string> {
-                { "value1", this.previousItem.Name },
-                { "value2", this.previousItem.Attempts.ToString() },
-                { "value3", this.previousItem.GetEstimatedDuration().TotalSeconds.ToString() }
-            };
+            var dict = new Dictionary<string, string>();
 
-            Logger.Debug($"IftttTrigger: Pushing message: {dict.Values}");
+            dict.Add("value1", this.previousItem.Name);
+            dict.Add("value2", this.previousItem.Attempts.ToString());
+            dict.Add("value3", string.Join(", ", PreviousItemIssues));
+
+            Logger.Debug($"IftttTrigger: Pushing message: {string.Join(" || ", dict.Values)}");
 
             await IftttCommon.IftttCommon.SendIftttTrigger(JsonConvert.SerializeObject(dict), EventName, IFTTTWebhookKey, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            bool shouldTrigger = false;
+
             if (previousItem == null) {
                 Logger.Debug("IftttTrigger: Previous item is null. Asserting false");
-                return false;
+                return shouldTrigger;
             }
 
             this.previousItem = previousItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("IFTTT")) {
                 Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                return true;
+                shouldTrigger = true;
+
+                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
+                    PreviousItemIssues = validatableItem.Issues;
+                    Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                }
+            } else {
+                Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
-            Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
-            return false;
+            return shouldTrigger;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -129,6 +137,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         private string IFTTTWebhookKey { get; set; }
+        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {

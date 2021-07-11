@@ -73,8 +73,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             string subject = $"Failure running {previousItem.Name}!";
             string body = $"Time: {DateTime.Now}\nStatus: \"{previousItem.Name}\" did not complete successfully after {previousItem.Attempts} attempts!";
 
+            if (PreviousItemIssues.Count > 0) {
+                body += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
+            }
+
             if (this.nextItem != null) {
-                body += $"\nFollowing instruction: \"{nextItem.Name}\"";
+                body += $"\n\nFollowing instruction: \"{nextItem.Name}\"";
             }
 
             var message = new MimeMessage();
@@ -107,24 +111,29 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            bool shouldTrigger = false;
+
             if (previousItem == null) {
                 Logger.Debug("FailuresToEmail: Previous item is null. Asserting false");
-                return false;
+                return shouldTrigger;
             }
 
             this.previousItem = previousItem;
-
-            if (nextItem != null) {
-                this.nextItem = nextItem;
-            }
+            this.nextItem = nextItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
                 Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                return true;
+                shouldTrigger = true;
+
+                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
+                    PreviousItemIssues = validatableItem.Issues;
+                    Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                }
+            } else {
+                Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
-            Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
-            return false;
+            return shouldTrigger;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -144,7 +153,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 i.Add("SMTP server is not configured");
             }
 
-            if (SmtpHostPort < 1) {
+            if (SmtpHostPort < 1 || SmtpHostPort > ushort.MaxValue) {
                 i.Add("SMTP port is invalid");
             }
 
@@ -176,6 +185,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         private ushort SmtpHostPort { get; set; }
         private string SmtpUsername { get; set; }
         private string SmtpPassword { get; set; }
+        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {

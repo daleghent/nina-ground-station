@@ -76,13 +76,16 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             string title = $"Failure running {previousItem.Name}!";
-            string message = $"{previousItem.Name} failed to run after {previousItem.Attempts} attempts!";
+            string message = $"{previousItem.Name} failed to run after {previousItem.Attempts} attempt{((previousItem.Attempts > 1) ? string.Format("s") : string.Format(""))}!";
+
+            if (PreviousItemIssues.Count > 0) {
+                message += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
+            }
 
             var pclient = new Pushover(PushoverAppKey, PushoverUserKey);
              
             Logger.Debug("PushoverTrigger: Pushing message");
             var response = await pclient.PushAsync(title, message, priority: Priority, notificationSound: NotificationSound);
-            Logger.Debug("foo2");
 
             if (response.Status != 1 || response.Errors?.Count > 0) {
                 Logger.Error($"PushoverTrigger: Push failed. Status={response.Status}, Errors={response.Errors.Select(array => string.Join(", ", array))}");
@@ -90,20 +93,28 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            bool shouldTrigger = false;
+
             if (previousItem == null) {
-                Logger.Debug("PushoverTrigger: Previous item is null. Asserting false"); 
-                return false;
+                Logger.Debug("PushoverTrigger: Previous item is null. Asserting false");
+                return shouldTrigger; ;
             }
 
             this.previousItem = previousItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
                 Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                return true;
+                shouldTrigger = true;
+
+                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
+                    PreviousItemIssues = validatableItem.Issues;
+                    Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                }
+            } else {
+                Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
-            Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
-            return false;
+            return shouldTrigger;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -144,6 +155,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         private string PushoverAppKey { get; set; }
         private string PushoverUserKey { get; set; }
+        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
