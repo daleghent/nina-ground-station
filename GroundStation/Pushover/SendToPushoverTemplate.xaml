@@ -61,12 +61,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DaleGhent.NINA.GroundStation.SendToPushover.SendToPushover_Mini">
-        <mini:MiniTrigger DataContext="{Binding}">
-            <mini:MiniTrigger.TriggerProgressContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Send to Pushover" />
-                </StackPanel>
-            </mini:MiniTrigger.TriggerProgressContent>
-        </mini:MiniTrigger>
+        <mini:MiniSequenceItem>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Send to Pushover" />
+            </StackPanel>
+        </mini:MiniSequenceItem>
     </DataTemplate>
 </ResourceDictionary>
