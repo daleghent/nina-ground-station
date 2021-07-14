@@ -22,3 +22,11 @@
 
 ## 1.0.0.4 - 2021-7-7 (beta)
 * Fix installation issue
+
+## 1.0.0.5 - 2021-7-14
+* Added validation issue list to failure messages
+  * Pushover, Email: list of any validation issues in the previous instruction is appended to the failure message
+  * IFTTT: list of any validation issues in the previous instruction is populated into Value 3 of the Webhooks message
+* Fix validation refesh issue in Send to Pushover
+* Fix for invalid base64 strings in encrypted credential storage
+* Fix instructions displaying as triggers in mini sequencer
