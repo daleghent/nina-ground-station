@@ -106,11 +106,11 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(PushoverAppKey)) {
+            if (string.IsNullOrEmpty(PushoverAppKey) || string.IsNullOrWhiteSpace(PushoverAppKey)) {
                 i.Add("Pushover app key is missing");
             }
 
-            if (string.IsNullOrEmpty(PushoverUserKey)) {
+            if (string.IsNullOrEmpty(PushoverUserKey) || string.IsNullOrWhiteSpace(PushoverUserKey)) {
                 i.Add("Pushover user key is missing");
             }
 

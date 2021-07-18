@@ -105,11 +105,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(IFTTTWebhookKey)) {
+            if (string.IsNullOrEmpty(IFTTTWebhookKey) || string.IsNullOrWhiteSpace(IFTTTWebhookKey)) {
                 i.Add("IFTTT Webhooks key is missing");
             }
 
-            if (string.IsNullOrEmpty(EventName)) {
+            if (string.IsNullOrEmpty(EventName) || string.IsNullOrWhiteSpace(EventName)) {
                 i.Add("IFTTT Webhooks event name is missing");
             }
 

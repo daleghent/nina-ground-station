@@ -141,15 +141,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Recipient)) {
+            if (string.IsNullOrEmpty(Recipient) || string.IsNullOrWhiteSpace(Recipient)) {
                 i.Add("Email recipient is missing");
             }
 
-            if (string.IsNullOrEmpty(SmtpFromAddress)) {
+            if (string.IsNullOrEmpty(SmtpFromAddress) || string.IsNullOrWhiteSpace(SmtpFromAddress)) {
                 i.Add("Email from address is missing");
             }
 
-            if (string.IsNullOrEmpty(SmtpHostName)) {
+            if (string.IsNullOrEmpty(SmtpHostName) || string.IsNullOrWhiteSpace(SmtpHostName)) {
                 i.Add("SMTP server is not configured");
             }
 
