@@ -33,3 +33,4 @@
 
 ## 1.0.0.6 - 2021-7-18
 * Added instruction and failure trigger for [Telegram](https://telegram.org/)
+* Message text boxes now have vertical and horizontal scrollbars and soft wrapping

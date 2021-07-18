@@ -24,6 +24,8 @@
                     <TextBox
                         MinWidth="100"
                         Margin="5,0,0,0"
+                        MaxLines="1"
+                        TextWrapping="NoWrap"
                         Text="{Binding Title}"
                         TextAlignment="Left" />
                     
@@ -32,6 +34,12 @@
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Message" />
                     <TextBox
                         MinWidth="100"
+                        MaxWidth="400"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        AcceptsTab="True"
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
                         Margin="5,0,0,0"
                         Text="{Binding Message}"
                         TextAlignment="Left" />

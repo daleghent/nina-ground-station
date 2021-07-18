@@ -35,14 +35,19 @@
                     <TextBox
                         MinWidth="100"
                         Margin="5,0,0,0"
+                        MaxLines="1"
+                        TextWrapping="NoWrap"
                         Text="{Binding Subject}" />
                     
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Message" />
                     <TextBox
-                        Width="600"
                         MinWidth="300"
+                        MaxWidth="400"
+                        TextWrapping="Wrap"
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
                         Margin="5,0,0,0"
                         AcceptsReturn="True"
                         AcceptsTab="True"
