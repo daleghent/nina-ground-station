@@ -1,0 +1,58 @@
+﻿<!--
+    Copyright © Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.SendToTelegram.SendToTelegramTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToTelegram"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    <GeometryGroup x:Key="Telegram_SVG">
+        <PathGeometry Figures="M47.8 20.5s3.6-1.4 3.3 2c-.1 1.4-1 6.3-1.7 11.6L47 49.8s-.2 2.3-2 2.7c-1.8.4-4.5-1.4-5-1.8-.4-.3-7.5-4.8-10-7-.7-.6-1.5-1.8.1-3.2l10.5-10c1.2-1.2 2.4-4-2.6-.6l-14 9.5s-1.6 1-4.6.1l-6.5-2s-2.4-1.5 1.7-3c10-4.7 22.3-9.5 33.2-14z" FillRule="NonZero" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:SendToTelegram}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Message" />
+                    <TextBox
+                        MinWidth="100"
+                        MaxWidth="400"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        AcceptsTab="True"
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
+                        Margin="5,0,0,0"
+                        Text="{Binding Message}"
+                        TextAlignment="Left" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock.Text>Silent</TextBlock.Text>
+                        <TextBlock.ToolTip>Prevents the message from sounding an alert on devices that receive it</TextBlock.ToolTip>
+                    </TextBlock>
+                    <CheckBox
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding DoNotNotify, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DaleGhent.NINA.GroundStation.SendToTelegram.SendToTelegram_Mini">
+        <mini:MiniSequenceItem>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Send to Telegram" />
+            </StackPanel>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+</ResourceDictionary>

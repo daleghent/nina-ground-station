@@ -30,3 +30,6 @@
 * Fix validation refesh issue in Send to Pushover
 * Fix for invalid base64 strings in encrypted credential storage
 * Fix instructions displaying as triggers in mini sequencer
+
+## 1.0.0.6 - 2021-7-18
+* Added instruction and failure trigger for [Telegram](https://telegram.org/)

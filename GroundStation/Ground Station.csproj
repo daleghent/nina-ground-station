@@ -83,6 +83,14 @@
     <Compile Include="Pushover\SendToPushoverTemplate.xaml.cs">
       <DependentUpon>SendToPushoverTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Telegram\FailuresToTelegramTrigger.cs" />
+    <Compile Include="Telegram\FailuresToTelegramTriggerTemplate.xaml.cs">
+      <DependentUpon>FailuresToTelegramTriggerTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Telegram\SendToTelegram.cs" />
+    <Compile Include="Telegram\SendToTelegramTemplate.xaml.cs">
+      <DependentUpon>SendToTelegramTemplate.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -118,6 +126,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pushover\SendToPushoverTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Telegram\FailuresToTelegramTriggerTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Telegram\SendToTelegramTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -159,6 +175,9 @@
     <PackageReference Include="PushoverNET">
       <Version>1.0.28</Version>
     </PackageReference>
+    <PackageReference Include="Telegram.Bot">
+      <Version>16.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -182,6 +201,7 @@
       xcopy "$(TargetDir)System.Numerics.Vectors.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
       xcopy "$(TargetDir)MailKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
       xcopy "$(TargetDir)MimeKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)BouncyCastle.Crypto.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y</PostBuildEvent>
+      xcopy "$(TargetDir)BouncyCastle.Crypto.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+      xcopy "$(TargetDir)Telegram.Bot.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -142,5 +142,29 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["SmtpDefaultRecipients"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TelegramAccessToken {
+            get {
+                return ((string)(this["TelegramAccessToken"]));
+            }
+            set {
+                this["TelegramAccessToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TelegramChatId {
+            get {
+                return ((string)(this["TelegramChatId"]));
+            }
+            set {
+                this["TelegramChatId"] = value;
+            }
+        }
     }
 }

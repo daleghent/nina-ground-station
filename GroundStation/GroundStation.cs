@@ -36,7 +36,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             }
             set {
-                Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value);
+                Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -47,7 +47,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             }
             set {
-                Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value);
+                Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -58,7 +58,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
             }
             set {
-                Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value);
+                Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -69,7 +69,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Properties.Settings.Default.SmtpFromAddress;
             }
             set {
-                Properties.Settings.Default.SmtpFromAddress = value;
+                Properties.Settings.Default.SmtpFromAddress = value.Trim();
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -80,7 +80,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Properties.Settings.Default.SmtpDefaultRecipients;
             }
             set {
-                Properties.Settings.Default.SmtpDefaultRecipients = value;
+                Properties.Settings.Default.SmtpDefaultRecipients = value.Trim();
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -91,7 +91,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Properties.Settings.Default.SmtpHostName;
             }
             set {
-                Properties.Settings.Default.SmtpHostName = value;
+                Properties.Settings.Default.SmtpHostName = value.Trim();
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -113,7 +113,7 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.SmtpUsername);
             }
             set {
-                Properties.Settings.Default.SmtpUsername = Security.Encrypt(value);
+                Properties.Settings.Default.SmtpUsername = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -124,7 +124,29 @@ namespace DaleGhent.NINA.GroundStation {
                 return Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             }
             set {
-                Properties.Settings.Default.SmtpPassword = Security.Encrypt(value);
+                Properties.Settings.Default.SmtpPassword = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelegramAccessToken {
+            get {
+                return Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
+            }
+            set {
+                Properties.Settings.Default.TelegramAccessToken = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelegramChatId {
+            get {
+                return Security.Decrypt(Properties.Settings.Default.TelegramChatId);
+            }
+            set {
+                Properties.Settings.Default.TelegramChatId = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }

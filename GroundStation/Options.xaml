@@ -85,6 +85,56 @@
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox Header="Telegram">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">
+                        Website: <Hyperlink NavigateUri="https://telegram.org/" RequestNavigate="Hyperlink_RequestNavigate">https://telegram.org/</Hyperlink>
+                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">
+                        Bot info: <Hyperlink NavigateUri="https://core.telegram.org/bots" RequestNavigate="Hyperlink_RequestNavigate">https://core.telegram.org/bots</Hyperlink>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Bot access token</TextBlock.Text>
+                            <TextBlock.ToolTip>The assigned to your Telegram bot</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="TelegramAccessToken" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Chat ID</TextBlock.Text>
+                            <TextBlock.ToolTip>The chat ID that messages should be sent to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="TelegramChatId" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                </StackPanel>
+            </GroupBox>
+
             <GroupBox Header="Email">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
