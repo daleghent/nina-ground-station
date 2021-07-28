@@ -82,6 +82,75 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="160">
+                            <TextBlock.Text>Default notification sound</TextBlock.Text>
+                            <TextBlock.ToolTip>The sound that new instances of the Send to Pushover sequence item will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Margin="5,0,0,0"
+                            MinWidth="100"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverNotificationSounds}"
+                            SelectedItem="{Binding PushoverDefaultNotificationSound}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="160">
+                            <TextBlock.Text>Default notification priority</TextBlock.Text>
+                            <TextBlock.ToolTip>The message priority that new instances of the Send to Pushover sequence item will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Margin="5,0,0,0"
+                            MinWidth="100"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverPriorities}"
+                            SelectedItem="{Binding PushoverDefaultNotificationPriority}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="160">
+                            <TextBlock.Text>Default failure sound</TextBlock.Text>
+                            <TextBlock.ToolTip>The sound that new instances of the Failures to Pushover sequence trigger will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Margin="5,0,0,0"
+                            MinWidth="100"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverNotificationSounds}"
+                            SelectedItem="{Binding PushoverDefaultFailureSound}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="160">
+                            <TextBlock.Text>Default failure priority</TextBlock.Text>
+                            <TextBlock.ToolTip>The message priority that new instances of the Failures to Pushover sequence trigger will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Margin="5,0,0,0"
+                            MinWidth="100"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverPriorities}"
+                            SelectedItem="{Binding PushoverDefaultFailurePriority}" />
+                    </StackPanel>
+
                 </StackPanel>
             </GroupBox>
 

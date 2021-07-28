@@ -36,13 +36,15 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
     public class SendToPushover : SequenceItem, IValidatable {
         private string title = string.Empty;
         private string message = string.Empty;
-        private Priority priority = Priority.Normal;
-        private NotificationSound notificationSound = NotificationSound.Pushover;
+        private Priority priority;
+        private NotificationSound notificationSound;
 
         [ImportingConstructor]
         public SendToPushover() {
             PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+            NotificationSound = Properties.Settings.Default.PushoverDefaultNotificationSound;
+            Priority = Properties.Settings.Default.PushoverDefaultNotificationPriority;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }

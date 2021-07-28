@@ -34,3 +34,7 @@
 ## 1.0.0.6 - 2021-7-18
 * Added instruction and failure trigger for [Telegram](https://telegram.org/)
 * Message text boxes now have vertical and horizontal scrollbars and soft wrapping
+
+## 1.0.0.7 - 2021-7-28
+* Improved sanitization of configurable inputs
+* Added ability to configure a default Pushover sound and message priority for failures and normal messages

@@ -13,8 +13,11 @@
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
+using PushoverClient;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DaleGhent.NINA.GroundStation {
@@ -59,6 +62,46 @@ namespace DaleGhent.NINA.GroundStation {
             }
             set {
                 Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public Priority[] PushoverPriorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
+
+        public NotificationSound[] PushoverNotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
+
+        public NotificationSound PushoverDefaultNotificationSound {
+            get => Properties.Settings.Default.PushoverDefaultNotificationSound;
+            set {
+                Properties.Settings.Default.PushoverDefaultNotificationSound = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public Priority PushoverDefaultNotificationPriority {
+            get => Properties.Settings.Default.PushoverDefaultNotificationPriority;
+            set {
+                Properties.Settings.Default.PushoverDefaultNotificationPriority = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public NotificationSound PushoverDefaultFailureSound {
+            get => Properties.Settings.Default.PushoverDefaultFailureSound;
+            set {
+                Properties.Settings.Default.PushoverDefaultFailureSound = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public Priority PushoverDefaultFailurePriority {
+            get => Properties.Settings.Default.PushoverDefaultFailurePriority;
+            set {
+                Properties.Settings.Default.PushoverDefaultFailurePriority = value;
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }

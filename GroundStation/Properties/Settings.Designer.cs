@@ -166,5 +166,53 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["TelegramChatId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Pushover")]
+        public global::PushoverClient.NotificationSound PushoverDefaultNotificationSound {
+            get {
+                return ((global::PushoverClient.NotificationSound)(this["PushoverDefaultNotificationSound"]));
+            }
+            set {
+                this["PushoverDefaultNotificationSound"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Siren")]
+        public global::PushoverClient.NotificationSound PushoverDefaultFailureSound {
+            get {
+                return ((global::PushoverClient.NotificationSound)(this["PushoverDefaultFailureSound"]));
+            }
+            set {
+                this["PushoverDefaultFailureSound"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::PushoverClient.Priority PushoverDefaultNotificationPriority {
+            get {
+                return ((global::PushoverClient.Priority)(this["PushoverDefaultNotificationPriority"]));
+            }
+            set {
+                this["PushoverDefaultNotificationPriority"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("High")]
+        public global::PushoverClient.Priority PushoverDefaultFailurePriority {
+            get {
+                return ((global::PushoverClient.Priority)(this["PushoverDefaultFailurePriority"]));
+            }
+            set {
+                this["PushoverDefaultFailurePriority"] = value;
+            }
+        }
     }
 }

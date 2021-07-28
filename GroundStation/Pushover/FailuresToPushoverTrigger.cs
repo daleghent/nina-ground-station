@@ -38,13 +38,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable {
         private ISequenceItem previousItem;
-        private Priority priority = Priority.High;
-        private NotificationSound notificationSound = NotificationSound.Pushover;
+        private Priority priority;
+        private NotificationSound notificationSound;
 
         [ImportingConstructor]
         public FailuresToPushoverTrigger() {
             PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+            NotificationSound = Properties.Settings.Default.PushoverDefaultFailureSound;
+            Priority = Properties.Settings.Default.PushoverDefaultFailurePriority;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
