@@ -102,7 +102,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 await smtp.SendAsync(message, ct);
                 await smtp.DisconnectAsync(true, ct);
             } catch (SocketException ex) {
-                Logger.Error($"FailuresToEmail: Connection to {SmtpHostPort}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
+                Logger.Error($"FailuresToEmail: Connection to {SmtpHostName}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
                 throw ex;
             } catch (AuthenticationException ex) {
                 Logger.Error($"FailuresToEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
