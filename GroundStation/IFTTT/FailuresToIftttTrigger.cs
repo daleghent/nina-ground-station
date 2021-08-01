@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Ifttt;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -35,14 +36,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToIftttTrigger : SequenceTrigger, IValidatable, INotifyPropertyChanged {
+        private IftttCommon ifttt;
         private ISequenceItem previousItem;
         private string eventName = "nina";
 
         [ImportingConstructor]
         public FailuresToIftttTrigger() {
-            IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            ifttt = new IftttCommon();
         }
 
         public FailuresToIftttTrigger(FailuresToIftttTrigger copyMe) : this() {
@@ -70,31 +70,31 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             dict.Add("value2", this.previousItem.Attempts.ToString());
             dict.Add("value3", string.Join(", ", PreviousItemIssues));
 
-            Logger.Debug($"IftttTrigger: Pushing message: {string.Join(" || ", dict.Values)}");
+            Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
-            await IftttCommon.IftttCommon.SendIftttTrigger(JsonConvert.SerializeObject(dict), EventName, IFTTTWebhookKey, ct);
+            await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             bool shouldTrigger = false;
 
             if (previousItem == null) {
-                Logger.Debug("IftttTrigger: Previous item is null. Asserting false");
+                Logger.Debug("Previous item is null. Asserting false");
                 return shouldTrigger;
             }
 
             this.previousItem = previousItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("IFTTT")) {
-                Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
                 shouldTrigger = true;
 
                 if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
                     PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
                 }
             } else {
-                Logger.Debug($"IftttTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
             return shouldTrigger;
@@ -103,11 +103,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(IFTTTWebhookKey) || string.IsNullOrWhiteSpace(IFTTTWebhookKey)) {
-                i.Add("IFTTT Webhooks key is missing");
-            }
+            var i = new List<string>(ifttt.ValidateSettings());
 
             if (string.IsNullOrEmpty(EventName) || string.IsNullOrWhiteSpace(EventName)) {
                 i.Add("IFTTT Webhooks event name is missing");
@@ -125,7 +121,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             return new FailuresToIftttTrigger() {
                 Icon = Icon,
                 Name = Name,
-                IFTTTWebhookKey = IFTTTWebhookKey,
                 EventName = EventName,
                 Category = Category,
                 Description = Description,
@@ -136,15 +131,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToIftttTrigger)}";
         }
 
-        private string IFTTTWebhookKey { get; set; }
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "IFTTTWebhookKey":
-                    IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-                    break;
-            }
-        }
     }
 }

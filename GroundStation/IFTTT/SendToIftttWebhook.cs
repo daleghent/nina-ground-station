@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Ifttt;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Sequencer.SequenceItem;
@@ -17,7 +18,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +31,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToIftttWebhook : SequenceItem, IValidatable {
+        private IftttCommon ifttt;
         private string eventName = "nina";
         private string value1 = string.Empty;
         private string value2 = string.Empty;
@@ -38,8 +39,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         [ImportingConstructor]
         public SendToIftttWebhook() {
-            IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            ifttt = new IftttCommon();
         }
 
         public SendToIftttWebhook(SendToIftttWebhook copyMe) : this() {
@@ -92,17 +92,13 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                 { "value3", value3 }
             };
 
-            await IftttCommon.IftttCommon.SendIftttTrigger(JsonConvert.SerializeObject(dict), EventName, IFTTTWebhookKey, ct);
+            await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(IFTTTWebhookKey) || string.IsNullOrWhiteSpace(IFTTTWebhookKey)) {
-                i.Add("IFTTT Webhook key is missing");
-            }
+            var i = new List<string>(ifttt.ValidateSettings());
 
             if (string.IsNullOrEmpty(EventName) || string.IsNullOrWhiteSpace(EventName)) {
                 i.Add("IFTTT Webhook event name is missing");
@@ -120,7 +116,6 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
             return new SendToIftttWebhook() {
                 Icon = Icon,
                 Name = Name,
-                IFTTTWebhookKey = IFTTTWebhookKey,
                 EventName = EventName,
                 Category = Category,
                 Description = Description,
@@ -129,16 +124,6 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SendToIftttWebhook)}";
-        }
-
-        private string IFTTTWebhookKey { get; set; }
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "IFTTTWebhookKey":
-                    IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-                    break;
-            }
         }
     }
 }
