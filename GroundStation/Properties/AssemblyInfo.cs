@@ -62,9 +62,10 @@ The provided instructions and triggers can be broken down in to two general cate
 The external services that are currently supported are:
 
 - Pushover: desktop and mobile device messaging
-- IFTTT Webhooks: If This Then That. An easy to use configurable webhooks-based gateway to a wide variety of messaging platforms and IoT services for automating popular home IoT systems
 - Telegram: Utilize a Telegram bot (message @BotFather for information) to send messages to any specified chat channel
 - Email: Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
+- IFTTT Webhooks: If This Then That. An easy to use configurable webhooks-based gateway to a wide variety of messaging platforms and IoT services for automating popular home IoT systems
+- MQTT: Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object
 
 Use of these services is done in conjunction with your own personal accounts with them. Some services might require a subscription to use. I do not provide in-depth technical support or training for the services.")]
 
