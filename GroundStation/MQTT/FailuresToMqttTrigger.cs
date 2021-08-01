@@ -60,6 +60,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var itemInfo = new PreviousItem {
+                version = 1,
                 name = previousItem.Name,
                 description = previousItem.Description,
                 attempts = previousItem.Attempts,
@@ -137,6 +138,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         private class PreviousItem {
+            public int version { get; set; }
             public string name { get; set; }
             public string description { get; set; }
             public int attempts { get; set; }
