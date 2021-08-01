@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Email\EmailCommon.cs" />
     <Compile Include="MQTT\FailuresToMqttTrigger.cs" />
     <Compile Include="MQTT\FailuresToMqttTriggerTemplate.xaml.cs">
       <DependentUpon>FailuresToMqttTriggerTemplate.xaml</DependentUpon>

@@ -10,8 +10,7 @@
 
 #endregion "copyright"
 
-using MailKit.Net.Smtp;
-using MailKit.Security;
+using DaleGhent.NINA.GroundStation.Email;
 using MimeKit;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
@@ -26,7 +25,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,18 +37,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToEmailTrigger : SequenceTrigger, IValidatable {
+        private EmailCommon email;
         private ISequenceItem previousItem;
         private ISequenceItem nextItem;
         private string recipient;
 
         [ImportingConstructor]
         public FailuresToEmailTrigger() {
+            email = new EmailCommon();
+
             SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
             SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-            SmtpHostName = Properties.Settings.Default.SmtpHostName;
-            SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-            SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
-            SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             Recipient = SmtpDefaultRecipients;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
@@ -87,34 +84,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             message.Subject = subject;
             message.Body = new TextPart("plain") { Text = body };
 
-            var xMailerHeader = new Header("X-Mailer", $"Ground Station/{GroundStation.GetVersion()}, NINA/{CoreUtil.Version}");
-            message.Headers.Add(xMailerHeader);
-
-            var smtp = new SmtpClient();
-
-            try {
-                await smtp.ConnectAsync(SmtpHostName, SmtpHostPort, SecureSocketOptions.Auto, ct);
-
-                if (!string.IsNullOrEmpty(SmtpUsername) && !string.IsNullOrEmpty(SmtpPassword)) {
-                    await smtp.AuthenticateAsync(SmtpUsername, SmtpPassword, ct);
-                }
-
-                await smtp.SendAsync(message, ct);
-                await smtp.DisconnectAsync(true, ct);
-            } catch (SocketException ex) {
-                Logger.Error($"FailuresToEmail: Connection to {SmtpHostName}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
-                throw ex;
-            } catch (AuthenticationException ex) {
-                Logger.Error($"FailuresToEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
-                throw ex;
-            }
+            await email.SendEmail(message, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             bool shouldTrigger = false;
 
             if (previousItem == null) {
-                Logger.Debug("FailuresToEmail: Previous item is null. Asserting false");
+                Logger.Debug("Previous item is null. Asserting false");
                 return shouldTrigger;
             }
 
@@ -122,15 +99,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             this.nextItem = nextItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
-                Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
                 shouldTrigger = true;
 
                 if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
                     PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
                 }
             } else {
-                Logger.Debug($"FailuresToEmail: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
             return shouldTrigger;
@@ -139,7 +116,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
+            var i = new List<string>(email.ValidateSettings());
 
             if (string.IsNullOrEmpty(Recipient) || string.IsNullOrWhiteSpace(Recipient)) {
                 i.Add("Email recipient is missing");
@@ -147,14 +124,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
             if (string.IsNullOrEmpty(SmtpFromAddress) || string.IsNullOrWhiteSpace(SmtpFromAddress)) {
                 i.Add("Email from address is missing");
-            }
-
-            if (string.IsNullOrEmpty(SmtpHostName) || string.IsNullOrWhiteSpace(SmtpHostName)) {
-                i.Add("SMTP server is not configured");
-            }
-
-            if (SmtpHostPort < 1 || SmtpHostPort > ushort.MaxValue) {
-                i.Add("SMTP port is invalid");
             }
 
             if (i != Issues) {
@@ -181,26 +150,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         private string SmtpFromAddress { get; set; }
         private string SmtpDefaultRecipients { get; set; }
-        private string SmtpHostName { get; set; }
-        private ushort SmtpHostPort { get; set; }
-        private string SmtpUsername { get; set; }
-        private string SmtpPassword { get; set; }
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "SmtpHostName":
-                    SmtpHostName = Properties.Settings.Default.SmtpHostName;
-                    break;
-                case "SmtpHostPort":
-                    SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-                    break;
-                case "SmtpUsername":
-                    SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
-                    break;
-                case "SmtpPassword":
-                    SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
-                    break;
                 case "SmtpFromAddress":
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
                     break;
