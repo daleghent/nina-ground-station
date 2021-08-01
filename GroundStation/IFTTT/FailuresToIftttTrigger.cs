@@ -83,6 +83,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                 return shouldTrigger;
             }
 
+            if (previousItem == this.previousItem) {
+                Logger.Debug("Previous item has already been processed. Asserting false");
+                return shouldTrigger;
+            }
+
             this.previousItem = previousItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("IFTTT")) {

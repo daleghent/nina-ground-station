@@ -95,6 +95,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 return shouldTrigger;
             }
 
+            if (previousItem == this.previousItem) {
+                Logger.Debug("Previous item has already been processed. Asserting false");
+                return shouldTrigger;
+            }
+
             this.previousItem = previousItem;
             this.nextItem = nextItem;
 

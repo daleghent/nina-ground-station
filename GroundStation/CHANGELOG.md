@@ -2,6 +2,7 @@
 
 ## 1.1.0.0 - 2021-8-1
 * MQTT: Added instruction and failure trigger for [MQTT](https://mqttt.org/) brokers
+* Fixed failure triggers running twice for failed items when used as a Global Trigger
 * Moved configuration options to a more compact tabbed layout
 * Large refactoring of the Ground Station code to reduce duplication and make it more efficient
 * Reordered change log to list the most recent versions first
