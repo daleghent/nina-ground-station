@@ -39,6 +39,7 @@
 * Improved sanitization of configurable inputs
 * Added ability to configure a default Pushover sound and message priority for failures and normal messages
 
-## 1.0.0.8 - 2021-8-1
+## 1.1.0.0 - 2021-8-1
 * MQTT: Added instruction and failure trigger for [MQTT](https://mqttt.org/) brokers
+* Moved configuration options to a more compact tabbed layout
 * Large refactoring of the Ground Station code to reduce duplication and make it more efficient
