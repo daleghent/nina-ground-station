@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Pushover;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -22,7 +23,6 @@ using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
@@ -37,18 +37,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable {
+        private PushoverCommon pushover;
         private ISequenceItem previousItem;
         private Priority priority;
         private NotificationSound notificationSound;
 
         [ImportingConstructor]
         public FailuresToPushoverTrigger() {
-            PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
-            PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+            pushover = new PushoverCommon();
+
             NotificationSound = Properties.Settings.Default.PushoverDefaultFailureSound;
             Priority = Properties.Settings.Default.PushoverDefaultFailurePriority;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this() {
@@ -84,36 +83,29 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 message += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
             }
 
-            var pclient = new Pushover(PushoverAppKey, PushoverUserKey);
-             
-            Logger.Debug("PushoverTrigger: Pushing message");
-            var response = await pclient.PushAsync(title, message, priority: Priority, notificationSound: NotificationSound);
-
-            if (response.Status != 1 || response.Errors?.Count > 0) {
-                Logger.Error($"PushoverTrigger: Push failed. Status={response.Status}, Errors={response.Errors.Select(array => string.Join(", ", array))}");
-            }
+            await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
             bool shouldTrigger = false;
 
             if (previousItem == null) {
-                Logger.Debug("PushoverTrigger: Previous item is null. Asserting false");
-                return shouldTrigger; ;
+                Logger.Debug("Previous item is null. Asserting false");
+                return shouldTrigger;
             }
 
             this.previousItem = previousItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
-                Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
                 shouldTrigger = true;
 
                 if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
                     PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
+                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
                 }
             } else {
-                Logger.Debug($"PushoverTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
             }
 
             return shouldTrigger;
@@ -122,15 +114,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(PushoverAppKey) || string.IsNullOrWhiteSpace(PushoverAppKey)) {
-                i.Add("Pushover app key is missing");
-            }
-
-            if (string.IsNullOrEmpty(PushoverUserKey) || string.IsNullOrWhiteSpace(PushoverUserKey)) {
-                i.Add("Pushover user key is missing");
-            }
+            var i = new List<string>(pushover.ValidateSettings());
 
             if (i != Issues) {
                 Issues = i;
@@ -155,19 +139,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToPushoverTrigger)}";
         }
 
-        private string PushoverAppKey { get; set; }
-        private string PushoverUserKey { get; set; }
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "PushoverAppKey":
-                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
-                    break;
-                case "PushoverUserKey":
-                    PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
-                    break;
-            }
-        }
     }
 }

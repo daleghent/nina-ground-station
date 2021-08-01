@@ -10,16 +10,15 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Pushover;
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
@@ -34,6 +33,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToPushover : SequenceItem, IValidatable {
+        private PushoverCommon pushover;
         private string title = string.Empty;
         private string message = string.Empty;
         private Priority priority;
@@ -41,12 +41,10 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
         [ImportingConstructor]
         public SendToPushover() {
-            PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
-            PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+            pushover = new PushoverCommon();
+
             NotificationSound = Properties.Settings.Default.PushoverDefaultNotificationSound;
             Priority = Properties.Settings.Default.PushoverDefaultNotificationPriority;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public SendToPushover(SendToPushover copyMe) : this() {
@@ -93,27 +91,20 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var pclient = new Pushover(PushoverAppKey, PushoverUserKey);
-
-            Logger.Debug("PushoverTrigger: Pushing message");
-            var response = await pclient.PushAsync(Title, Message, priority: Priority, notificationSound: NotificationSound);
-
-            if (response.Status != 1 || response.Errors?.Count > 0) {
-                Logger.Error($"PushoverTrigger: Push failed. Status={response.Status}, Errors={response.Errors.Select(array => string.Join(", ", array))}");
-            }
+            await pushover.PushMessage(Title, Message, Priority, NotificationSound, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
+            var i = new List<string>(pushover.ValidateSettings());
 
-            if (string.IsNullOrEmpty(PushoverAppKey) || string.IsNullOrWhiteSpace(PushoverAppKey)) {
-                i.Add("Pushover app key is missing");
+            if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title)) {
+                i.Add("Pushover message title is missing");
             }
 
-            if (string.IsNullOrEmpty(PushoverUserKey) || string.IsNullOrWhiteSpace(PushoverUserKey)) {
-                i.Add("Pushover user key is missing");
+            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+                i.Add("Pushover message body is missing");
             }
 
             if (i != Issues) {
@@ -139,20 +130,6 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SendToPushover)}";
-        }
-
-        private string PushoverAppKey { get; set; }
-        private string PushoverUserKey { get; set; }
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "PushoverAppKey":
-                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
-                    break;
-                case "PushoverUserKey":
-                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
-                    break;
-            }
         }
     }
 }
