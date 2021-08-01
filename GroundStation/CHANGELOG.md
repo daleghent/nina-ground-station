@@ -18,7 +18,7 @@
 * Message text boxes now have vertical and horizontal scrollbars and soft wrapping
 
 ## 1.0.0.5 - 2021-7-14
-* Added validation issue list to failure messages (**NOTE:** Will start working when used in a future NINA version)
+* Added validation issue list to failure messages
   * Pushover, Email: list of any validation issues in the previous instruction is appended to the failure message
   * IFTTT: list of any validation issues in the previous instruction is populated into Value 3 of the Webhooks message
 * Fix validation refesh issue in Send to Pushover
