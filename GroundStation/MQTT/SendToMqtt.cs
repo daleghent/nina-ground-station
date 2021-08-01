@@ -25,8 +25,8 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.SendToMqtt {
 
-    [ExportMetadata("Name", "Send to MQTT")]
-    [ExportMetadata("Description", "Sends a free form message to a MQTT broker")]
+    [ExportMetadata("Name", "Publish to MQTT broker")]
+    [ExportMetadata("Description", "Publishes a free form message to a MQTT broker")]
     [ExportMetadata("Icon", "Mqtt_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]

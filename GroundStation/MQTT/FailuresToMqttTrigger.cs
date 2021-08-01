@@ -28,8 +28,8 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
-    [ExportMetadata("Name", "Failures to MQTT")]
-    [ExportMetadata("Description", "Sends a JSON object to an MQTT broker and topic when a sequence instruction fails")]
+    [ExportMetadata("Name", "Failures to MQTT broker")]
+    [ExportMetadata("Description", "Publishes an informative JSON object to an MQTT broker when a sequence instruction fails")]
     [ExportMetadata("Icon", "Mqtt_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
