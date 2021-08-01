@@ -6,6 +6,8 @@
 * Moved configuration options to a more compact tabbed layout
 * Large refactoring of the Ground Station code to reduce duplication and make it more efficient
 * Reordered change log to list the most recent versions first
+* Updated MimeKit to 2.14.0
+* Minimum supported NINA version is now 1.11 build 116
 
 ## 1.0.0.7 - 2021-7-28
 * Improved sanitization of configurable inputs
