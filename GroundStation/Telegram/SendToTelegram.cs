@@ -10,20 +10,17 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Telegram;
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
 
 namespace DaleGhent.NINA.GroundStation.SendToTelegram {
 
@@ -34,15 +31,13 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToTelegram : SequenceItem, IValidatable {
+        private TelegramCommon telegram;
         private string message = string.Empty;
         private bool doNotNotify = false;
 
         [ImportingConstructor]
         public SendToTelegram() {
-            TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
-            TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            telegram = new TelegramCommon();
         }
 
         public SendToTelegram(SendToTelegram copyMe) : this() {
@@ -68,29 +63,16 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var bclient = new TelegramBotClient(TelegramAccessToken);
-
-            Logger.Debug("SendToTelegram: Pushing message");
-
-            try {
-                await bclient.SendTextMessageAsync(TelegramChatId, Message, disableNotification: DoNotNotify, cancellationToken: ct);
-            } catch (Exception ex) {
-                Logger.Error($"Error sending to Telegram: {ex.Message}");
-                throw ex;
-            }
+            await telegram.SendTelegram(Message, DoNotNotify, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
+            var i = new List<string>(telegram.ValidateSettings());
 
-            if (string.IsNullOrEmpty(TelegramAccessToken) || string.IsNullOrWhiteSpace(TelegramAccessToken)) {
-                i.Add("Telegram bot access token is missing");
-            }
-
-            if (string.IsNullOrEmpty(TelegramChatId) || string.IsNullOrWhiteSpace(TelegramChatId)) {
-                i.Add("Telegram chat ID missing");
+            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+                i.Add("Telegram message is empty!");
             }
 
             if (i != Issues) {
@@ -114,20 +96,6 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(SendToTelegram)}";
-        }
-
-        private string TelegramAccessToken { get; set; }
-        private string TelegramChatId { get; set; }
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "TelegramAccessToken":
-                    TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
-                    break;
-                case "TelegramChatId":
-                    TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
-                    break;
-            }
         }
     }
 }

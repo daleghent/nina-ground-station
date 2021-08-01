@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Telegram;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -21,12 +22,10 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
@@ -37,14 +36,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToTelegramTrigger : SequenceTrigger, IValidatable {
+        private TelegramCommon telegram;
         private ISequenceItem previousItem;
 
         [ImportingConstructor]
         public FailuresToTelegramTrigger() {
-            TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
-            TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            telegram = new TelegramCommon();
         }
 
         public FailuresToTelegramTrigger(FailuresToTelegramTrigger copyMe) : this() {
@@ -58,16 +55,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 message += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
             }
 
-            var bclient = new TelegramBotClient(TelegramAccessToken);
-
-            Logger.Debug("TelegramTrigger: Pushing message");
-
-            try {
-                await bclient.SendTextMessageAsync(TelegramChatId, message, cancellationToken: ct);
-            } catch (Exception ex) {
-                Logger.Error($"Error sending to Telegram: {ex.Message}");
-                throw ex;
-            }
+            await telegram.SendTelegram(message, true, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -98,15 +86,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(TelegramAccessToken) || string.IsNullOrWhiteSpace(TelegramAccessToken)) {
-                i.Add("Telegram bot access token is missing");
-            }
-
-            if (string.IsNullOrEmpty(TelegramChatId) || string.IsNullOrWhiteSpace(TelegramChatId)) {
-                i.Add("Telegram chat ID missing");
-            }
+            var i = new List<string>(telegram.ValidateSettings());
 
             if (i != Issues) {
                 Issues = i;
@@ -129,19 +109,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToTelegramTrigger)}";
         }
 
-        private string TelegramAccessToken { get; set; }
-        private string TelegramChatId { get; set; }
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
-
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "TelegramAccessToken":
-                    TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
-                    break;
-                case "TelegramChatId":
-                    TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
-                    break;
-            }
-        }
     }
 }

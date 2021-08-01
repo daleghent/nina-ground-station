@@ -98,6 +98,7 @@
     <Compile Include="Telegram\FailuresToTelegramTriggerTemplate.xaml.cs">
       <DependentUpon>FailuresToTelegramTriggerTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Telegram\TelegramCommon.cs" />
     <Compile Include="Telegram\SendToTelegram.cs" />
     <Compile Include="Telegram\SendToTelegramTemplate.xaml.cs">
       <DependentUpon>SendToTelegramTemplate.xaml</DependentUpon>
