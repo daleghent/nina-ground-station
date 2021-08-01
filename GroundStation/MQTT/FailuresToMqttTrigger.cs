@@ -74,7 +74,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
             Logger.Trace($"{this}: {payload}");
 
-            await mqtt.PublishMessge(Topic, payload, ct);
+            await mqtt.PublishMessage(Topic, payload, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {

@@ -34,7 +34,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public async Task PublishMessge(string topic, string message, CancellationToken ct) {
+        public async Task PublishMessage(string topic, string message, CancellationToken ct) {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
 
