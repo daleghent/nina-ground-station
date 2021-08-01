@@ -38,3 +38,6 @@
 ## 1.0.0.7 - 2021-7-28
 * Improved sanitization of configurable inputs
 * Added ability to configure a default Pushover sound and message priority for failures and normal messages
+
+## 1.0.0.8 - 2021-8-1
+* Added instruction and failure trigger for MQTT brokers

@@ -214,5 +214,89 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["PushoverDefaultFailurePriority"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttBrokerHost {
+            get {
+                return ((string)(this["MqttBrokerHost"]));
+            }
+            set {
+                this["MqttBrokerHost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1883")]
+        public ushort MqttBrokerPort {
+            get {
+                return ((ushort)(this["MqttBrokerPort"]));
+            }
+            set {
+                this["MqttBrokerPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttUsername {
+            get {
+                return ((string)(this["MqttUsername"]));
+            }
+            set {
+                this["MqttUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttPassword {
+            get {
+                return ((string)(this["MqttPassword"]));
+            }
+            set {
+                this["MqttPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MqttBrokerUseTls {
+            get {
+                return ((bool)(this["MqttBrokerUseTls"]));
+            }
+            set {
+                this["MqttBrokerUseTls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttDefaultTopic {
+            get {
+                return ((string)(this["MqttDefaultTopic"]));
+            }
+            set {
+                this["MqttDefaultTopic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NINA")]
+        public string MqttClientId {
+            get {
+                return ((string)(this["MqttClientId"]));
+            }
+            set {
+                this["MqttClientId"] = value;
+            }
+        }
     }
 }

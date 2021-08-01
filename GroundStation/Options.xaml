@@ -39,6 +39,143 @@
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox Header="MQTT">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">
+                        Website: <Hyperlink NavigateUri="https://mqtt.org/" RequestNavigate="Hyperlink_RequestNavigate">https://mqtt.org/</Hyperlink>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Client ID</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT client ID</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttClientId" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Broker host</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker hostname or IP</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttBrokerHost" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Broker port</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker port</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="75"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttBrokerPort" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Default topic</TextBlock.Text>
+                            <TextBlock.ToolTip>The default topic to publish to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttDefaultTopic" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Username</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker username</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttUsername" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Password</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker password</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttPassword" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Use TLS</TextBlock.Text>
+                            <TextBlock.ToolTip>Use TLS on broker connections</TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding MqttBrokerUseTls, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </GroupBox>
+
             <GroupBox Header="Pushover">
                 <StackPanel Orientation="Vertical">
                     <TextBlock VerticalAlignment="Center" Margin="0,5,0,5">

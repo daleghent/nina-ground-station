@@ -35,9 +35,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string IFTTTWebhookKey {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             set {
                 Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -46,9 +44,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string PushoverAppKey {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             set {
                 Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -57,9 +53,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string PushoverUserKey {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
             set {
                 Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -108,9 +102,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string SmtpFromAddress {
-            get {
-                return Properties.Settings.Default.SmtpFromAddress;
-            }
+            get => Properties.Settings.Default.SmtpFromAddress;
             set {
                 Properties.Settings.Default.SmtpFromAddress = value.Trim();
                 Properties.Settings.Default.Save();
@@ -119,9 +111,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string SmtpDefaultRecipients {
-            get {
-                return Properties.Settings.Default.SmtpDefaultRecipients;
-            }
+            get => Properties.Settings.Default.SmtpDefaultRecipients;
             set {
                 Properties.Settings.Default.SmtpDefaultRecipients = value.Trim();
                 Properties.Settings.Default.Save();
@@ -130,9 +120,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string SmtpHostName {
-            get {
-                return Properties.Settings.Default.SmtpHostName;
-            }
+            get => Properties.Settings.Default.SmtpHostName;
             set {
                 Properties.Settings.Default.SmtpHostName = value.Trim();
                 Properties.Settings.Default.Save();
@@ -141,9 +129,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public ushort SmtpHostPort {
-            get {
-                return Properties.Settings.Default.SmtpHostPort;
-            }
+            get => Properties.Settings.Default.SmtpHostPort;
             set {
                 Properties.Settings.Default.SmtpHostPort = value;
                 Properties.Settings.Default.Save();
@@ -152,9 +138,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string SmtpUsername {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.SmtpUsername);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.SmtpUsername);
             set {
                 Properties.Settings.Default.SmtpUsername = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -163,9 +147,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string SmtpPassword {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.SmtpPassword);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             set {
                 Properties.Settings.Default.SmtpPassword = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -174,9 +156,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string TelegramAccessToken {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
             set {
                 Properties.Settings.Default.TelegramAccessToken = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
@@ -185,11 +165,79 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public string TelegramChatId {
-            get {
-                return Security.Decrypt(Properties.Settings.Default.TelegramChatId);
-            }
+            get => Security.Decrypt(Properties.Settings.Default.TelegramChatId);
             set {
                 Properties.Settings.Default.TelegramChatId = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttBrokerHost {
+            get => Properties.Settings.Default.MqttBrokerHost;
+            set {
+                Properties.Settings.Default.MqttBrokerHost = value.Trim();
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public ushort MqttBrokerPort {
+            get => Properties.Settings.Default.MqttBrokerPort;
+            set {
+                Properties.Settings.Default.MqttBrokerPort = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttDefaultTopic {
+            get => Properties.Settings.Default.MqttDefaultTopic;
+            set {
+                Properties.Settings.Default.MqttDefaultTopic = value.Trim();
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttClientId {
+            get => Properties.Settings.Default.MqttClientId;
+            set {
+                Properties.Settings.Default.MqttClientId = value.Trim();
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool MqttBrokerUseTls {
+            get => Properties.Settings.Default.MqttBrokerUseTls;
+            set {
+                Properties.Settings.Default.MqttBrokerUseTls = value;
+                Properties.Settings.Default.Save();
+
+                if (value) {
+                    MqttBrokerPort = 8883;
+                } else {
+                    MqttBrokerPort = 1883;
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttUsername {
+            get => Security.Decrypt(Properties.Settings.Default.MqttUsername);
+            set {
+                Properties.Settings.Default.MqttUsername = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttPassword {
+            get => Security.Decrypt(Properties.Settings.Default.MqttPassword);
+            set {
+                Properties.Settings.Default.MqttPassword = Security.Encrypt(value.Trim());
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }

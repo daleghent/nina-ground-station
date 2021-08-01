@@ -50,5 +50,26 @@
     <Setting Name="PushoverDefaultFailurePriority" Type="PushoverClient.Priority" Scope="User">
       <Value Profile="(Default)">High</Value>
     </Setting>
+    <Setting Name="MqttBrokerHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttBrokerPort" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">1883</Value>
+    </Setting>
+    <Setting Name="MqttUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttBrokerUseTls" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MqttDefaultTopic" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttClientId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NINA</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
