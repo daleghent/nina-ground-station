@@ -22,6 +22,7 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
@@ -42,6 +43,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         [ImportingConstructor]
         public FailuresToTelegramTrigger() {
             telegram = new TelegramCommon();
+
+            TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
+            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToTelegramTrigger(FailuresToTelegramTrigger copyMe) : this() {
@@ -49,11 +53,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            string message = $"{previousItem.Name} failed to run after {previousItem.Attempts} attempt{((previousItem.Attempts > 1) ? string.Format("s") : string.Format(""))}!";
-
-            if (PreviousItemIssues.Count > 0) {
-                message += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
-            }
+            var message = Utilities.ResolveTokens(TelegramFailureBodyText, previousItem);
+            message = Utilities.ResolveFailureTokens(message, previousItem);
 
             await telegram.SendTelegram(message, true, ct);
         }
@@ -115,5 +116,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+
+        private string TelegramFailureBodyText { get; set; }
+
+        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case "TelegramFailureBodyText":
+                    TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
+                    break;
+            }
+        }
     }
 }

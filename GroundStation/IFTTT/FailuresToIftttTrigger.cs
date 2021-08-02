@@ -43,6 +43,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         [ImportingConstructor]
         public FailuresToIftttTrigger() {
             ifttt = new IftttCommon();
+
+            IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
+            IftttFailureValue2 = Properties.Settings.Default.IftttFailureValue2;
+            IftttFailureValue3 = Properties.Settings.Default.IftttFailureValue3;
+
+            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToIftttTrigger(FailuresToIftttTrigger copyMe) : this() {
@@ -66,9 +72,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string>();
 
-            dict.Add("value1", this.previousItem.Name);
-            dict.Add("value2", this.previousItem.Attempts.ToString());
-            dict.Add("value3", string.Join(", ", PreviousItemIssues));
+            dict.Add("value1", IftttFailureValue1);
+            dict.Add("value2", IftttFailureValue2);
+            dict.Add("value3", IftttFailureValue3);
 
             Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
@@ -137,5 +143,23 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+
+        private string IftttFailureValue1 { get; set; }
+        private string IftttFailureValue2 { get; set; }
+        private string IftttFailureValue3 { get; set; }
+
+        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case "IftttFailureValue1":
+                    IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
+                    break;
+                case "IftttFailureValue2":
+                    IftttFailureValue2 = Properties.Settings.Default.IftttFailureValue2;
+                    break;
+                case "IftttFailureValue3":
+                    IftttFailureValue3 = Properties.Settings.Default.IftttFailureValue3;
+                    break;
+            }
+        }
     }
 }

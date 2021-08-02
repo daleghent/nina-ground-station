@@ -43,6 +43,33 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        public string IftttFailureValue1 {
+            get => Properties.Settings.Default.IftttFailureValue1;
+            set {
+                Properties.Settings.Default.IftttFailureValue1 = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string IftttFailureValue2 {
+            get => Properties.Settings.Default.IftttFailureValue2;
+            set {
+                Properties.Settings.Default.IftttFailureValue2 = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string IftttFailureValue3 {
+            get => Properties.Settings.Default.IftttFailureValue3;
+            set {
+                Properties.Settings.Default.IftttFailureValue3 = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public string PushoverAppKey {
             get => Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             set {
@@ -96,6 +123,24 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverDefaultFailurePriority;
             set {
                 Properties.Settings.Default.PushoverDefaultFailurePriority = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PushoverFailureTitleText {
+            get => Properties.Settings.Default.PushoverFailureTitleText;
+            set {
+                Properties.Settings.Default.PushoverFailureTitleText = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PushoverFailureBodyText {
+            get => Properties.Settings.Default.PushoverFailureBodyText;
+            set {
+                Properties.Settings.Default.PushoverFailureBodyText = value;
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -155,6 +200,24 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        public string EmailFailureSubjectText {
+            get => Properties.Settings.Default.EmailFailureSubjectText;
+            set {
+                Properties.Settings.Default.EmailFailureSubjectText = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string EmailFailureBodyText {
+            get => Properties.Settings.Default.EmailFailureBodyText;
+            set {
+                Properties.Settings.Default.EmailFailureBodyText = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public string TelegramAccessToken {
             get => Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
             set {
@@ -168,6 +231,15 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.TelegramChatId);
             set {
                 Properties.Settings.Default.TelegramChatId = Security.Encrypt(value.Trim());
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TelegramFailureBodyText {
+            get => Properties.Settings.Default.TelegramFailureBodyText;
+            set {
+                Properties.Settings.Default.TelegramFailureBodyText = value;
                 Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
@@ -242,6 +314,13 @@ namespace DaleGhent.NINA.GroundStation {
                 RaisePropertyChanged();
             }
         }
+
+        public string TokenDate => DateTime.Now.ToString("d");
+        public string TokenTime => DateTime.Now.ToString("T");
+        public string TokenDateTime => DateTime.Now.ToString("G");
+        public string TokenDateUtc => DateTime.UtcNow.ToString("d");
+        public string TokenTimeUtc => DateTime.UtcNow.ToString("T");
+        public string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
 
         public static string GetVersion() {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();

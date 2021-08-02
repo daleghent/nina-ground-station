@@ -85,8 +85,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
             message.To.AddRange(InternetAddressList.Parse(Recipient));
-            message.Subject = Subject;
-            message.Body = new TextPart("plain") { Text = Body };
+            message.Subject = Utilities.ResolveTokens(Subject, this);
+            message.Body = new TextPart("plain") { Text = Utilities.ResolveTokens(Body, this) };
 
             await email.SendEmail(message, ct);
         }

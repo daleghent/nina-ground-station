@@ -50,6 +50,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
             Recipient = SmtpDefaultRecipients;
 
+            EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
+            EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
+
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
@@ -67,16 +70,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            string subject = $"Failure running {previousItem.Name}!";
-            string body = $"Time: {DateTime.Now}\nStatus: \"{previousItem.Name}\" did not complete successfully after {previousItem.Attempts} attempts!";
+            var subject = Utilities.ResolveTokens(EmailFailureSubjectText, previousItem);
+            var body = Utilities.ResolveTokens(EmailFailureBodyText, previousItem);
 
-            if (PreviousItemIssues.Count > 0) {
-                body += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
-            }
-
-            if (this.nextItem != null) {
-                body += $"\n\nFollowing instruction: \"{nextItem.Name}\"";
-            }
+            subject = Utilities.ResolveFailureTokens(subject, previousItem);
+            body = Utilities.ResolveFailureTokens(body, previousItem);
 
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
@@ -155,6 +153,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         private string SmtpFromAddress { get; set; }
         private string SmtpDefaultRecipients { get; set; }
+        private string EmailFailureSubjectText { get; set; }
+        private string EmailFailureBodyText { get; set; }
+
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
@@ -164,6 +165,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                     break;
                 case "SmtpDefaultRecipients":
                     SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
+                    break;
+                case "EmailFailureSubjectText":
+                    EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
+                    break;
+                case "EmailFailureBodyText":
+                    EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
                     break;
             }
         }

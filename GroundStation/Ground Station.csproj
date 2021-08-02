@@ -58,6 +58,7 @@
       <DependentUpon>SendToMqttTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pushover\PushoverCommon.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="Email\FailuresToEmailTrigger.cs" />
     <Compile Include="Email\FailuresToEmailTriggerTemplate.xaml.cs">

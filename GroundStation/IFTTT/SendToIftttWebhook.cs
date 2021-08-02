@@ -87,9 +87,9 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string> {
-                { "value1", value1 },
-                { "value2", value2 },
-                { "value3", value3 }
+                { "value1", Utilities.ResolveTokens(Value1, this) },
+                { "value2", Utilities.ResolveTokens(Value2, this) },
+                { "value3", Utilities.ResolveTokens(Value3, this) }
             };
 
             await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);

@@ -298,5 +298,104 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["MqttClientId"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string PushoverFailureTitleText {
+            get {
+                return ((string)(this["PushoverFailureTitleText"]));
+            }
+            set {
+                this["PushoverFailureTitleText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
+            "T$$")]
+        public string PushoverFailureBodyText {
+            get {
+                return ((string)(this["PushoverFailureBodyText"]));
+            }
+            set {
+                this["PushoverFailureBodyText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
+            "T$$\r\n")]
+        public string TelegramFailureBodyText {
+            get {
+                return ((string)(this["TelegramFailureBodyText"]));
+            }
+            set {
+                this["TelegramFailureBodyText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
+            "T$$\r\n")]
+        public string EmailFailureBodyText {
+            get {
+                return ((string)(this["EmailFailureBodyText"]));
+            }
+            set {
+                this["EmailFailureBodyText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string EmailFailureSubjectText {
+            get {
+                return ((string)(this["EmailFailureSubjectText"]));
+            }
+            set {
+                this["EmailFailureSubjectText"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$")]
+        public string IftttFailureValue1 {
+            get {
+                return ((string)(this["IftttFailureValue1"]));
+            }
+            set {
+                this["IftttFailureValue1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$ERROR_LIST$$")]
+        public string IftttFailureValue2 {
+            get {
+                return ((string)(this["IftttFailureValue2"]));
+            }
+            set {
+                this["IftttFailureValue2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$DATETIME$$")]
+        public string IftttFailureValue3 {
+            get {
+                return ((string)(this["IftttFailureValue3"]));
+            }
+            set {
+                this["IftttFailureValue3"] = value;
+            }
+        }
     }
 }

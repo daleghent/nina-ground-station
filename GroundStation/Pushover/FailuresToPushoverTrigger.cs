@@ -23,6 +23,7 @@ using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
@@ -46,8 +47,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public FailuresToPushoverTrigger() {
             pushover = new PushoverCommon();
 
+            PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
+            PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
             NotificationSound = Properties.Settings.Default.PushoverDefaultFailureSound;
             Priority = Properties.Settings.Default.PushoverDefaultFailurePriority;
+
+            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this() {
@@ -76,12 +81,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            string title = $"Failure running {previousItem.Name}!";
-            string message = $"{previousItem.Name} failed to run after {previousItem.Attempts} attempt{((previousItem.Attempts > 1) ? string.Format("s") : string.Format(""))}!";
+            var title = Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
+            var message = Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
 
-            if (PreviousItemIssues.Count > 0) {
-                message += $"\nReason{((PreviousItemIssues.Count > 1) ? string.Format("s") : string.Format(""))}: {string.Join(", ", PreviousItemIssues)}";
-            }
+            title = Utilities.ResolveFailureTokens(title, previousItem);
+            message = Utilities.ResolveFailureTokens(message, previousItem);
 
             await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
         }
@@ -98,7 +102,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 Logger.Debug("Previous item has already been processed. Asserting false");
                 return shouldTrigger;
             }
-
 
             this.previousItem = previousItem;
 
@@ -146,5 +149,19 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+
+        private string PushoverFailureTitleText { get; set; }
+        private string PushoverFailureBodyText { get; set; }
+
+        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case "PushoverFailureTitleText":
+                    PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
+                    break;
+                case "PushoverFailureBodyText":
+                    PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
+                    break;
+            }
+        }
     }
 }

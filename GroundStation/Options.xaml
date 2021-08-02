@@ -36,7 +36,7 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                         <TextBlock
                             VerticalAlignment="Center"
@@ -123,6 +123,45 @@
                             ItemsSource="{Binding PushoverPriorities}"
                             SelectedItem="{Binding PushoverDefaultFailurePriority}" />
                     </StackPanel>
+
+                    <GroupBox Header="Failure message template" Margin="0,10,0,0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Width="110">
+                                    <TextBlock.Text>Title</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Margin="5,0,0,0"
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding PushoverFailureTitleText}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    Width="110">
+                                    <TextBlock.Text>Body</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    MinWidth="515"
+                                    MaxWidth="515"
+                                    MinHeight="400"
+                                    MaxHeight="400"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    VerticalScrollBarVisibility="Visible"
+                                    Margin="0,5,0,0"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding PushoverFailureBodyText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
 
@@ -173,6 +212,24 @@
                         </TextBox>
                     </StackPanel>
 
+                    <GroupBox Header="Failure message template" Margin="0,10,0,0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                                <TextBox
+                                    MinWidth="515"
+                                    MaxWidth="515"
+                                    MinHeight="400"
+                                    MaxHeight="400"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    VerticalScrollBarVisibility="Visible"
+                                    Margin="0,5,0,0"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding TelegramFailureBodyText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
 
@@ -291,6 +348,45 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
+
+                    <GroupBox Header="Failure message template" Margin="0,10,0,0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Width="110">
+                                    <TextBlock.Text>Subject</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Margin="5,0,0,0"
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding EmailFailureSubjectText}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    Width="110">
+                                    <TextBlock.Text>Body</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    MinWidth="515"
+                                    MaxWidth="515"
+                                    MinHeight="400"
+                                    MaxHeight="400"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    VerticalScrollBarVisibility="Visible"
+                                    Margin="0,5,0,0"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalAlignment="Left"
+                                    Text="{Binding EmailFailureBodyText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
 
@@ -312,12 +408,58 @@
                             Margin="5,0,0,0"
                             Width="400"
                             VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="IFTTTWebhookKey" />
-                            </TextBox.Text>
-                        </TextBox>
+                            VerticalContentAlignment="Center"
+                            Text="{Binding IFTTTWebhookKey}" />
                     </StackPanel>
+
+                    <GroupBox Header="Failure message template" Margin="0,10,0,0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Width="110">
+                                    <TextBlock.Text>Value 1</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Margin="5,0,0,0"
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue1}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Width="110">
+                                    <TextBlock.Text>Value 2</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Margin="5,0,0,0"
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue2}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Width="110">
+                                    <TextBlock.Text>Value 3</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Margin="5,0,0,0"
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue3}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
 
@@ -454,7 +596,247 @@
                             VerticalAlignment="Center"
                             IsChecked="{Binding MqttBrokerUseTls, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
+                </StackPanel>
+            </TabItem>
 
+            <TabItem Header="Message Token Help" Name="Token_Help">
+                <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        TextWrapping="Wrap"
+                        Margin="0,5,0,5"
+                        Width="600">
+                            Regular and Failure messages can contain tokens that allow you to insert dynamic information into the message. Tokens take the form of $$TOKEN_NAME$$, similar to how N.I.N.A. file patterns work. Ground Station provides its own list of supported tokens, which are listed below.
+                            <LineBreak />
+                            <LineBreak />
+                            Tokens that are related to failures are available only for failure messages.
+                    </TextBlock>
+
+                    <GroupBox>
+                        <StackPanel Orientation="Vertical"  Margin="0,10,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$DATE$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDate}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TIME$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenTime}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$DATETIME$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateTime}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$DATE_UTC$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateUtc}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TIME_UTC$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenTimeUtc}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$DATETIME_UTC$$" />
+                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateTimeUtc}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_NAME$$" />
+                                <TextBlock Margin="5,0,0,0" Text="M 13" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_RA$$" />
+                                <TextBlock Margin="5,0,0,0" Text="16:41:42" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_DEC$$" />
+                                <TextBlock Margin="5,0,0,0">36° 27' 41"</TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_RA_DECIMAL$$" />
+                                <TextBlock Margin="5,0,0,0" Text="34.53393748626" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_DEC_DECIMAL$$" />
+                                <TextBlock Margin="5,0,0,0" Text="124.7833563436" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$TARGET_EPOCH$$" />
+                                <TextBlock Margin="5,0,0,0" Text="J2000" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$INSTRUCTION_SET$$" />
+                                <TextBlock Margin="5,0,0,0" Text="Parent instruction set name" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ITEM$$" />
+                                <TextBlock Margin="5,0,0,0" Text="Switch Filter" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ATTEMPTS$$" />
+                                <TextBlock Margin="5,0,0,0" Text="3" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_INSTR_SET$$" />
+                                <TextBlock Margin="5,0,0,0" Text="Instruction set name" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Margin="5,0,0,0"
+                                    Width="175"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$ERROR_LIST$$" />
+                                <TextBlock Margin="5,0,0,0">Some problem, Another problem, ...</TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
         </TabControl>

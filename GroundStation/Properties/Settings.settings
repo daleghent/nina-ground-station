@@ -71,5 +71,37 @@
     <Setting Name="MqttClientId" Type="System.String" Scope="User">
       <Value Profile="(Default)">NINA</Value>
     </Setting>
+    <Setting Name="PushoverFailureTitleText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
+    </Setting>
+    <Setting Name="PushoverFailureBodyText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+
+Reasons: $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="TelegramFailureBodyText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+
+Reasons: $$ERROR_LIST$$
+</Value>
+    </Setting>
+    <Setting Name="EmailFailureBodyText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+
+Reasons: $$ERROR_LIST$$
+</Value>
+    </Setting>
+    <Setting Name="EmailFailureSubjectText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
+    </Setting>
+    <Setting Name="IftttFailureValue1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$</Value>
+    </Setting>
+    <Setting Name="IftttFailureValue2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="IftttFailureValue3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$DATETIME$$</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

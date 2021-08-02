@@ -63,7 +63,10 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            await telegram.SendTelegram(Message, DoNotNotify, ct);
+            var message = Utilities.ResolveTokens(Message, this);
+            message = Utilities.ResolveFailureTokens(message, this);
+
+            await telegram.SendTelegram(message, DoNotNotify, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();

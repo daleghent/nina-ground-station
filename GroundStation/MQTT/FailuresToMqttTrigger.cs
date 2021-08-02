@@ -59,13 +59,22 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            var target = Utilities.FindDsoInfo(previousItem.Parent);
+
             var itemInfo = new PreviousItem {
                 version = 1,
                 name = previousItem.Name,
                 description = previousItem.Description,
                 attempts = previousItem.Attempts,
+                target_info = new List<TargetInfo>(),
                 error_list = new List<ErrorItems>()
             };
+
+            itemInfo.target_info.Add(new TargetInfo {
+                target_name = target.Name,
+                target_ra = target.Coordinates.RAString,
+                target_dec = target.Coordinates.DecString
+            });
 
             foreach (var e in PreviousItemIssues) {
                 itemInfo.error_list.Add(new ErrorItems { reason = e, });
@@ -142,7 +151,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             public string name { get; set; }
             public string description { get; set; }
             public int attempts { get; set; }
+            public List<TargetInfo> target_info { get; set; }
             public List<ErrorItems> error_list { get; set; }
+        }
+
+        public class TargetInfo {
+            public string target_name { get; set; }
+            public string target_ra { get; set; }
+            public string target_dec { get; set; }
         }
 
         public class ErrorItems {

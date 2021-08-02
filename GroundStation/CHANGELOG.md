@@ -1,6 +1,7 @@
 ﻿# Ground Station
 
 ## 1.2.0.0 -
+* Added message tokens and customizable failure message text for each service. Please refer to the Message Token Help tab for a list of supported tokens
 * MQTT: added a `version` field to the failure JSON object
 
 ## 1.1.0.0 - 2021-8-1

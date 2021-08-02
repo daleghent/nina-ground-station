@@ -65,8 +65,10 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            Logger.Trace($"{this}: {Payload}");
-            await mqtt.PublishMessage(Topic, Payload, ct);
+            var payload = Utilities.ResolveTokens(Payload, this);
+
+            Logger.Trace($"{this}: {payload}");
+            await mqtt.PublishMessage(Topic, payload, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();

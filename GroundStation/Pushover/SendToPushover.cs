@@ -91,7 +91,10 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            await pushover.PushMessage(Title, Message, Priority, NotificationSound, ct);
+            var title = Utilities.ResolveTokens(Title, this);
+            var message = Utilities.ResolveTokens(Message, this);
+
+            await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
