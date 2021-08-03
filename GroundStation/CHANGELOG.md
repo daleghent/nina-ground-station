@@ -1,8 +1,8 @@
 ﻿# Ground Station
 
-## 1.2.0.0 -
+## 1.2.0.0 - 2021-8-3
 * Added message tokens and customizable failure message text for each service. Please refer to the Message Token Help tab for a list of supported tokens
-* MQTT: added a `version` field to the failure JSON object
+* MQTT: added a `version` field to the failure JSON object. We start with version `1`
 * Uses new `ShouldTriggerAfter()` method to evaluate failure conditions
 * Minimum supported NINA version is now 1.11 build 120
 
