@@ -75,18 +75,19 @@
       <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
     </Setting>
     <Setting Name="PushoverFailureBodyText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
 
-Reasons: $$ERROR_LIST$$</Value>
+Reasons: $$ERROR_LIST$$
+</Value>
     </Setting>
     <Setting Name="TelegramFailureBodyText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
 
 Reasons: $$ERROR_LIST$$
 </Value>
     </Setting>
     <Setting Name="EmailFailureBodyText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
 
 Reasons: $$ERROR_LIST$$
 </Value>

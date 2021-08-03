@@ -313,8 +313,8 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
-            "T$$")]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$\r\n")]
         public string PushoverFailureBodyText {
             get {
                 return ((string)(this["PushoverFailureBodyText"]));
@@ -326,8 +326,8 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
-            "T$$\r\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$\r\n")]
         public string TelegramFailureBodyText {
             get {
                 return ((string)(this["TelegramFailureBodyText"]));
@@ -339,8 +339,8 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ atempts!\r\n\r\nReasons: $$ERROR_LIS" +
-            "T$$\r\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$\r\n")]
         public string EmailFailureBodyText {
             get {
                 return ((string)(this["EmailFailureBodyText"]));
