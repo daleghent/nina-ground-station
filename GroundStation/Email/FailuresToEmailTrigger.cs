@@ -39,7 +39,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
     public class FailuresToEmailTrigger : SequenceTrigger, IValidatable {
         private EmailCommon email;
         private ISequenceItem previousItem;
-        private ISequenceItem nextItem;
         private string recipient;
 
         [ImportingConstructor]
@@ -98,7 +97,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             }
 
             this.previousItem = previousItem;
-            this.nextItem = nextItem;
 
             if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
                 Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
