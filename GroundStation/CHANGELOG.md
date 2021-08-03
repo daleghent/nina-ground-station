@@ -3,6 +3,8 @@
 ## 1.2.0.0 -
 * Added message tokens and customizable failure message text for each service. Please refer to the Message Token Help tab for a list of supported tokens
 * MQTT: added a `version` field to the failure JSON object
+* Uses new `ShouldTriggerAfter()` method to evaluate failure conditions
+* Minimum supported NINA version is now 1.11 build 120
 
 ## 1.1.0.0 - 2021-8-1
 * MQTT: Added instruction and failure trigger for [MQTT](https://mqtt.org/) brokers

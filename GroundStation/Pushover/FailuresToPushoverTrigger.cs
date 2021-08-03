@@ -91,15 +91,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
+            return false;
+        }
+
+        public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
             bool shouldTrigger = false;
 
             if (previousItem == null) {
                 Logger.Debug("Previous item is null. Asserting false");
-                return shouldTrigger;
-            }
-
-            if (previousItem == this.previousItem) {
-                Logger.Debug("Previous item has already been processed. Asserting false");
                 return shouldTrigger;
             }
 
