@@ -27,21 +27,29 @@ namespace DaleGhent.NINA.GroundStation {
             var datetime = DateTime.Now;
             var datetimeUtc = DateTime.UtcNow;
 
-            text = !string.IsNullOrEmpty(target.Name)
+            text = !string.IsNullOrEmpty(target?.Name)
                 ? text.Replace(@"$$TARGET_NAME$$", target.Name)
                 : text.Replace(@"$$TARGET_NAME$$", "----");
 
-            text = !string.IsNullOrEmpty(target.Coordinates.RAString)
+            text = !string.IsNullOrEmpty(target?.Coordinates.RAString)
                 ? text.Replace(@"$$TARGET_RA$$", target.Coordinates.RAString)
                 : text.Replace(@"$$TARGET_RA$$", "----");
 
-            text = !string.IsNullOrEmpty(target.Coordinates.DecString)
+            text = !string.IsNullOrEmpty(target?.Coordinates.DecString)
                 ? text.Replace(@"$$TARGET_DEC$$", target.Coordinates.DecString)
                 : text.Replace(@"$$TARGET_DEC$$", "----");
 
-            text = text.Replace(@"$$TARGET_RA_DECIMAL$$", target.Coordinates.RA.ToString());
-            text = text.Replace(@"$$TARGET_DEC_DECIMAL$$", target.Coordinates.Dec.ToString());
-            text = text.Replace(@"$$TARGET_EPOCH$$", target.Coordinates.Epoch.ToString());
+            text = !string.IsNullOrEmpty(target?.Coordinates.RA.ToString())
+                ? text.Replace(@"$$TARGET_RA_DECIMAL$$", target.Coordinates.RA.ToString())
+                : text.Replace(@"$$TARGET_RA_DECIMAL$$", "----");
+
+            text = !string.IsNullOrEmpty(target?.Coordinates.Dec.ToString())
+                ? text.Replace(@"$$TARGET_DEC_DECIMAL$$", target.Coordinates.Dec.ToString())
+                : text.Replace(@"$$TARGET_DEC_DECIMAL$$", "----");
+
+            text = !string.IsNullOrEmpty(target?.Coordinates.Epoch.ToString())
+                ? text.Replace(@"$$TARGET_EPOCH$$", target.Coordinates.Epoch.ToString())
+                : text.Replace(@"$$TARGET_EPOCH$$", "----");
 
             text = text.Replace(@"$$INSTRUCTION_SET$$", sequenceItem.Parent.Name);
 
