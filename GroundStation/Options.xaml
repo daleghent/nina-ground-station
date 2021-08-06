@@ -732,6 +732,21 @@
                                 Grid.Column="1">
                                     Inserts a custom local date and time format. Replace "[DateTime format]" with any arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                             </TextBlock>
+
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$FORMAT_DATETIME_UTC [format]$$" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Text="Same as $$FORMAT_DATEIME ...$$ but in UTC" />
+
                         </Grid>
 
                         <Grid Margin="0,10,0,0">
