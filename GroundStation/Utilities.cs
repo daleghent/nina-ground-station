@@ -12,11 +12,13 @@
 
 using NINA.Astrometry;
 using NINA.Core.Enum;
+using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace DaleGhent.NINA.GroundStation {
 
@@ -61,6 +63,13 @@ namespace DaleGhent.NINA.GroundStation {
             text = text.Replace(@"$$TIME_UTC$$", datetimeUtc.ToString("T"));
             text = text.Replace(@"$$DATETIME_UTC$$", datetimeUtc.ToString("G"));
 
+            text = ParseFormattedDateTime(text);
+
+            text = text.Replace(@"$$SYSTEM_NAME$$", Environment.MachineName);
+            text = text.Replace(@"$$USER_NAME$$", Environment.UserName);
+            text = text.Replace(@"$$NINA_VERSION$$", CoreUtil.Version);
+            text = text.Replace(@"$$GS_VERSION$$", GroundStation.GetVersion());
+
             return text;
         }
 
@@ -96,6 +105,24 @@ namespace DaleGhent.NINA.GroundStation {
             }
 
             return target;
+        }
+
+        private static string ParseFormattedDateTime(string text) {
+            string pattern = @"\$\$FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\$\$";
+
+            foreach (Match dateTimeMatch in Regex.Matches(text, pattern)) {
+                var dateRegex = new Regex(Regex.Escape(dateTimeMatch.Value));
+
+                try {
+                    text = dateTimeMatch.Groups["isUTC"].Success
+                        ? dateRegex.Replace(text, DateTime.UtcNow.ToString(dateTimeMatch.Groups["specifier"].Value))
+                        : dateRegex.Replace(text, DateTime.Now.ToString(dateTimeMatch.Groups["specifier"].Value));
+                } catch {
+                    text = dateRegex.Replace(text, "[Invalid DateTime format]");
+                }
+            }
+
+            return text;
         }
     }
 }

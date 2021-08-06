@@ -9,6 +9,7 @@
     x:Class="DaleGhent.NINA.GroundStation.Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <DataTemplate x:Key="Ground Station_Options">
         <TabControl TabStripPlacement="Top">
 
@@ -605,236 +606,390 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left"
                         TextWrapping="Wrap"
-                        Margin="0,5,0,5"
+                        Margin="0,5,0,0"
                         Width="600">
                             Regular and Failure messages can contain tokens that allow you to insert dynamic information into the message. Tokens take the form of $$TOKEN_NAME$$, similar to how N.I.N.A. file patterns work. Ground Station provides its own list of supported tokens, which are listed below.
                             <LineBreak />
                             <LineBreak />
-                            Tokens that are related to failures are available only for failure messages.
+                            Global tokens are available in both regular and failure messages. Failure message tokens are will be resolved only in failure messages.
                     </TextBlock>
 
-                    <GroupBox>
-                        <StackPanel Orientation="Vertical"  Margin="0,10,0,0">
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$DATE$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDate}" />
-                            </StackPanel>
+                    <TextBlock Margin="0,10,0,0" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TIME$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenTime}" />
-                            </StackPanel>
+                    <GroupBox Header="Global tokens">
+                        <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$DATETIME$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateTime}" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$DATE$$" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="{Binding TokenDate}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$DATE_UTC$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateUtc}" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TIME$$" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="{Binding TokenTime}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TIME_UTC$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenTimeUtc}" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$DATETIME$$" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="{Binding TokenDateTime}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$DATETIME_UTC$$" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding TokenDateTimeUtc}" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$DATE_UTC$$" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="{Binding TokenDateUtc}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_NAME$$" />
-                                <TextBlock Margin="5,0,0,0" Text="M 13" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TIME_UTC$$" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Text="{Binding TokenTimeUtc}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_RA$$" />
-                                <TextBlock Margin="5,0,0,0" Text="16:41:42" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$DATETIME_UTC$$" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Text="{Binding TokenDateTimeUtc}" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_DEC$$" />
-                                <TextBlock Margin="5,0,0,0">36° 27' 41"</TextBlock>
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                $$FORMAT_DATETIME [DateTime format]$$
+                            </TextBox>
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="1">
+                                    Inserts a custom local date and time format. Replace "[DateTime format]" with any arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
+                            </TextBlock>
+                        </Grid>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_RA_DECIMAL$$" />
-                                <TextBlock Margin="5,0,0,0" Text="34.53393748626" />
-                            </StackPanel>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_DEC_DECIMAL$$" />
-                                <TextBlock Margin="5,0,0,0" Text="124.7833563436" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_NAME$$" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="The name of the target being imaged" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$TARGET_EPOCH$$" />
-                                <TextBlock Margin="5,0,0,0" Text="J2000" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_RA$$" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="The right ascension of the target being imaged, in 24 hour format" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$INSTRUCTION_SET$$" />
-                                <TextBlock Margin="5,0,0,0" Text="Parent instruction set name" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_DEC$$" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="The declination of the target being imaged, in sexagesimal format" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$FAILED_ITEM$$" />
-                                <TextBlock Margin="5,0,0,0" Text="Switch Filter" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_RA_DECIMAL$$" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="The right ascension of the target being imaged, deciaml format" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$FAILED_ATTEMPTS$$" />
-                                <TextBlock Margin="5,0,0,0" Text="3" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_DEC_DECIMAL$$" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Text="The declination of the target being imaged, deciaml format" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$FAILED_INSTR_SET$$" />
-                                <TextBlock Margin="5,0,0,0" Text="Instruction set name" />
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$TARGET_EPOCH$$" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Text="The epoch of the target's coordinates" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Margin="5,0,0,0"
-                                    Width="175"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Text="$$ERROR_LIST$$" />
-                                <TextBlock Margin="5,0,0,0">Some problem, Another problem, ...</TextBlock>
-                            </StackPanel>
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$INSTRUCTION_SET$$" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Text="The name of the enclosing instruction set" />
+                        </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$SYSTEM_NAME$$" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="The name of the computer" />
+
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$USER_NAME$$" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="The name of the user running N.I.N.A." />
+
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$NINA_VERSION$$" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="The version of N.I.N.A." />
+
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$GS_VERSION$$" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="The version of Ground Station" />
+
+                        </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Failure message tokens">
+                        <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$FAILED_ITEM$$" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Text="The name of the instruction that failed" />
+
+                            <TextBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$FAILED_ATTEMPTS$$" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="The number of failed attempts" />
+
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$FAILED_INSTR_SET$$" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Text="The name of the instruction set that contains the failed instruction" />
+
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsReadOnly="True"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Text="$$ERROR_LIST$$" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
+                        </Grid>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

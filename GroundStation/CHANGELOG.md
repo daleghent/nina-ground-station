@@ -1,5 +1,16 @@
 ﻿# Ground Station
 
+## 1.4.0.0 -
+* This release reorganizes the Message Tokens Help tab and adds new tokens that may be used:
+  * `$$SYSTEM_NAME$$` - The name of the computer
+  * `$$USER_NAME$$` - The name of the user running N.I.N.A.
+  * `$$NINA_VERSION$$` - The version of N.I.N.A.
+  * `$$GS_VERSION$$` - The version of Ground Station
+  * `$$FORMAT_DATETIME <custom date and time format>$$` - Custom local date and time string
+  * `$$FORMAT_DATETIME_UTC <custom date and time format>$$` - Custom UTC date and time string
+
+ The `$$FORMAT_DATETIME <custom date and time format>$$` token takes additional options in the form of [format specifiers](https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings). This allows you to insert a custom date and time string into your messages. Simply specify the format specifiers in the indicated area of the token. Your system's cultural settings are observed. For example, `$$FORMAT_DATETIME ddd d MMM$$` will display "Thu 14 Aug" for systems set to US English, and "ven. 14 août" for French locales. Local time is used. To create custom times in UTC, use `$$FORMAT_DATETIME_UTC ...$$` token instead.
+
 ## 1.3.0.0 - 2021-8-4
 * Fix message failure when a DSO container is not present
 
