@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.4.1.0 - 2021-8-9
+* Fix missing token substitution for IFTTT failure messages
+
 ## 1.4.0.0 - 2021-8-6
 * This release reorganizes the Message Tokens Help tab and adds new tokens that may be used:
   * `$$SYSTEM_NAME$$` - The name of the computer

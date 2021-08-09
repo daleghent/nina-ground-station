@@ -72,9 +72,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string>();
 
-            dict.Add("value1", IftttFailureValue1);
-            dict.Add("value2", IftttFailureValue2);
-            dict.Add("value3", IftttFailureValue3);
+            dict.Add("value1", ResolveAllTokens(IftttFailureValue1));
+            dict.Add("value2", ResolveAllTokens(IftttFailureValue2));
+            dict.Add("value3", ResolveAllTokens(IftttFailureValue3));
 
             Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
@@ -146,6 +146,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private string IftttFailureValue1 { get; set; }
         private string IftttFailureValue2 { get; set; }
         private string IftttFailureValue3 { get; set; }
+
+        private string ResolveAllTokens(string text) {
+            text = Utilities.ResolveTokens(text, this.Parent);
+            text = Utilities.ResolveFailureTokens(text, previousItem);
+
+            return text;
+        }
 
         void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
