@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.4.2.0 - 2021-8-9
+* Small fixes and adjustments to Help tab text formatting
+
 ## 1.4.1.0 - 2021-8-9
 * Fix missing token substitution for IFTTT failure messages
 
