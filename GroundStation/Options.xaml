@@ -631,6 +631,7 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
 
                             <TextBox
@@ -725,29 +726,33 @@
                                 IsReadOnly="True"
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center">
-                                $$FORMAT_DATETIME [DateTime format]$$
+                                $$FORMAT_DATETIME format$$
                             </TextBox>
                             <TextBlock
                                 Grid.Row="6"
                                 Grid.Column="1">
-                                    Inserts a custom local date and time format. Replace "[DateTime format]"
+                                    Inserts a custom local date and time format. Replace <Span FontStyle="Italic">format</Span> with any
                                     <LineBreak />
-                                    with any arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
+                                    arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                             </TextBlock>
 
                             <TextBox
-                                Grid.Row="5"
+                                Grid.Row="7"
                                 Grid.Column="0"
+                                Margin="0,5,0,0"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 IsReadOnly="True"
                                 VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$FORMAT_DATETIME_UTC [format]$$" />
+                                VerticalContentAlignment="Center">
+                                $$FORMAT_DATETIME_UTC format$$
+                            </TextBox>
                             <TextBlock
-                                Grid.Row="5"
+                                Grid.Row="7"
                                 Grid.Column="1"
-                                Text="Same as $$FORMAT_DATEIME ...$$ but in UTC" />
+                                Margin="0,5,0,0">
+                                    Same as <Span FontWeight="Bold">$$FORMAT_DATETIME <Span FontStyle="Italic">format</Span>$$</Span> but with UTC date and time
+                            </TextBlock>
 
                         </Grid>
 
