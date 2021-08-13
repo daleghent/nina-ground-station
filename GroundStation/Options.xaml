@@ -730,7 +730,9 @@
                             <TextBlock
                                 Grid.Row="6"
                                 Grid.Column="1">
-                                    Inserts a custom local date and time format. Replace "[DateTime format]" with any arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
+                                    Inserts a custom local date and time format. Replace "[DateTime format]"
+                                    <LineBreak />
+                                    with any arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                             </TextBlock>
 
                             <TextBox
