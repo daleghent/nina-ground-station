@@ -825,7 +825,7 @@
                             <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
-                                Text="The right ascension of the target being imaged, deciaml format" />
+                                Text="The right ascension of the target being imaged, decimal format" />
 
                             <TextBox
                                 Grid.Row="4"
@@ -839,7 +839,7 @@
                             <TextBlock
                                 Grid.Row="4"
                                 Grid.Column="1"
-                                Text="The declination of the target being imaged, deciaml format" />
+                                Text="The declination of the target being imaged, decimal format" />
 
                             <TextBox
                                 Grid.Row="5"
