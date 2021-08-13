@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.5.0.0 - 2021-8-13
+* Fix null reference when running trigger or action in the root container
+
 ## 1.4.2.0 - 2021-8-13
 * Small fixes and adjustments to Help tab text formatting
 

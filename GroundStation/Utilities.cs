@@ -53,7 +53,8 @@ namespace DaleGhent.NINA.GroundStation {
                 ? text.Replace(@"$$TARGET_EPOCH$$", target.Coordinates.Epoch.ToString())
                 : text.Replace(@"$$TARGET_EPOCH$$", "----");
 
-            text = text.Replace(@"$$INSTRUCTION_SET$$", sequenceItem.Parent.Name);
+            text = text.Replace(@"$$INSTRUCTION_SET$$",
+                string.IsNullOrEmpty(sequenceItem.Parent?.Name) ? "----" : sequenceItem.Parent.Name);
 
             text = text.Replace(@"$$DATE$$", datetime.ToString("d"));
             text = text.Replace(@"$$TIME$$", datetime.ToString("T"));
