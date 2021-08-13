@@ -731,7 +731,7 @@
                             <TextBlock
                                 Grid.Row="6"
                                 Grid.Column="1">
-                                    Inserts a custom local date and time format. Replace <Span FontStyle="Italic">format</Span> with any
+                                    Inserts a custom local date and time format. Replace <Span FontWeight="Bold"><Span FontStyle="Italic">format</Span></Span> with any
                                     <LineBreak />
                                     arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                             </TextBlock>
@@ -751,7 +751,7 @@
                                 Grid.Row="7"
                                 Grid.Column="1"
                                 Margin="0,5,0,0">
-                                    Same as <Span FontWeight="Bold">$$FORMAT_DATETIME <Span FontStyle="Italic">format</Span>$$</Span> but with UTC date and time
+                                    Same as <Span FontWeight="Bold">$$FORMAT_DATETIME <Span FontStyle="Italic">format</Span>$$</Span> but uses UTC date and time instead
                             </TextBlock>
 
                         </Grid>
