@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2021 Dale Ghent")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "1.11.0.1120")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "1.11.0.1125")]
 
 // The license your plugin code is using
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
@@ -40,7 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Homepage", "https://daleghent.com/ground-station")]
 
 //[Optional] Common tags that quickly describe your plugin
-[assembly: AssemblyMetadata("Tags", "notifications,alerts,ifttt,email,pushover")]
+[assembly: AssemblyMetadata("Tags", "notifications,alerts,ifttt,email,pushover,mqtt")]
 
 //[Optional] A link that will show a log of all changes in between your plugin's versions
 [assembly: AssemblyMetadata("ChangelogURL", "https://github.com/daleghent/nina-plugins/blob/main/GroundStation/CHANGELOG.md")]
@@ -48,26 +48,36 @@ using System.Runtime.InteropServices;
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://daleghent.github.io/nina-plugins/assets/images/ground-station-logo1.png")]
 //[Optional] A url to an example screenshot of your plugin in action
-[assembly: AssemblyMetadata("ScreenshotURL", "")]
+[assembly: AssemblyMetadata("ScreenshotURL", "https://daleghent.github.io/nina-plugins/assets/images/gs-example1.jpg")]
 //[Optional] An additional url to an example example screenshot of your plugin in action
-[assembly: AssemblyMetadata("AltScreenshotURL", "")]
+[assembly: AssemblyMetadata("AltScreenshotURL", "https://daleghent.github.io/nina-plugins/assets/images/gs-example2.png")]
 //[Optional] An in-depth description of your plugin
 [assembly: AssemblyMetadata("LongDescription", @"Ground Station provides remote messaging instructions and triggers for use in NINA's Advanced Sequencer. This allows you to send alerts to messaging platforms and orchestrate IoT devices and services directly from Advanced Sequencer.
 
 The provided instructions and triggers can be broken down in to two general categories:
 
-- Instructions for sending free form messages to a variety of services
-- Triggers for sending messages to services when something in the sequence experiences a failure
+* Instructions for sending free form messages to a variety of services
+* Triggers for sending messages to services when something in the sequence experiences a failure
 
-The external services that are currently supported are:
+# Supported services #
 
-- Pushover: desktop and mobile device messaging
-- Telegram: Utilize a Telegram bot (message @BotFather for information) to send messages to any specified chat channel
-- Email: Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
-- IFTTT Webhooks: If This Then That. An easy to use configurable webhooks-based gateway to a wide variety of messaging platforms and IoT services for automating popular home IoT systems
-- MQTT: Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object
+* Pushover — Simple and reliable desktop and iOS/Android push messaging. Pushover charges a one-time $5 per-device fee to support its service
+* Telegram — Utilize the [Telegram bot API](https://core.telegram.org/bots/api) to send messages a Telegram channel
+* Email — Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
+* IFTTT Webhooks — If This Then That. An easy to use configurable webhooks-based gateway to control a wide variety of messaging platforms and IoT devices. Taking full advantage requires an IFTTT Pro account
+* MQTT — Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object
 
-Use of these services is done in conjunction with your own personal accounts with them. Some services might require a subscription to use. I do not provide in-depth technical support or training for the services.")]
+Information about your session or any failures may be inserted into the messages by the use of tokens. These tokens are described on the **Message Token Help** tab.
+
+# Getting help #
+
+Help for this plugin may be found in the **#plugin-discussions** channel on the NINA project [Discord chat server](https://discord.com/invite/rWRbVbw) or by filing an issue report at this plugin's [Github repository](https://github.com/daleghent/nina-plugins/issues).
+
+* Some services charge a subscription or one-time fee to utilize them
+* Most services require an Internet connection in order to function
+* I do not provide in-depth technical support or training for the services themselves
+* Ground Station is provided 'as is' under the terms of the [Mozilla Public License 2.0](https://github.com/daleghent/nina-plugins/blob/main/LICENSE.txt)
+* Source code for this plugin is available in my NINA plugins [source code repository](https://github.com/daleghent/nina-plugins)")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
