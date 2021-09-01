@@ -80,13 +80,19 @@ namespace DaleGhent.NINA.GroundStation {
 
                 text = text.Replace(@"$$FAILED_ITEM$$", sequenceItem.Name);
                 text = text.Replace(@"$$FAILED_ATTEMPTS$$", sequenceItem.Attempts.ToString());
-                text = text.Replace(@"$$FAILED_INSTR_SET$$", sequenceItem.Parent.Name);
+
+                text = !string.IsNullOrEmpty(sequenceItem.Parent?.Name.ToString())
+                    ? text.Replace(@"$$FAILED_INSTR_SET$$", sequenceItem.Parent.Name)
+                    : text.Replace(@"$$FAILED_INSTR_SET$$", "----");
 
                 if (sequenceItem is IValidatable validatableItem) {
                     errorList = validatableItem.Issues as List<string>;
                 }
 
-                text = text.Replace(@"$$ERROR_LIST$$", string.Join(", ", errorList));
+                text = errorList.Count > 0
+                    ? text.Replace(@"$$ERROR_LIST$$", string.Join(", ", errorList))
+                    : text.Replace(@"$$ERROR_LIST$$", string.Empty);
+
             }
 
             return text;

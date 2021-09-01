@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.5.5.0 - 2021-9-1
+* Fix some corner cases when Failures to... triggers are ran as a Global Trigger
+
 ## 1.5.0.0 - 2021-8-13
 * Fix null reference when running trigger or action in the root container
 
