@@ -1,0 +1,72 @@
+﻿<!--
+    Copyright © Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.HTTP.HttpClientTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.HTTP"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    <GeometryGroup x:Key="HTTP_SVG">
+        <PathGeometry Figures="m 48.800097 70.908333 h -1.674311 v -3.017894 h -3.06957 v 3.017894 h -1.669144 v -7.410377 h 1.669144 v 2.955883 h 3.06957 v -2.955883 h 1.674311 z" FillRule="NonZero"/>
+        <PathGeometry Figures="m 55.698879 64.857042 h -2.11356 v 6.051291 h -1.674311 v -6.051291 h -2.103224 v -1.359086 h 5.891095 z" FillRule="NonZero"/>
+        <PathGeometry Figures="m 62.111904 64.857042 h -2.11356 v 6.051291 h -1.674311 v -6.051291 h -2.103224 v -1.359086 h 5.891095 z" FillRule="NonZero"/>
+        <PathGeometry Figures="m 64.778399 68.355525 v 2.552808 h -1.669144 v -7.410377 h 2.614819 q 2.800854 0 2.800854 2.361605 0 1.116208 -0.80615 1.80867 -0.800982 0.687294 -2.144565 0.687294 z m 0 -3.575998 v 2.30993 h 0.656288 q 1.333248 0 1.333248 -1.167884 0 -1.142046 -1.333248 -1.142046 z" FillRule="NonZero"/>
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:HttpClient}">
+        <nina:SequenceBlockView DataContext="{Binding}">
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Method" />
+                    <ComboBox
+                        MinWidth="100"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding HttpMethods}"
+                        SelectedItem="{Binding HttpMethod}" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="URL" />
+                    <TextBox
+                        MinWidth="300"
+                        MaxWidth="300"
+                        Margin="5,0,0,0"
+                        TextWrapping="NoWrap"
+                        HorizontalScrollBarVisibility="Auto"
+                        Text="{Binding HttpUri}"
+                        TextAlignment="Left" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="POST Body" />
+                    <TextBox
+                        MinWidth="200"
+                        MaxWidth="400"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        AcceptsTab="True"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
+                        Margin="5,0,0,0"
+                        Text="{Binding HttpPostBody}"
+                        TextAlignment="Left" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DaleGhent.NINA.GroundStation.HTTP.HttpClientTemplate_Mini">
+        <mini:MiniSequenceItem>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Send HTTP Request" />
+            </StackPanel>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+</ResourceDictionary>

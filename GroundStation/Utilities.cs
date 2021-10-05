@@ -19,79 +19,80 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace DaleGhent.NINA.GroundStation {
 
     public class Utilities {
 
-        public static string ResolveTokens(string text, ISequenceItem sequenceItem) {
+        public static string ResolveTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
             var target = FindDsoInfo(sequenceItem.Parent);
             var datetime = DateTime.Now;
             var datetimeUtc = DateTime.UtcNow;
 
             text = !string.IsNullOrEmpty(target?.Name)
-                ? text.Replace(@"$$TARGET_NAME$$", target.Name)
-                : text.Replace(@"$$TARGET_NAME$$", "----");
+                ? text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, target.Name))
+                : text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, "----"));
 
             text = !string.IsNullOrEmpty(target?.Coordinates.RAString)
-                ? text.Replace(@"$$TARGET_RA$$", target.Coordinates.RAString)
-                : text.Replace(@"$$TARGET_RA$$", "----");
+                ? text.Replace(@"$$TARGET_RA$$", DoUrlEncode(urlEncode, target.Coordinates.RAString))
+                : text.Replace(@"$$TARGET_RA$$", DoUrlEncode(urlEncode, "----"));
 
             text = !string.IsNullOrEmpty(target?.Coordinates.DecString)
-                ? text.Replace(@"$$TARGET_DEC$$", target.Coordinates.DecString)
-                : text.Replace(@"$$TARGET_DEC$$", "----");
+                ? text.Replace(@"$$TARGET_DEC$$", DoUrlEncode(urlEncode, target.Coordinates.DecString))
+                : text.Replace(@"$$TARGET_DEC$$", DoUrlEncode(urlEncode, "----"));
 
             text = !string.IsNullOrEmpty(target?.Coordinates.RA.ToString())
-                ? text.Replace(@"$$TARGET_RA_DECIMAL$$", target.Coordinates.RA.ToString())
-                : text.Replace(@"$$TARGET_RA_DECIMAL$$", "----");
+                ? text.Replace(@"$$TARGET_RA_DECIMAL$$", DoUrlEncode(urlEncode, target.Coordinates.RA.ToString()))
+                : text.Replace(@"$$TARGET_RA_DECIMAL$$", DoUrlEncode(urlEncode, "----"));
 
             text = !string.IsNullOrEmpty(target?.Coordinates.Dec.ToString())
-                ? text.Replace(@"$$TARGET_DEC_DECIMAL$$", target.Coordinates.Dec.ToString())
-                : text.Replace(@"$$TARGET_DEC_DECIMAL$$", "----");
+                ? text.Replace(@"$$TARGET_DEC_DECIMAL$$", DoUrlEncode(urlEncode, target.Coordinates.Dec.ToString()))
+                : text.Replace(@"$$TARGET_DEC_DECIMAL$$", DoUrlEncode(urlEncode, "----"));
 
             text = !string.IsNullOrEmpty(target?.Coordinates.Epoch.ToString())
-                ? text.Replace(@"$$TARGET_EPOCH$$", target.Coordinates.Epoch.ToString())
-                : text.Replace(@"$$TARGET_EPOCH$$", "----");
+                ? text.Replace(@"$$TARGET_EPOCH$$", DoUrlEncode(urlEncode, target.Coordinates.Epoch.ToString()))
+                : text.Replace(@"$$TARGET_EPOCH$$", DoUrlEncode(urlEncode, "----"));
 
             text = text.Replace(@"$$INSTRUCTION_SET$$",
-                string.IsNullOrEmpty(sequenceItem.Parent?.Name) ? "----" : sequenceItem.Parent.Name);
+                string.IsNullOrEmpty(sequenceItem.Parent?.Name) ? DoUrlEncode(urlEncode, "----") : DoUrlEncode(urlEncode, sequenceItem.Parent.Name));
 
-            text = text.Replace(@"$$DATE$$", datetime.ToString("d"));
-            text = text.Replace(@"$$TIME$$", datetime.ToString("T"));
-            text = text.Replace(@"$$DATETIME$$", datetime.ToString("G"));
+            text = text.Replace(@"$$DATE$$", DoUrlEncode(urlEncode, datetime.ToString("d")));
+            text = text.Replace(@"$$TIME$$", DoUrlEncode(urlEncode, datetime.ToString("T")));
+            text = text.Replace(@"$$DATETIME$$", DoUrlEncode(urlEncode, datetime.ToString("G")));
 
-            text = text.Replace(@"$$DATE_UTC$$", datetimeUtc.ToString("d"));
-            text = text.Replace(@"$$TIME_UTC$$", datetimeUtc.ToString("T"));
-            text = text.Replace(@"$$DATETIME_UTC$$", datetimeUtc.ToString("G"));
+            text = text.Replace(@"$$DATE_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("d")));
+            text = text.Replace(@"$$TIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("T")));
+            text = text.Replace(@"$$DATETIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("G")));
 
-            text = ParseFormattedDateTime(text);
+            text = ParseFormattedDateTime(text, urlEncode);
 
-            text = text.Replace(@"$$SYSTEM_NAME$$", Environment.MachineName);
-            text = text.Replace(@"$$USER_NAME$$", Environment.UserName);
-            text = text.Replace(@"$$NINA_VERSION$$", CoreUtil.Version);
-            text = text.Replace(@"$$GS_VERSION$$", GroundStation.GetVersion());
+            text = text.Replace(@"$$SYSTEM_NAME$$", DoUrlEncode(urlEncode, Environment.MachineName));
+            text = text.Replace(@"$$USER_NAME$$", DoUrlEncode(urlEncode, Environment.UserName));
+            text = text.Replace(@"$$NINA_VERSION$$", DoUrlEncode(urlEncode, CoreUtil.Version));
+            text = text.Replace(@"$$GS_VERSION$$", DoUrlEncode(urlEncode, GroundStation.GetVersion()));
 
             return text;
         }
 
-        public static string ResolveFailureTokens(string text, ISequenceItem sequenceItem) {
+        public static string ResolveFailureTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
             if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
                 var errorList = new List<string>();
 
-                text = text.Replace(@"$$FAILED_ITEM$$", sequenceItem.Name);
+                text = text.Replace(@"$$FAILED_ITEM$$", DoUrlEncode(urlEncode, sequenceItem.Name));
                 text = text.Replace(@"$$FAILED_ATTEMPTS$$", sequenceItem.Attempts.ToString());
 
                 text = !string.IsNullOrEmpty(sequenceItem.Parent?.Name.ToString())
-                    ? text.Replace(@"$$FAILED_INSTR_SET$$", sequenceItem.Parent.Name)
-                    : text.Replace(@"$$FAILED_INSTR_SET$$", "----");
+                    ? text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, sequenceItem.Parent.Name))
+                    : text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, "----"));
 
                 if (sequenceItem is IValidatable validatableItem) {
                     errorList = validatableItem.Issues as List<string>;
                 }
 
                 text = errorList.Count > 0
-                    ? text.Replace(@"$$ERROR_LIST$$", string.Join(", ", errorList))
-                    : text.Replace(@"$$ERROR_LIST$$", string.Empty);
+                    ? text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Join(", ", errorList)))
+                    : text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Empty));
 
             }
 
@@ -114,7 +115,7 @@ namespace DaleGhent.NINA.GroundStation {
             return target;
         }
 
-        private static string ParseFormattedDateTime(string text) {
+        private static string ParseFormattedDateTime(string text, bool urlEncode) {
             string pattern = @"\$\$FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\$\$";
 
             foreach (Match dateTimeMatch in Regex.Matches(text, pattern)) {
@@ -122,14 +123,18 @@ namespace DaleGhent.NINA.GroundStation {
 
                 try {
                     text = dateTimeMatch.Groups["isUTC"].Success
-                        ? dateRegex.Replace(text, DateTime.UtcNow.ToString(dateTimeMatch.Groups["specifier"].Value))
-                        : dateRegex.Replace(text, DateTime.Now.ToString(dateTimeMatch.Groups["specifier"].Value));
+                        ? dateRegex.Replace(text, DoUrlEncode(urlEncode, DateTime.UtcNow.ToString(dateTimeMatch.Groups["specifier"].Value)))
+                        : dateRegex.Replace(text, DoUrlEncode(urlEncode, DateTime.Now.ToString(dateTimeMatch.Groups["specifier"].Value)));
                 } catch {
-                    text = dateRegex.Replace(text, "[Invalid DateTime format]");
+                    text = dateRegex.Replace(text, DoUrlEncode(urlEncode, "[Invalid DateTime format]"));
                 }
             }
 
             return text;
+        }
+
+        private static string DoUrlEncode(bool doUrlEncode, string text) {
+            return doUrlEncode ? HttpUtility.UrlEncode(text) : text;
         }
     }
 }

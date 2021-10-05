@@ -1,4 +1,7 @@
 ﻿# Ground Station
+## 1.6.0.0 - 2021-10-5
+* Added new "Send HTTP Request" instruction for making a generic HTTP GET/POST request to a URL. Message token substitution is supported in the URL and POST body
+* Minimum supported NINA version is now 1.11 build 141
 
 ## 1.5.5.0 - 2021-9-1
 * Fix some corner cases when Failures to... triggers are ran as a Global Trigger
