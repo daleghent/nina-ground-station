@@ -77,7 +77,7 @@ namespace DaleGhent.NINA.GroundStation {
 
         public static string ResolveFailureTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
             if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
-                var errorList = new List<string>();
+                var errorList = new List<string>() { };
 
                 text = text.Replace(@"$$FAILED_ITEM$$", DoUrlEncode(urlEncode, sequenceItem.Name));
                 text = text.Replace(@"$$FAILED_ATTEMPTS$$", sequenceItem.Attempts.ToString());
@@ -90,10 +90,9 @@ namespace DaleGhent.NINA.GroundStation {
                     errorList = validatableItem.Issues as List<string>;
                 }
 
-                text = errorList.Count > 0
+                text = errorList?.Count > 0
                     ? text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Join(", ", errorList)))
                     : text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Empty));
-
             }
 
             return text;
