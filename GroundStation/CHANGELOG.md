@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.7.0.0 - 2021-10-27
+* Updated the settings save routine to use the new safe multi-instance method in 1.11 build 172
+
 ## 1.7.0.0 - 2021-10-25
 * Fixed corner case that could result in failed error notifications
 * Minimum supported NINA version is now 1.11 build 170

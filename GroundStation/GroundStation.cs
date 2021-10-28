@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
@@ -30,7 +31,7 @@ namespace DaleGhent.NINA.GroundStation {
             if (Properties.Settings.Default.UpgradeSettings) {
                 Properties.Settings.Default.Upgrade();
                 Properties.Settings.Default.UpgradeSettings = false;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
             }
         }
 
@@ -38,7 +39,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
             set {
                 Properties.Settings.Default.IFTTTWebhookKey = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -47,7 +48,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.IftttFailureValue1;
             set {
                 Properties.Settings.Default.IftttFailureValue1 = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -56,7 +57,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.IftttFailureValue2;
             set {
                 Properties.Settings.Default.IftttFailureValue2 = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -65,7 +66,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.IftttFailureValue3;
             set {
                 Properties.Settings.Default.IftttFailureValue3 = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -74,7 +75,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             set {
                 Properties.Settings.Default.PushoverAppKey = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -83,7 +84,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
             set {
                 Properties.Settings.Default.PushoverUserKey = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -96,7 +97,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverDefaultNotificationSound;
             set {
                 Properties.Settings.Default.PushoverDefaultNotificationSound = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -105,7 +106,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverDefaultNotificationPriority;
             set {
                 Properties.Settings.Default.PushoverDefaultNotificationPriority = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -114,7 +115,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverDefaultFailureSound;
             set {
                 Properties.Settings.Default.PushoverDefaultFailureSound = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -123,7 +124,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverDefaultFailurePriority;
             set {
                 Properties.Settings.Default.PushoverDefaultFailurePriority = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -132,7 +133,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverFailureTitleText;
             set {
                 Properties.Settings.Default.PushoverFailureTitleText = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -141,7 +142,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PushoverFailureBodyText;
             set {
                 Properties.Settings.Default.PushoverFailureBodyText = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -150,7 +151,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.SmtpFromAddress;
             set {
                 Properties.Settings.Default.SmtpFromAddress = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -159,7 +160,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.SmtpDefaultRecipients;
             set {
                 Properties.Settings.Default.SmtpDefaultRecipients = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -168,7 +169,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.SmtpHostName;
             set {
                 Properties.Settings.Default.SmtpHostName = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -177,7 +178,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.SmtpHostPort;
             set {
                 Properties.Settings.Default.SmtpHostPort = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -186,7 +187,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.SmtpUsername);
             set {
                 Properties.Settings.Default.SmtpUsername = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -195,7 +196,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.SmtpPassword);
             set {
                 Properties.Settings.Default.SmtpPassword = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -204,7 +205,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.EmailFailureSubjectText;
             set {
                 Properties.Settings.Default.EmailFailureSubjectText = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -213,7 +214,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.EmailFailureBodyText;
             set {
                 Properties.Settings.Default.EmailFailureBodyText = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -222,7 +223,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
             set {
                 Properties.Settings.Default.TelegramAccessToken = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -231,7 +232,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.TelegramChatId);
             set {
                 Properties.Settings.Default.TelegramChatId = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -240,7 +241,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.TelegramFailureBodyText;
             set {
                 Properties.Settings.Default.TelegramFailureBodyText = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -249,7 +250,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttBrokerHost;
             set {
                 Properties.Settings.Default.MqttBrokerHost = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -258,7 +259,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttBrokerPort;
             set {
                 Properties.Settings.Default.MqttBrokerPort = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -267,7 +268,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttDefaultTopic;
             set {
                 Properties.Settings.Default.MqttDefaultTopic = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -276,7 +277,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttClientId;
             set {
                 Properties.Settings.Default.MqttClientId = value.Trim();
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -285,7 +286,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttBrokerUseTls;
             set {
                 Properties.Settings.Default.MqttBrokerUseTls = value;
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
 
                 if (value) {
                     MqttBrokerPort = 8883;
@@ -301,7 +302,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.MqttUsername);
             set {
                 Properties.Settings.Default.MqttUsername = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
@@ -310,7 +311,7 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.MqttPassword);
             set {
                 Properties.Settings.Default.MqttPassword = Security.Encrypt(value.Trim());
-                Properties.Settings.Default.Save();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }

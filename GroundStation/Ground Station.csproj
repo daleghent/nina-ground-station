@@ -176,34 +176,34 @@
       <Version>3.0.16</Version>
     </PackageReference>
     <PackageReference Include="NINA.Astrometry">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Core">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Equipment">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Image">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.MGEN">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.PlateSolving">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Plugin">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Profile">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.Sequencer">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="NINA.WPF.Base">
-      <Version>1.11.0.1170-nightly2</Version>
+      <Version>1.11.0.1172-nightly</Version>
     </PackageReference>
     <PackageReference Include="PushoverNET">
       <Version>1.0.28</Version>
