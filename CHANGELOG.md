@@ -1,5 +1,13 @@
 ﻿# Ground Station
 
+## 1.8.0.0 - 2021-11-??
+* Housekeeping release; no functional changes
+* Reorganized plugin source code and put Ground Station into its on repository
+* Minimum supported NINA version is now 2.0 beta 1
+
+## 1.7.5.0 - 2021-11-01
+* Fixed issue with URL encoding
+
 ## 1.7.0.0 - 2021-10-27
 * Updated the settings save routine to use the new safe multi-instance method in 1.11 build 172
 
