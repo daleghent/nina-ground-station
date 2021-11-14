@@ -152,11 +152,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         private string PushoverFailureTitleText { get; set; }
         private string PushoverFailureBodyText { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "PushoverFailureTitleText":
                     PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
                     break;
+
                 case "PushoverFailureBodyText":
                     PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
                     break;

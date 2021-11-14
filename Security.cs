@@ -3,7 +3,9 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace DaleGhent.NINA.GroundStation {
+
     public class Security {
+
         public static string Encrypt(string secret) {
             if (string.IsNullOrEmpty(secret)) {
                 return string.Empty;

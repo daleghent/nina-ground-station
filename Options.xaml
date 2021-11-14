@@ -618,23 +618,23 @@
 
                     <GroupBox Header="Global tokens">
                         <StackPanel Orientation="Vertical">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -643,12 +643,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$DATE$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Text="{Binding TokenDate}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -657,12 +657,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TIME$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Text="{Binding TokenTime}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -671,12 +671,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$DATETIME$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Text="{Binding TokenDateTime}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -685,12 +685,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$DATE_UTC$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Text="{Binding TokenDateUtc}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -699,12 +699,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TIME_UTC$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="4"
                                 Grid.Column="1"
                                 Text="{Binding TokenTimeUtc}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -713,12 +713,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$DATETIME_UTC$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="5"
                                 Grid.Column="1"
                                 Text="{Binding TokenDateTimeUtc}" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="6"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -726,17 +726,17 @@
                                 IsReadOnly="True"
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center">
-                                $$FORMAT_DATETIME format$$
-                            </TextBox>
-                            <TextBlock
+                                    $$FORMAT_DATETIME format$$
+                                </TextBox>
+                                <TextBlock
                                 Grid.Row="6"
                                 Grid.Column="1">
                                     Inserts a custom local date and time format. Replace <Span FontWeight="Bold"><Span FontStyle="Italic">format</Span></Span> with any
                                     <LineBreak />
                                     arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
-                            </TextBlock>
+                                </TextBlock>
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="7"
                                 Grid.Column="0"
                                 Margin="0,5,0,0"
@@ -745,33 +745,32 @@
                                 IsReadOnly="True"
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center">
-                                $$FORMAT_DATETIME_UTC format$$
-                            </TextBox>
-                            <TextBlock
+                                    $$FORMAT_DATETIME_UTC format$$
+                                </TextBox>
+                                <TextBlock
                                 Grid.Row="7"
                                 Grid.Column="1"
                                 Margin="0,5,0,0">
                                     Same as <Span FontWeight="Bold">$$FORMAT_DATETIME <Span FontStyle="Italic">format</Span>$$</Span> but uses UTC date and time instead
-                            </TextBlock>
+                                </TextBlock>
+                            </Grid>
 
-                        </Grid>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <TextBox
+                                <TextBox
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -780,12 +779,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_NAME$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Text="The name of the target being imaged" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -794,12 +793,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_RA$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Text="The right ascension of the target being imaged, in 24 hour format" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -808,12 +807,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_DEC$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Text="The declination of the target being imaged, in sexagesimal format" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -822,12 +821,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_RA_DECIMAL$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Text="The right ascension of the target being imaged, decimal format" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -836,12 +835,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_DEC_DECIMAL$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="4"
                                 Grid.Column="1"
                                 Text="The declination of the target being imaged, decimal format" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -850,12 +849,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$TARGET_EPOCH$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="5"
                                 Grid.Column="1"
                                 Text="The epoch of the target's coordinates" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="6"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -864,25 +863,25 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$INSTRUCTION_SET$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="6"
                                 Grid.Column="1"
                                 Text="The name of the enclosing instruction set" />
-                        </Grid>
+                            </Grid>
 
                             <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -891,12 +890,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$SYSTEM_NAME$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Text="The name of the computer" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -905,12 +904,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$USER_NAME$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Text="The name of the user running N.I.N.A." />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -919,12 +918,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$NINA_VERSION$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Text="The version of N.I.N.A." />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -933,30 +932,29 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$GS_VERSION$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Text="The version of Ground Station" />
-
-                        </Grid>
+                            </Grid>
                         </StackPanel>
                     </GroupBox>
 
                     <GroupBox Header="Failure message tokens">
                         <StackPanel Orientation="Vertical">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -965,12 +963,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$FAILED_ITEM$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 Text="The name of the instruction that failed" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -979,12 +977,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$FAILED_ATTEMPTS$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Text="The number of failed attempts" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -993,12 +991,12 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$FAILED_INSTR_SET$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Text="The name of the instruction set that contains the failed instruction" />
 
-                            <TextBox
+                                <TextBox
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Background="Transparent"
@@ -1007,11 +1005,11 @@
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Text="$$ERROR_LIST$$" />
-                            <TextBlock
+                                <TextBlock
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
-                        </Grid>
+                            </Grid>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

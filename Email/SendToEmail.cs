@@ -14,7 +14,6 @@ using DaleGhent.NINA.GroundStation.Email;
 using MimeKit;
 using Newtonsoft.Json;
 using NINA.Core.Model;
-using NINA.Core.Utility;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -139,11 +138,12 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         private string SmtpFromAddress { get; set; }
         private string SmtpDefaultRecipients { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "SmtpFromAddress":
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
                     break;
+
                 case "SmtpDefaultRecipients":
                     SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
                     Recipient = SmtpDefaultRecipients;

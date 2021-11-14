@@ -14,7 +14,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using NINA.Core.Utility;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Sockets;
@@ -22,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.Email {
+
     public class EmailCommon {
 
         public EmailCommon() {
@@ -76,17 +76,20 @@ namespace DaleGhent.NINA.GroundStation.Email {
         private string SmtpUsername { get; set; }
         private string SmtpPassword { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "SmtpHostName":
                     SmtpHostName = Properties.Settings.Default.SmtpHostName;
                     break;
+
                 case "SmtpHostPort":
                     SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
                     break;
+
                 case "SmtpUsername":
                     SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
                     break;
+
                 case "SmtpPassword":
                     SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
                     break;

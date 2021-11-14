@@ -97,7 +97,6 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 } else {
                     Logger.Info(error);
                 }
-
             } catch (Exception ex) {
                 if (ex is InvalidOperationException || ex is HttpRequestException || ex is TaskCanceledException) {
                     throw new SequenceEntityFailedException($"HTTP {HttpMethod} {HttpUri} failed: {ex.Message}");
@@ -148,6 +147,5 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(HttpClient)}";
         }
-
     }
 }

@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.Pushover {
+
     public class PushoverCommon {
 
         public PushoverCommon() {
@@ -68,11 +69,12 @@ namespace DaleGhent.NINA.GroundStation.Pushover {
         private string PushoverAppKey { get; set; }
         private string PushoverUserKey { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "PushoverAppKey":
                     PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
                     break;
+
                 case "PushoverUserKey":
                     PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
                     break;

@@ -155,17 +155,20 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "SmtpFromAddress":
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
                     break;
+
                 case "SmtpDefaultRecipients":
                     SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
                     break;
+
                 case "EmailFailureSubjectText":
                     EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
                     break;
+
                 case "EmailFailureBodyText":
                     EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
                     break;

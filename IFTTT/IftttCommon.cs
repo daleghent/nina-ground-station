@@ -12,14 +12,13 @@
 
 using NINA.Core.Utility;
 using NINA.Core.Utility.Http;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.Ifttt {
+
     public class IftttCommon {
 
         public IftttCommon() {
@@ -50,7 +49,7 @@ namespace DaleGhent.NINA.GroundStation.Ifttt {
 
         private string IFTTTWebhookKey { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "IFTTTWebhookKey":
                     IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);

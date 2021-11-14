@@ -154,14 +154,16 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             return text;
         }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "IftttFailureValue1":
                     IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
                     break;
+
                 case "IftttFailureValue2":
                     IftttFailureValue2 = Properties.Settings.Default.IftttFailureValue2;
                     break;
+
                 case "IftttFailureValue3":
                     IftttFailureValue3 = Properties.Settings.Default.IftttFailureValue3;
                     break;

@@ -21,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.Mqtt {
+
     public class MqttCommon {
 
         public MqttCommon() {
@@ -101,18 +102,23 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 case "MqttBrokerHost":
                     MqttBrokerHost = Properties.Settings.Default.MqttBrokerHost;
                     break;
+
                 case "MqttBrokerPort":
                     MqttBrokerPort = Properties.Settings.Default.MqttBrokerPort;
                     break;
+
                 case "MqttBrokerUseTls":
                     MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
                     break;
+
                 case "MqttUsername":
                     MqttUsername = Security.Decrypt(Properties.Settings.Default.MqttUsername);
                     break;
+
                 case "MqttPassword":
                     MqttPassword = Security.Decrypt(Properties.Settings.Default.MqttPassword);
                     break;
+
                 case "MqttClientId":
                     MqttClientId = Properties.Settings.Default.MqttClientId;
                     break;

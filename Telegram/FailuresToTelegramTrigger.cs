@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -118,7 +117,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
         private string TelegramFailureBodyText { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "TelegramFailureBodyText":
                     TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;

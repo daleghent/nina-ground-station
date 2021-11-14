@@ -14,12 +14,12 @@ using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace DaleGhent.NINA.GroundStation.Telegram {
+
     public class TelegramCommon {
 
         public TelegramCommon() {
@@ -59,11 +59,12 @@ namespace DaleGhent.NINA.GroundStation.Telegram {
         private string TelegramAccessToken { get; set; }
         private string TelegramChatId { get; set; }
 
-        void SettingsChanged(object sender, PropertyChangedEventArgs e) {
+        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case "TelegramAccessToken":
                     TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
                     break;
+
                 case "TelegramChatId":
                     TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
                     break;
