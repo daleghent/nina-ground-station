@@ -3,7 +3,9 @@
 ## 1.8.0.0 - 2021-11-??
 * Housekeeping release; no functional changes
 * Reorganized plugin source code and put Ground Station into its on repository
-* Minimum supported NINA version is now 2.0 beta 1
+* MQTTnet updated to 3.1.0
+* Telegram.Bot updated to 17.0.0
+* Minimum supported NINA version is now 2.0 beta 4
 
 ## 1.7.5.0 - 2021-11-01
 * Fixed issue with URL encoding

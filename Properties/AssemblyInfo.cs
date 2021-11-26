@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2021 Dale Ghent")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "2.0.0.2001")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "2.0.0.2004")]
 
 // The license your plugin code is using
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
@@ -87,4 +87,4 @@ Help for this plugin may be found in the **#plugin-discussions** channel on the 
 // [Unused]
 [assembly: AssemblyTrademark("")]
 // [Unused]
-[assembly: AssemblyCulture("")] 
+[assembly: AssemblyCulture("")]
