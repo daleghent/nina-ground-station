@@ -1,6 +1,6 @@
 ﻿# Ground Station
 
-## 1.8.0.0 - 2021-12-??
+## 1.8.0.0 - 2021-12-02
 * MQTT: Added configurable QoS levels
 * Reorganized plugin source code and put Ground Station into its on repository
 * MQTTnet updated to 3.1.1
