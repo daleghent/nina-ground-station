@@ -35,11 +35,13 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         private MqttCommon mqtt;
         private string topic;
         private string payload = string.Empty;
+        private int qos = 0;
 
         [ImportingConstructor]
         public SendToMqtt() {
             mqtt = new MqttCommon();
             Topic = Properties.Settings.Default.MqttDefaultTopic;
+            QoS = Properties.Settings.Default.MqttDefaultQoSLevel;
         }
 
         public SendToMqtt(SendToMqtt copyMe) : this() {
@@ -64,11 +66,22 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             }
         }
 
+        [JsonProperty]
+        public int QoS {
+            get => qos;
+            set {
+                qos = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var payload = Utilities.ResolveTokens(Payload, this);
 
             Logger.Trace($"{this}: {payload}");
-            await mqtt.PublishMessage(Topic, payload, ct);
+            await mqtt.PublishMessage(Topic, payload, QoS, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -96,7 +109,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToMqtt)}";
+            return $"Category: {Category}, Item: {nameof(SendToMqtt)}, Topic: {Topic}, QoS: {QoS}, PayloadLength={Payload.Length}";
         }
     }
 }

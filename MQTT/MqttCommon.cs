@@ -13,6 +13,7 @@
 using MQTTnet;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
+using MQTTnet.Protocol;
 using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public async Task PublishMessage(string topic, string message, CancellationToken ct) {
+        public async Task PublishMessage(string topic, string message, int qos, CancellationToken ct) {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
 
@@ -52,12 +53,15 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 options.WithTls();
             }
 
+            if (qos < 0) { qos = 0; }
+            if (qos > 2) { qos = 2; }
+
             var opts = options.Build();
 
             var payload = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(message)
-                .WithExactlyOnceQoS()
+                .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)qos)
                 .WithRetainFlag()
                 .Build();
 
@@ -89,6 +93,12 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
             return issues;
         }
+
+        public static readonly IList<string> QoSLevels = new List<string> {
+            "0 - At Most Once",
+            "1 - At Least Once",
+            "2 - Exactly Once",
+        };
 
         private string MqttBrokerHost { get; set; }
         private ushort MqttBrokerPort { get; set; }

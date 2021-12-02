@@ -46,6 +46,16 @@
                         Margin="5,0,0,0"
                         Text="{Binding Payload}"
                         TextAlignment="Left" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="QoS" />
+                    <ComboBox
+                        MinWidth="40"
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding QoSLevels}"
+                        SelectedIndex="{Binding QoS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

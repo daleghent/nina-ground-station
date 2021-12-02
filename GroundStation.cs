@@ -10,12 +10,14 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Mqtt;
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
 using PushoverClient;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -264,6 +266,24 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        public int MqttDefaultQoSLevel {
+            get => Properties.Settings.Default.MqttDefaultQoSLevel;
+            set {
+                Properties.Settings.Default.MqttDefaultQoSLevel = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public int MqttDefaultFailureQoSLevel {
+            get => Properties.Settings.Default.MqttDefaultFailureQoSLevel;
+            set {
+                Properties.Settings.Default.MqttDefaultFailureQoSLevel = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
         public string MqttDefaultTopic {
             get => Properties.Settings.Default.MqttDefaultTopic;
             set {
@@ -315,6 +335,8 @@ namespace DaleGhent.NINA.GroundStation {
                 RaisePropertyChanged();
             }
         }
+
+        public IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public string TokenDate => DateTime.Now.ToString("d");
         public string TokenTime => DateTime.Now.ToString("T");

@@ -546,6 +546,38 @@
                         </TextBox>
                     </StackPanel>
 
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Default QoS</TextBlock.Text>
+                            <TextBlock.ToolTip>The default QoS level that message payloads are assigned</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding QoSLevels}"
+                            SelectedIndex="{Binding MqttDefaultQoSLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Default failure QoS</TextBlock.Text>
+                            <TextBlock.ToolTip>The default QoS level that failure payloads are assigned</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding QoSLevels}"
+                            SelectedIndex="{Binding MqttDefaultFailureQoSLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
                         <TextBlock
                             VerticalAlignment="Center"

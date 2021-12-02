@@ -38,11 +38,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         private MqttCommon mqtt;
         private ISequenceItem previousItem;
         private string topic;
+        private int qos = 0;
 
         [ImportingConstructor]
         public FailuresToMqttTrigger() {
             mqtt = new MqttCommon();
             Topic = Properties.Settings.Default.MqttDefaultTopic;
+            QoS = Properties.Settings.Default.MqttDefaultFailureQoSLevel;
         }
 
         public FailuresToMqttTrigger(FailuresToMqttTrigger copyMe) : this() {
@@ -57,6 +59,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 RaisePropertyChanged();
             }
         }
+
+        [JsonProperty]
+        public int QoS {
+            get => qos;
+            set {
+                qos = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var target = Utilities.FindDsoInfo(previousItem.Parent);
@@ -84,7 +97,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
             Logger.Trace($"{this}: {payload}");
 
-            await mqtt.PublishMessage(Topic, payload, ct);
+            await mqtt.PublishMessage(Topic, payload, QoS, ct);
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -140,7 +153,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToMqttTrigger)}";
+            return $"Category: {Category}, Item: {nameof(FailuresToMqttTrigger)}, Topic: {Topic}, QoS: {QoS}";
         }
 
         private IList<string> PreviousItemIssues { get; set; } = new List<string>();

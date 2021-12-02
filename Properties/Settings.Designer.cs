@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -395,6 +395,30 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["IftttFailureValue3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MqttDefaultFailureQoSLevel {
+            get {
+                return ((int)(this["MqttDefaultFailureQoSLevel"]));
+            }
+            set {
+                this["MqttDefaultFailureQoSLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MqttDefaultQoSLevel {
+            get {
+                return ((int)(this["MqttDefaultQoSLevel"]));
+            }
+            set {
+                this["MqttDefaultQoSLevel"] = value;
             }
         }
     }
