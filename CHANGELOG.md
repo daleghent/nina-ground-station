@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.9.0.0 - 2021-??-??
+* Added new message token: `$$UNIX_EPOCH$$` - yields the number of seconds elapsed since 0 hour on January 1, 1970
+
 ## 1.8.0.0 - 2021-12-02
 * MQTT: Added configurable QoS levels
 * Reorganized plugin source code and put Ground Station into its own repository

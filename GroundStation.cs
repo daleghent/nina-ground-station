@@ -344,6 +344,7 @@ namespace DaleGhent.NINA.GroundStation {
         public string TokenDateUtc => DateTime.UtcNow.ToString("d");
         public string TokenTimeUtc => DateTime.UtcNow.ToString("T");
         public string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
+        public string TokenUnixEpoch => Utilities.UnixEpoch().ToString();
 
         public static string GetVersion() {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
