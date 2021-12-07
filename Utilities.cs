@@ -10,6 +10,10 @@
 
 #endregion "copyright"
 
+using MQTTnet;
+using MQTTnet.Client.Disconnecting;
+using MQTTnet.Client.Options;
+using MQTTnet.Protocol;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
@@ -19,13 +23,15 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace DaleGhent.NINA.GroundStation {
 
-    public class Utilities {
+    internal class Utilities {
 
-        public static string ResolveTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
+        internal static string ResolveTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
             var target = FindDsoInfo(sequenceItem.Parent);
             var datetime = DateTime.Now;
             var datetimeUtc = DateTime.UtcNow;
@@ -76,7 +82,7 @@ namespace DaleGhent.NINA.GroundStation {
             return text;
         }
 
-        public static string ResolveFailureTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
+        internal static string ResolveFailureTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
             if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
                 var errorList = new List<string>() { };
 
@@ -115,7 +121,7 @@ namespace DaleGhent.NINA.GroundStation {
             return target;
         }
 
-        public static long UnixEpoch() {
+        internal static long UnixEpoch() {
             return (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         }
 

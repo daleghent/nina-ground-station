@@ -289,7 +289,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("NINA")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string MqttClientId {
             get {
                 return ((string)(this["MqttClientId"]));
@@ -419,6 +419,54 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["MqttDefaultQoSLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MqttLwtEnable {
+            get {
+                return ((bool)(this["MqttLwtEnable"]));
+            }
+            set {
+                this["MqttLwtEnable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttLwtTopic {
+            get {
+                return ((string)(this["MqttLwtTopic"]));
+            }
+            set {
+                this["MqttLwtTopic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttLwtBirthPayload {
+            get {
+                return ((string)(this["MqttLwtBirthPayload"]));
+            }
+            set {
+                this["MqttLwtBirthPayload"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MqttLwtLastWillPayload {
+            get {
+                return ((string)(this["MqttLwtLastWillPayload"]));
+            }
+            set {
+                this["MqttLwtLastWillPayload"] = value;
             }
         }
     }

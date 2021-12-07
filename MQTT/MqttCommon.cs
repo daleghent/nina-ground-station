@@ -10,10 +10,6 @@
 
 #endregion "copyright"
 
-using MQTTnet;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
-using MQTTnet.Protocol;
 using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
@@ -29,51 +25,26 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             MqttBrokerHost = Properties.Settings.Default.MqttBrokerHost;
             MqttBrokerPort = Properties.Settings.Default.MqttBrokerPort;
             MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
-            MqttUsername = Security.Decrypt(Properties.Settings.Default.MqttUsername);
-            MqttPassword = Security.Decrypt(Properties.Settings.Default.MqttPassword);
             MqttClientId = Properties.Settings.Default.MqttClientId;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public async Task PublishMessage(string topic, string message, int qos, CancellationToken ct) {
-            var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
-
-            var options = new MqttClientOptionsBuilder()
-                .WithClientId(MqttClientId)
-                .WithTcpServer(MqttBrokerHost, MqttBrokerPort)
-                .WithCleanSession();
-
-            if (!string.IsNullOrEmpty(MqttUsername) && !string.IsNullOrWhiteSpace(MqttUsername)) {
-                options.WithCredentials(MqttUsername, MqttPassword);
-            }
-
-            if (MqttBrokerUseTls) {
-                options.WithTls();
-            }
-
-            if (qos < 0) { qos = 0; }
-            if (qos > 2) { qos = 2; }
-
-            var opts = options.Build();
-
-            var payload = new MqttApplicationMessageBuilder()
-                .WithTopic(topic)
-                .WithPayload(message)
-                .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)qos)
-                .WithRetainFlag()
-                .Build();
-
-            var discopts = new MqttClientDisconnectOptions();
+            var mqttClient = new MqttClient() {
+                Topic = topic,
+                Payload = message,
+                Qos = qos,
+            };
 
             Logger.Debug($"Publishing message to {MqttBrokerHost}:{MqttBrokerPort}, UseTLS={MqttBrokerUseTls}, Topic={topic}");
 
             try {
-                await mqttClient.ConnectAsync(opts, ct);
-                await mqttClient.PublishAsync(payload, ct);
-                await mqttClient.DisconnectAsync(discopts, ct);
-                mqttClient.Dispose();
+                var options = mqttClient.Prepare();
+
+                await mqttClient.Connect(options, ct);
+                await mqttClient.Publish(ct);
+                await mqttClient.Disconnect(ct);
             } catch (Exception ex) {
                 Logger.Error($"Error sending to MQTT broker: {ex.Message}");
                 throw ex;
@@ -87,10 +58,6 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 issues.Add("MQTT broker hostname or IP not configured");
             }
 
-            if (string.IsNullOrEmpty(MqttClientId) || string.IsNullOrWhiteSpace(MqttClientId)) {
-                issues.Add("MQTT client ID is invalid!");
-            }
-
             return issues;
         }
 
@@ -102,8 +69,6 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
         private string MqttBrokerHost { get; set; }
         private ushort MqttBrokerPort { get; set; }
-        private string MqttUsername { get; set; }
-        private string MqttPassword { get; set; }
         private string MqttClientId { get; set; }
         private bool MqttBrokerUseTls { get; set; }
 
@@ -119,14 +84,6 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
                 case "MqttBrokerUseTls":
                     MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
-                    break;
-
-                case "MqttUsername":
-                    MqttUsername = Security.Decrypt(Properties.Settings.Default.MqttUsername);
-                    break;
-
-                case "MqttPassword":
-                    MqttPassword = Security.Decrypt(Properties.Settings.Default.MqttPassword);
                     break;
 
                 case "MqttClientId":

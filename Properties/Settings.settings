@@ -69,7 +69,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="MqttClientId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">NINA</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PushoverFailureTitleText" Type="System.String" Scope="User">
       <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
@@ -109,6 +109,18 @@ Reasons: $$ERROR_LIST$$
     </Setting>
     <Setting Name="MqttDefaultQoSLevel" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MqttLwtEnable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MqttLwtTopic" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttLwtBirthPayload" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MqttLwtLastWillPayload" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

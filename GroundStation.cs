@@ -22,11 +22,14 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation {
 
     [Export(typeof(IPluginManifest))]
     public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
+        private MqttClient mqttClient;
 
         [ImportingConstructor]
         public GroundStation() {
@@ -35,6 +38,52 @@ namespace DaleGhent.NINA.GroundStation {
                 Properties.Settings.Default.UpgradeSettings = false;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
             }
+        }
+
+        public override Task Initialize() {
+            if (MqttLwtEnable) {
+                LwtStartWorker();
+            }
+
+            Logger.Debug("Init completed");
+
+            return Task.CompletedTask;
+        }
+
+        public override async Task Teardown() {
+            await LwtStopWorker();
+
+            return;
+        }
+
+        private Task LwtStartWorker() {
+            return Task.Run(async () => {
+                Logger.Info($"Starting MQTT LWT service. Sending to topic {MqttLwtTopic}");
+
+                mqttClient = new MqttClient() {
+                    Payload = MqttLwtBirthPayload,
+                    LastWillTopic = MqttLwtTopic,
+                    LastWillPayload = MqttLwtLastWillPayload,
+                    Qos = MqttDefaultFailureQoSLevel,
+                };
+
+                var clientOpts = mqttClient.Prepare();
+
+                await mqttClient.Connect(clientOpts, CancellationToken.None);
+                await mqttClient.Publish(CancellationToken.None);
+
+                Logger.Debug("Exiting LwtStartWorker task");
+            });
+        }
+
+        private async Task LwtStopWorker() {
+            Logger.Debug("Stopping LWT worker");
+
+            if (mqttClient.IsConnected) {
+                await mqttClient.Disconnect(CancellationToken.None);
+            }
+
+            return;
         }
 
         public string IFTTTWebhookKey {
@@ -308,11 +357,7 @@ namespace DaleGhent.NINA.GroundStation {
                 Properties.Settings.Default.MqttBrokerUseTls = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
 
-                if (value) {
-                    MqttBrokerPort = 8883;
-                } else {
-                    MqttBrokerPort = 1883;
-                }
+                MqttBrokerPort = value ? (ushort)8883 : (ushort)1883;
 
                 RaisePropertyChanged();
             }
@@ -331,6 +376,54 @@ namespace DaleGhent.NINA.GroundStation {
             get => Security.Decrypt(Properties.Settings.Default.MqttPassword);
             set {
                 Properties.Settings.Default.MqttPassword = Security.Encrypt(value.Trim());
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool MqttLwtEnable {
+            get => Properties.Settings.Default.MqttLwtEnable;
+            set {
+                Properties.Settings.Default.MqttLwtEnable = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+
+                if (!mqttClient.IsConnected && value == true) {
+                    LwtStartWorker();
+                } else if (mqttClient.IsConnected && value == false) {
+                    LwtStopWorker();
+                }
+            }
+        }
+
+        public string MqttLwtTopic {
+            get {
+                if (string.IsNullOrEmpty(Properties.Settings.Default.MqttLwtTopic)) {
+                    Properties.Settings.Default.MqttLwtTopic = Properties.Settings.Default.MqttDefaultTopic;
+                }
+
+                return Properties.Settings.Default.MqttLwtTopic;
+            }
+            set {
+                Properties.Settings.Default.MqttLwtTopic = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttLwtBirthPayload {
+            get => Properties.Settings.Default.MqttLwtBirthPayload;
+            set {
+                Properties.Settings.Default.MqttLwtBirthPayload = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttLwtLastWillPayload {
+            get => Properties.Settings.Default.MqttLwtLastWillPayload;
+            set {
+                Properties.Settings.Default.MqttLwtLastWillPayload = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
