@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Mqtt;
+using MQTTnet.Client.Disconnecting;
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
@@ -51,7 +52,9 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         public override async Task Teardown() {
-            await LwtStopWorker();
+            if (MqttLwtEnable) {
+                await LwtStopWorker();
+            }
 
             return;
         }
@@ -61,9 +64,9 @@ namespace DaleGhent.NINA.GroundStation {
                 Logger.Info($"Starting MQTT LWT service. Sending to topic {MqttLwtTopic}");
 
                 mqttClient = new MqttClient() {
-                    Payload = MqttLwtBirthPayload,
+                    Payload = Utilities.ResolveTokens(MqttLwtBirthPayload),
                     LastWillTopic = MqttLwtTopic,
-                    LastWillPayload = MqttLwtLastWillPayload,
+                    LastWillPayload = Utilities.ResolveTokens(MqttLwtLastWillPayload),
                     Qos = MqttDefaultFailureQoSLevel,
                 };
 
@@ -79,9 +82,7 @@ namespace DaleGhent.NINA.GroundStation {
         private async Task LwtStopWorker() {
             Logger.Debug("Stopping LWT worker");
 
-            if (mqttClient.IsConnected) {
-                await mqttClient.Disconnect(CancellationToken.None);
-            }
+            await mqttClient.Disconnect(CancellationToken.None);
 
             return;
         }

@@ -10,10 +10,6 @@
 
 #endregion "copyright"
 
-using MQTTnet;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
-using MQTTnet.Protocol;
 using NINA.Astrometry;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
@@ -31,8 +27,13 @@ namespace DaleGhent.NINA.GroundStation {
 
     internal class Utilities {
 
-        internal static string ResolveTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
-            var target = FindDsoInfo(sequenceItem.Parent);
+        internal static string ResolveTokens(string text, ISequenceItem sequenceItem = null, bool urlEncode = false) {
+            DeepSkyObject target = null;
+
+            if (sequenceItem != null) {
+                target = FindDsoInfo(sequenceItem.Parent);
+            }
+
             var datetime = DateTime.Now;
             var datetimeUtc = DateTime.UtcNow;
 
@@ -61,7 +62,7 @@ namespace DaleGhent.NINA.GroundStation {
                 : text.Replace(@"$$TARGET_EPOCH$$", DoUrlEncode(urlEncode, "----"));
 
             text = text.Replace(@"$$INSTRUCTION_SET$$",
-                string.IsNullOrEmpty(sequenceItem.Parent?.Name) ? DoUrlEncode(urlEncode, "----") : DoUrlEncode(urlEncode, sequenceItem.Parent.Name));
+                string.IsNullOrEmpty(sequenceItem?.Parent?.Name) ? DoUrlEncode(urlEncode, "----") : DoUrlEncode(urlEncode, sequenceItem.Parent.Name));
 
             text = text.Replace(@"$$DATE$$", DoUrlEncode(urlEncode, datetime.ToString("d")));
             text = text.Replace(@"$$TIME$$", DoUrlEncode(urlEncode, datetime.ToString("T")));

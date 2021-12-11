@@ -15,6 +15,7 @@ using MQTTnet.Client;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Publishing;
+using MQTTnet.Client.Subscribing;
 using MQTTnet.Protocol;
 using NINA.Core.Utility;
 using System;
@@ -28,7 +29,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
         private IMqttClient mqttClient;
 
         public MqttClient() {
-            MqttFactory mqttFactory = new MqttFactory();
+            var mqttFactory = new MqttFactory();
             mqttClient = mqttFactory.CreateMqttClient();
         }
 
@@ -46,11 +47,9 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
         public bool IsConnected { get; set; } = false;
         public bool Shutdown { get; set; } = false;
         public MqttClientConnectResult MqttClientConnectResult { get; set; }
+        public MqttApplicationMessage MqttApplicationMessage { get; set; }
 
         public IMqttClientOptions Prepare() {
-            var factory = new MqttFactory();
-            mqttClient = factory.CreateMqttClient();
-
             var clientOptions = new MqttClientOptionsBuilder()
                 .WithTcpServer(MqttBrokerHost, MqttBrokerPort)
                 .WithCleanSession();
@@ -102,45 +101,52 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 });
 
                 mqttClient.UseConnectedHandler(e => {
-                    Logger.Info($"MQTT client has connected to {MqttBrokerHost}:{MqttBrokerPort}");
+                    Logger.Debug($"MQTT client has connected to {MqttBrokerHost}:{MqttBrokerPort}");
                 });
 
                 MqttClientConnectResult = await mqttClient.ConnectAsync(clientOptions, ct);
-                IsConnected = true;
+                IsConnected = mqttClient.IsConnected;
 
                 return;
             } catch (Exception ex) {
-                Logger.Error($"Error connecting to MQTT broker: {ex.Message}");
+                Logger.Error($"Error connecting to broker: {ex.Message}");
                 throw ex;
             }
         }
 
         public async Task<MqttClientPublishResult> Publish(CancellationToken ct) {
+            MqttClientPublishResult result = null;
+
             try {
-                Logger.Debug("Sending payload to broker");
+                if (mqttClient.IsConnected) {
+                    Logger.Debug("Sending payload to broker");
 
-                var payload = new MqttApplicationMessageBuilder()
-                    .WithTopic(Topic)
-                    .WithPayload(Payload)
-                    .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)Qos)
-                    .WithRetainFlag()
-                    .Build();
+                    var payload = new MqttApplicationMessageBuilder()
+                        .WithTopic(Topic)
+                        .WithPayload(Payload)
+                        .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)Qos)
+                        .WithRetainFlag()
+                        .Build();
 
-                var result = await mqttClient.PublishAsync(payload, ct);
-                return result;
+                    result = await mqttClient.PublishAsync(payload, ct);
+                }
             } catch (Exception ex) {
-                Logger.Error($"Error publishing to MQTT broker: {ex.Message}");
+                Logger.Error($"Error publishing to broker: {ex.Message}");
                 throw ex;
             }
+
+            return result;
         }
 
         public async Task Ping(CancellationToken ct) {
             try {
-                Logger.Debug("Sending ping to broker");
+                if (mqttClient.IsConnected) {
+                    Logger.Debug("Sending ping to broker");
 
-                await mqttClient.PingAsync(ct);
+                    await mqttClient.PingAsync(ct);
+                }
             } catch (Exception ex) {
-                Logger.Error($"Error disconnecting from MQTT broker: {ex.Message}");
+                Logger.Error($"Error pinging broker: {ex.Message}");
                 throw ex;
             }
         }
@@ -150,11 +156,35 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 Logger.Debug("Sending Disconnect to broker");
                 Shutdown = true;
 
-                await mqttClient.DisconnectAsync(ct);
-                mqttClient.Dispose();
-                IsConnected = false;
+                if (mqttClient.IsConnected) {
+                    await mqttClient.DisconnectAsync(ct);
+                    IsConnected = mqttClient.IsConnected;
+                    mqttClient.Dispose();
+                }
             } catch (Exception ex) {
-                Logger.Error($"Error disconnecting from MQTT broker: {ex.Message}");
+                Logger.Error($"Error disconnecting from broker: {ex.Message}");
+                throw ex;
+            }
+        }
+
+        public async Task Subscribe(CancellationToken ct) {
+            try {
+                if (mqttClient.IsConnected) {
+                    Logger.Debug($"Subscribing to topic \"{Topic}\"");
+
+                    mqttClient.UseApplicationMessageReceivedHandler(e => {
+                        Logger.Info($"Received message: {e.ClientId}: Topic: {e.ApplicationMessage.Topic}, Qos: {e.ApplicationMessage.QualityOfServiceLevel}, Message: {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
+                        MqttApplicationMessage = e.ApplicationMessage;
+                    });
+
+                    var options = new MqttClientSubscribeOptionsBuilder()
+                        .WithTopicFilter(Topic)
+                        .Build();
+
+                    await mqttClient.SubscribeAsync(options, ct);
+                }
+            } catch (Exception ex) {
+                Logger.Error($"Error subscribing to topic \"{Topic}\": {ex.Message}");
                 throw ex;
             }
         }
