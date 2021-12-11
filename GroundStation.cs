@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Mqtt;
-using MQTTnet.Client.Disconnecting;
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
@@ -81,6 +80,9 @@ namespace DaleGhent.NINA.GroundStation {
 
         private async Task LwtStopWorker() {
             Logger.Debug("Stopping LWT worker");
+
+            mqttClient.Payload = Utilities.ResolveTokens(MqttLwtClosePayload);
+            await mqttClient.Publish(CancellationToken.None);
 
             await mqttClient.Disconnect(CancellationToken.None);
 
@@ -425,6 +427,15 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttLwtLastWillPayload;
             set {
                 Properties.Settings.Default.MqttLwtLastWillPayload = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string MqttLwtClosePayload {
+            get => Properties.Settings.Default.MqttLwtClosePayload;
+            set {
+                Properties.Settings.Default.MqttLwtClosePayload = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }

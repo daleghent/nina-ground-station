@@ -122,5 +122,8 @@ Reasons: $$ERROR_LIST$$
     <Setting Name="MqttLwtLastWillPayload" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="MqttLwtClosePayload" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
