@@ -4,7 +4,7 @@
 * Added new message token: `$$UNIX_EPOCH$$` - yields the number of seconds elapsed since 00:00:00 January 1, 1970 UTC
 <!-- -->
 * MQTT: Added [Last Will & Testament](https://www.hivemq.com/blog/mqtt-essentials-part-9-last-will-and-testament/) (LWT) support. When configured and enabled, Ground Station will start a session with the MQTT broker when NINA launches and loads the plugin. The session contains configurable birth, last will &amp; testament, and close payloads that will be sent to the specified topic. The LWT payload can be used to trigger further automation to warn of or react to a *potentially* crashed system. The LWT session will always attempt to reconnect to the broker if the network connection with the broker is interrupted.
-    - The **birth** payload is published immediately to the topic upon the initial connection, which is made when NINA starts and loads Ground Station, or when the LWT is enabled under the Ground Station options
+    - The **birth** payload is published immediately to the topic upon the initial connection, which is made when NINA starts and loads Ground Station, or when the LWT feature is enabled under the Ground Station options
     - The **last will &amp; testament** payload is sent with the intial connection. The broker will publish this payload to topic subscribers if the session drops without being gracefully closed (ie, TCP reset due to dead client or network connection)
     - The **close** payload is published when NINA closes or the LWT feature is disabled.
 <!-- -->
