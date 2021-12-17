@@ -89,6 +89,14 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         public bool Validate() {
             var i = new List<string>(mqtt.ValidateSettings());
 
+            if (string.IsNullOrEmpty(Topic)) {
+                i.Add("A topic is not defined");
+            }
+
+            if (string.IsNullOrEmpty(Payload)) {
+                i.Add("A payload is not defined");
+            }
+
             if (i != Issues) {
                 Issues = i;
                 RaisePropertyChanged("Issues");
@@ -102,6 +110,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 Icon = Icon,
                 Name = Name,
                 Topic = Topic,
+                QoS = QoS,
                 Payload = Payload,
                 Category = Category,
                 Description = Description,

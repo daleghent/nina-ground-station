@@ -1,5 +1,33 @@
 ﻿# Ground Station
 
+## 1.9.5.0 - 2021-12-17
+* MQTT: Fixed exception in **Failures to MQTT broker** when trigger is exectuted with no target object in the context
+* MQTT: Fixed including the QoS parameter when the failures trigger or send to instruction is duplicated in a sequence
+* MQTT: Added ISO 8601-formatted `date_local`, `date_utc` and UNIX epoch `date_unix` members to the **Failures to MQTT broker** trigger. An example JSON object:
+```json
+{
+  "version": 2,
+  "name": "Failed Validation Instruction",
+  "description": "This instruction will always fail the validation",
+  "date_local": "2021-12-17T10:40:38.3478158-05:00",
+  "date_utc": "2021-12-17T15:40:38.3478158Z",
+  "date_unix": 1639755638,
+  "attempts": 1,
+  "target_info": [
+    {
+      "target_name": "Great Star Cluster in Hercules",
+      "target_ra": "16:41:41",
+      "target_dec": "36° 27' 41\""
+    }
+  ],
+  "error_list": [
+    {
+      "reason": "Validation for this instruction has failed"
+    }
+  ]
+}
+```
+
 ## 1.9.0.0 - 2021-12-10
 * Added new message token: `$$UNIX_EPOCH$$` - yields the number of seconds elapsed since 00:00:00 January 1, 1970 UTC
 <!-- -->

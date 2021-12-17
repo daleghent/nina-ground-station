@@ -73,21 +73,27 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var target = Utilities.FindDsoInfo(previousItem.Parent);
+            var now = DateTime.Now;
 
             var itemInfo = new PreviousItem {
-                version = 1,
+                version = 2,
                 name = previousItem.Name,
                 description = previousItem.Description,
                 attempts = previousItem.Attempts,
+                date_local = now.ToString("o"),
+                date_utc = now.ToUniversalTime().ToString("o"),
+                date_unix = Utilities.UnixEpoch(),
                 target_info = new List<TargetInfo>(),
                 error_list = new List<ErrorItems>()
             };
 
-            itemInfo.target_info.Add(new TargetInfo {
-                target_name = target.Name,
-                target_ra = target.Coordinates.RAString,
-                target_dec = target.Coordinates.DecString
-            });
+            if (target != null) {
+                itemInfo.target_info.Add(new TargetInfo {
+                    target_name = target.Name,
+                    target_ra = target.Coordinates.RAString,
+                    target_dec = target.Coordinates.DecString
+                });
+            }
 
             foreach (var e in PreviousItemIssues) {
                 itemInfo.error_list.Add(new ErrorItems { reason = e, });
@@ -134,6 +140,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public bool Validate() {
             var i = new List<string>(mqtt.ValidateSettings());
 
+            if (string.IsNullOrEmpty(Topic)) {
+                i.Add("A topic is not defined");
+            }
+
             if (i != Issues) {
                 Issues = i;
                 RaisePropertyChanged("Issues");
@@ -147,6 +157,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 Icon = Icon,
                 Name = Name,
                 Topic = Topic,
+                QoS = QoS,
                 Category = Category,
                 Description = Description,
             };
@@ -162,6 +173,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             public int version { get; set; }
             public string name { get; set; }
             public string description { get; set; }
+            public string date_local { get; set; }
+            public string date_utc { get; set; }
+            public long date_unix { get; set; }
             public int attempts { get; set; }
             public List<TargetInfo> target_info { get; set; }
             public List<ErrorItems> error_list { get; set; }
