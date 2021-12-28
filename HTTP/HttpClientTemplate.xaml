@@ -12,6 +12,7 @@
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.HTTP"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+
     <GeometryGroup x:Key="HTTP_SVG">
         <PathGeometry Figures="m 48.800097 70.908333 h -1.674311 v -3.017894 h -3.06957 v 3.017894 h -1.669144 v -7.410377 h 1.669144 v 2.955883 h 3.06957 v -2.955883 h 1.674311 z" FillRule="NonZero" />
         <PathGeometry Figures="m 55.698879 64.857042 h -2.11356 v 6.051291 h -1.674311 v -6.051291 h -2.103224 v -1.359086 h 5.891095 z" FillRule="NonZero" />
@@ -20,7 +21,7 @@
     </GeometryGroup>
 
     <DataTemplate DataType="{x:Type local:HttpClient}">
-        <nina:SequenceBlockView DataContext="{Binding}">
+        <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Method" />
