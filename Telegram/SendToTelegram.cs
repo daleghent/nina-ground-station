@@ -63,8 +63,8 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var message = Utilities.ResolveTokens(Message, this);
-            message = Utilities.ResolveFailureTokens(message, this);
+            var message = Utilities.Utilities.ResolveTokens(Message, this);
+            message = Utilities.Utilities.ResolveFailureTokens(message, this);
 
             await telegram.SendTelegram(message, DoNotNotify, ct);
         }
@@ -87,7 +87,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override object Clone() {
-            return new SendToTelegram() {
+            return new SendToTelegram(this) {
                 Message = Message,
                 DoNotNotify = DoNotNotify,
             };

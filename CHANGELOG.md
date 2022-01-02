@@ -1,5 +1,11 @@
 ﻿# Ground Station
 
+## 1.10.0.0 - 2022-01-02
+* Pushover: Fixed failure to observe new Pushover user key by already-instantiated Pushover instructions/triggers in a sequence
+* Removed unnecessary property copies when cloning instructions
+* Removed unnecessary WPF data context bindings that just love to hold on to memory when they really should not be doing that
+* Minimum supported NINA version is now 2.0 Beta 21
+ 
 ## 1.9.5.0 - 2021-12-17
 * MQTT: Fixed exception in **Failures to MQTT broker** when trigger is exectuted with no target object in the context
 * MQTT: Fixed including the QoS parameter when the failures trigger or send to instruction is duplicated in a sequence

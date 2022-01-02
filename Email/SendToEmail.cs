@@ -84,8 +84,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
             message.To.AddRange(InternetAddressList.Parse(Recipient));
-            message.Subject = Utilities.ResolveTokens(Subject, this);
-            message.Body = new TextPart("plain") { Text = Utilities.ResolveTokens(Body, this) };
+            message.Subject = Utilities.Utilities.ResolveTokens(Subject, this);
+            message.Body = new TextPart("plain") { Text = Utilities.Utilities.ResolveTokens(Body, this) };
 
             await email.SendEmail(message, ct);
         }
@@ -120,7 +120,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         }
 
         public override object Clone() {
-            return new SendToEmail() {
+            return new SendToEmail(this) {
                 Recipient = Recipient,
                 Subject = Subject,
                 Body = Body,

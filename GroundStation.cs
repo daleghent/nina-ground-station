@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.Utilities;
 using NINA.Core.Utility;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
@@ -63,9 +64,9 @@ namespace DaleGhent.NINA.GroundStation {
                 Logger.Info($"Starting MQTT LWT service. Sending to topic {MqttLwtTopic}");
 
                 mqttClient = new MqttClient() {
-                    Payload = Utilities.ResolveTokens(MqttLwtBirthPayload),
+                    Payload = Utilities.Utilities.ResolveTokens(MqttLwtBirthPayload),
                     LastWillTopic = MqttLwtTopic,
-                    LastWillPayload = Utilities.ResolveTokens(MqttLwtLastWillPayload),
+                    LastWillPayload = Utilities.Utilities.ResolveTokens(MqttLwtLastWillPayload),
                     Qos = MqttDefaultFailureQoSLevel,
                 };
 
@@ -81,7 +82,7 @@ namespace DaleGhent.NINA.GroundStation {
         private async Task LwtStopWorker() {
             Logger.Debug("Stopping LWT worker");
 
-            mqttClient.Payload = Utilities.ResolveTokens(MqttLwtClosePayload);
+            mqttClient.Payload = Utilities.Utilities.ResolveTokens(MqttLwtClosePayload);
             await mqttClient.Publish(CancellationToken.None);
 
             await mqttClient.Disconnect(CancellationToken.None);
@@ -449,7 +450,7 @@ namespace DaleGhent.NINA.GroundStation {
         public string TokenDateUtc => DateTime.UtcNow.ToString("d");
         public string TokenTimeUtc => DateTime.UtcNow.ToString("T");
         public string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
-        public string TokenUnixEpoch => Utilities.UnixEpoch().ToString();
+        public string TokenUnixEpoch => Utilities.Utilities.UnixEpoch().ToString();
 
         public static string GetVersion() {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();

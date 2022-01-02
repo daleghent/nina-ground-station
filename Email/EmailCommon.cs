@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Utilities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;

@@ -76,13 +76,13 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var client = new System.Net.Http.HttpClient();
             var response = new HttpResponseMessage();
-            var resolvedUri = Utilities.ResolveTokens(httpUri, this, true);
+            var resolvedUri = Utilities.Utilities.ResolveTokens(httpUri, this, true);
 
             try {
                 if (HttpMethod == HttpMethodEnum.GET) {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
-                    var body = HttpUtility.UrlEncode(Utilities.ResolveTokens(httpPostBody, this));
+                    var body = HttpUtility.UrlEncode(Utilities.Utilities.ResolveTokens(httpPostBody, this));
                     HttpContent httpContent = new StringContent(body);
 
                     response = await client.PostAsync(resolvedUri, httpContent, ct);
@@ -133,7 +133,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
 
         public override object Clone() {
-            return new HttpClient() {
+            return new HttpClient(this) {
                 HttpMethod = HttpMethod,
                 HttpUri = HttpUri,
                 HttpPostBody = HttpPostBody,

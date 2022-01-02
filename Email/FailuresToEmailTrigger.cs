@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Email;
+using DaleGhent.NINA.GroundStation.Utilities;
 using MimeKit;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
@@ -69,11 +70,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var subject = Utilities.ResolveTokens(EmailFailureSubjectText, previousItem);
-            var body = Utilities.ResolveTokens(EmailFailureBodyText, previousItem);
+            var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, previousItem);
+            var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, previousItem);
 
-            subject = Utilities.ResolveFailureTokens(subject, previousItem);
-            body = Utilities.ResolveFailureTokens(body, previousItem);
+            subject = Utilities.Utilities.ResolveFailureTokens(subject, previousItem);
+            body = Utilities.Utilities.ResolveFailureTokens(body, previousItem);
 
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
@@ -135,7 +136,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override object Clone() {
-            return new FailuresToEmailTrigger() {
+            return new FailuresToEmailTrigger(this) {
                 Recipient = Recipient,
             };
         }

@@ -128,7 +128,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override object Clone() {
-            return new FailuresToIftttTrigger() {
+            return new FailuresToIftttTrigger(this) {
                 EventName = EventName,
             };
         }
@@ -144,8 +144,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private string IftttFailureValue3 { get; set; }
 
         private string ResolveAllTokens(string text) {
-            text = Utilities.ResolveTokens(text, this.Parent);
-            text = Utilities.ResolveFailureTokens(text, previousItem);
+            text = Utilities.Utilities.ResolveTokens(text, this.Parent);
+            text = Utilities.Utilities.ResolveFailureTokens(text, previousItem);
 
             return text;
         }

@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Utilities;
 using NINA.Core.Utility;
 using PushoverClient;
 using System;

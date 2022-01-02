@@ -87,9 +87,9 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string> {
-                { "value1", Utilities.ResolveTokens(Value1, this) },
-                { "value2", Utilities.ResolveTokens(Value2, this) },
-                { "value3", Utilities.ResolveTokens(Value3, this) }
+                { "value1", Utilities.Utilities.ResolveTokens(Value1, this) },
+                { "value2", Utilities.Utilities.ResolveTokens(Value2, this) },
+                { "value3", Utilities.Utilities.ResolveTokens(Value3, this) }
             };
 
             await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
@@ -113,7 +113,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         }
 
         public override object Clone() {
-            return new SendToIftttWebhook() {
+            return new SendToIftttWebhook(this) {
                 EventName = EventName,
                 Value1 = Value1,
                 Value2 = Value2,

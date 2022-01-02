@@ -81,11 +81,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var title = Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
-            var message = Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
+            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
+            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
 
-            title = Utilities.ResolveFailureTokens(title, previousItem);
-            message = Utilities.ResolveFailureTokens(message, previousItem);
+            title = Utilities.Utilities.ResolveFailureTokens(title, previousItem);
+            message = Utilities.Utilities.ResolveFailureTokens(message, previousItem);
 
             await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
         }
@@ -133,7 +133,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override object Clone() {
-            return new FailuresToPushoverTrigger() {
+            return new FailuresToPushoverTrigger(this) {
                 Priority = Priority,
                 NotificationSound = NotificationSound,
             };

@@ -52,8 +52,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var message = Utilities.ResolveTokens(TelegramFailureBodyText, previousItem);
-            message = Utilities.ResolveFailureTokens(message, previousItem);
+            var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, previousItem);
+            message = Utilities.Utilities.ResolveFailureTokens(message, previousItem);
 
             await telegram.SendTelegram(message, true, ct);
         }
@@ -101,7 +101,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override object Clone() {
-            return new FailuresToTelegramTrigger() {
+            return new FailuresToTelegramTrigger(this) {
             };
         }
 
