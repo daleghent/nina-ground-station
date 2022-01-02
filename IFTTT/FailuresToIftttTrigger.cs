@@ -129,11 +129,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
         public override object Clone() {
             return new FailuresToIftttTrigger() {
-                Icon = Icon,
-                Name = Name,
                 EventName = EventName,
-                Category = Category,
-                Description = Description,
             };
         }
 

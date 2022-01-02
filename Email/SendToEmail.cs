@@ -121,13 +121,9 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         public override object Clone() {
             return new SendToEmail() {
-                Icon = Icon,
-                Name = Name,
                 Recipient = Recipient,
                 Subject = Subject,
                 Body = Body,
-                Category = Category,
-                Description = Description,
             };
         }
 

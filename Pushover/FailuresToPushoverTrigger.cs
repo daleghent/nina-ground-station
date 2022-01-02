@@ -134,12 +134,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         public override object Clone() {
             return new FailuresToPushoverTrigger() {
-                Icon = Icon,
-                Name = Name,
                 Priority = Priority,
                 NotificationSound = NotificationSound,
-                Category = Category,
-                Description = Description,
             };
         }
 

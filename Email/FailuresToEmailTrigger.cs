@@ -136,11 +136,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         public override object Clone() {
             return new FailuresToEmailTrigger() {
-                Icon = Icon,
-                Name = Name,
                 Recipient = Recipient,
-                Category = Category,
-                Description = Description,
             };
         }
 

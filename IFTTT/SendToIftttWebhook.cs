@@ -114,11 +114,10 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override object Clone() {
             return new SendToIftttWebhook() {
-                Icon = Icon,
-                Name = Name,
                 EventName = EventName,
-                Category = Category,
-                Description = Description,
+                Value1 = Value1,
+                Value2 = Value2,
+                Value3 = Value3,
             };
         }
 

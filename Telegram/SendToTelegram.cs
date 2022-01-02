@@ -88,12 +88,8 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
 
         public override object Clone() {
             return new SendToTelegram() {
-                Icon = Icon,
-                Name = Name,
                 Message = Message,
                 DoNotNotify = DoNotNotify,
-                Category = Category,
-                Description = Description,
             };
         }
 

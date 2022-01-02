@@ -120,14 +120,9 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
         public override object Clone() {
             return new SendToPushover() {
-                Icon = Icon,
-                Name = Name,
-                Title = Title,
                 Message = Message,
                 Priority = Priority,
                 NotificationSound = NotificationSound,
-                Category = Category,
-                Description = Description,
             };
         }
 

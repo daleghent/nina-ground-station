@@ -134,13 +134,9 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
         public override object Clone() {
             return new HttpClient() {
-                Icon = Icon,
-                Name = Name,
                 HttpMethod = HttpMethod,
                 HttpUri = HttpUri,
                 HttpPostBody = HttpPostBody,
-                Category = Category,
-                Description = Description,
             };
         }
 
