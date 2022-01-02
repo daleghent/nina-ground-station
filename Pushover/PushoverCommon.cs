@@ -76,7 +76,7 @@ namespace DaleGhent.NINA.GroundStation.Pushover {
                     break;
 
                 case "PushoverUserKey":
-                    PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+                    PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
                     break;
             }
         }
