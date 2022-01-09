@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Ifttt;
+using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -70,15 +71,19 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var dict = new Dictionary<string, string>();
+            foreach (var failedItem in FailedItems) {
+                var dict = new Dictionary<string, string>();
 
-            dict.Add("value1", ResolveAllTokens(IftttFailureValue1));
-            dict.Add("value2", ResolveAllTokens(IftttFailureValue2));
-            dict.Add("value3", ResolveAllTokens(IftttFailureValue3));
+                dict.Add("value1", ResolveAllTokens(IftttFailureValue1, failedItem));
+                dict.Add("value2", ResolveAllTokens(IftttFailureValue2, failedItem));
+                dict.Add("value3", ResolveAllTokens(IftttFailureValue3, failedItem));
 
-            Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
+                Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
-            await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
+                await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
+            }
+
+            FailedItems.Clear();
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -86,28 +91,22 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            bool shouldTrigger = false;
-
             if (previousItem == null) {
                 Logger.Debug("Previous item is null. Asserting false");
-                return shouldTrigger;
+                return false;
             }
 
             this.previousItem = previousItem;
 
-            if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("IFTTT")) {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                shouldTrigger = true;
-
-                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
-                    PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
-                }
-            } else {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+            if (this.previousItem.Name.Contains("IFTTT") && this.previousItem.Category.Equals(Category)) {
+                Logger.Debug("Previous item is related. Asserting false");
+                return false;
             }
 
-            return shouldTrigger;
+            FailedItems.Clear();
+            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
+
+            return FailedItems.Count > 0;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -137,15 +136,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToIftttTrigger)}";
         }
 
-        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private string IftttFailureValue1 { get; set; }
         private string IftttFailureValue2 { get; set; }
         private string IftttFailureValue3 { get; set; }
 
-        private string ResolveAllTokens(string text) {
+        private string ResolveAllTokens(string text, FailedItem failedItem) {
             text = Utilities.Utilities.ResolveTokens(text, this.Parent);
-            text = Utilities.Utilities.ResolveFailureTokens(text, previousItem);
+            text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
             return text;
         }

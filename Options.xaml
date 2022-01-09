@@ -1031,60 +1031,60 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBox
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$SYSTEM_NAME$$" />
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$SYSTEM_NAME$$" />
                                 <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Text="The name of the computer" />
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="The name of the computer" />
 
                                 <TextBox
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$USER_NAME$$" />
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$USER_NAME$$" />
                                 <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Text="The name of the user running N.I.N.A." />
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="The name of the user running N.I.N.A." />
 
                                 <TextBox
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$NINA_VERSION$$" />
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$NINA_VERSION$$" />
                                 <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Text="The version of N.I.N.A." />
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="The version of N.I.N.A." />
 
                                 <TextBox
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$GS_VERSION$$" />
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$GS_VERSION$$" />
                                 <TextBlock
-                                Grid.Row="3"
-                                Grid.Column="1"
-                                Text="The version of Ground Station" />
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="The version of Ground Station" />
                             </Grid>
                         </StackPanel>
                     </GroupBox>
@@ -1101,63 +1101,93 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
                                 </Grid.RowDefinitions>
 
                                 <TextBox
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$FAILED_ITEM$$" />
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ITEM$$" />
                                 <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Text="The name of the instruction that failed" />
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="The name of the failed instruction" />
 
                                 <TextBox
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$FAILED_ATTEMPTS$$" />
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ITEM_DESC$$" />
                                 <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Text="The number of failed attempts" />
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="The description of the faied instruction" />
 
                                 <TextBox
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$FAILED_INSTR_SET$$" />
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ITEM_CATEGORY$$" />
                                 <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Text="The name of the instruction set that contains the failed instruction" />
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="The category name of the failed instruction" />
 
                                 <TextBox
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsReadOnly="True"
-                                VerticalAlignment="Center"
-                                VerticalContentAlignment="Center"
-                                Text="$$ERROR_LIST$$" />
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_ATTEMPTS$$" />
                                 <TextBlock
-                                Grid.Row="3"
-                                Grid.Column="1"
-                                Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="The number of failed attempts" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$FAILED_INSTR_SET$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="The name of the container that contained the failed instruction" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="$$ERROR_LIST$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
                             </Grid>
                         </StackPanel>
                     </GroupBox>

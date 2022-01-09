@@ -70,19 +70,23 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, previousItem);
-            var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, previousItem);
+            foreach (var failedItem in FailedItems) {
+                var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, previousItem);
+                var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, previousItem);
 
-            subject = Utilities.Utilities.ResolveFailureTokens(subject, previousItem);
-            body = Utilities.Utilities.ResolveFailureTokens(body, previousItem);
+                subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);
+                body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
 
-            var message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
-            message.To.AddRange(InternetAddressList.Parse(Recipient));
-            message.Subject = subject;
-            message.Body = new TextPart("plain") { Text = body };
+                var message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
+                message.To.AddRange(InternetAddressList.Parse(Recipient));
+                message.Subject = subject;
+                message.Body = new TextPart("plain") { Text = body };
 
-            await email.SendEmail(message, ct);
+                await email.SendEmail(message, ct);
+            }
+
+            FailedItems.Clear();
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -90,28 +94,22 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            bool shouldTrigger = false;
-
             if (previousItem == null) {
                 Logger.Debug("Previous item is null. Asserting false");
-                return shouldTrigger;
+                return false;
             }
 
             this.previousItem = previousItem;
 
-            if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                shouldTrigger = true;
-
-                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
-                    PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
-                }
-            } else {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+            if (this.previousItem.Name.Contains("Email") && this.previousItem.Category.Equals(Category)) {
+                Logger.Debug("Previous item is related. Asserting false");
+                return false;
             }
 
-            return shouldTrigger;
+            FailedItems.Clear();
+            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
+
+            return FailedItems.Count > 0;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -150,7 +148,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         private string EmailFailureSubjectText { get; set; }
         private string EmailFailureBodyText { get; set; }
 
-        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {

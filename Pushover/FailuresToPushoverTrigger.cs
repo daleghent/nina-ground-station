@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Pushover;
+using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -81,13 +82,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
-            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
+            foreach (var failedItem in FailedItems) {
+                var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
+                var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
 
-            title = Utilities.Utilities.ResolveFailureTokens(title, previousItem);
-            message = Utilities.Utilities.ResolveFailureTokens(message, previousItem);
+                title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
+                message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
-            await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
+                await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
+            }
+
+            FailedItems.Clear();
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -95,28 +100,22 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            bool shouldTrigger = false;
-
             if (previousItem == null) {
                 Logger.Debug("Previous item is null. Asserting false");
-                return shouldTrigger;
+                return false;
             }
 
             this.previousItem = previousItem;
 
-            if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("Pushover")) {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                shouldTrigger = true;
-
-                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
-                    PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
-                }
-            } else {
-                Logger.Debug($"Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+            if (this.previousItem.Name.Contains("Pushover") && this.previousItem.Category.Equals(Category)) {
+                Logger.Debug("Previous item is related. Asserting false");
+                return false;
             }
 
-            return shouldTrigger;
+            FailedItems.Clear();
+            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
+
+            return FailedItems.Count > 0;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -143,7 +142,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToPushoverTrigger)}";
         }
 
-        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private string PushoverFailureTitleText { get; set; }
         private string PushoverFailureBodyText { get; set; }

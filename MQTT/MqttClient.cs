@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.Utilities;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Connecting;
@@ -93,19 +94,19 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             try {
                 Logger.Debug("Connecting to broker");
 
-                mqttClient.UseDisconnectedHandler(e => {
-                    if (!Shutdown) {
-                        Logger.Error($"MQTT client has been disconnected from {MqttBrokerHost}:{MqttBrokerPort}. Reconnecting...");
-                        mqttClient.ReconnectAsync(ct);
-                    }
-                });
-
                 mqttClient.UseConnectedHandler(e => {
                     Logger.Debug($"MQTT client has connected to {MqttBrokerHost}:{MqttBrokerPort}");
                 });
 
                 MqttClientConnectResult = await mqttClient.ConnectAsync(clientOptions, ct);
                 IsConnected = mqttClient.IsConnected;
+
+                mqttClient.UseDisconnectedHandler(e => {
+                    if (!Shutdown) {
+                        Logger.Error($"MQTT client has been disconnected from {MqttBrokerHost}:{MqttBrokerPort}. Reconnecting...");
+                        mqttClient.ReconnectAsync(ct);
+                    }
+                });
 
                 return;
             } catch (Exception ex) {

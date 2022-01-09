@@ -26,6 +26,7 @@ using System.Web;
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
     internal class Utilities {
+        internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
 
         internal static string ResolveTokens(string text, ISequenceItem sequenceItem = null, bool urlEncode = false) {
             DeepSkyObject target = null;
@@ -83,25 +84,27 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return text;
         }
 
-        internal static string ResolveFailureTokens(string text, ISequenceItem sequenceItem, bool urlEncode = false) {
-            if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
-                var errorList = new List<string>() { };
+        internal static string ResolveFailureTokens(string text, FailedItem failedItem, bool urlEncode = false) {
+            text = text.Replace(@"$$FAILED_ITEM$$", DoUrlEncode(urlEncode, failedItem.Name));
+            text = text.Replace(@"$$FAILED_ITEM_DESC$$", DoUrlEncode(urlEncode, failedItem.Description));
+            text = text.Replace(@"$$FAILED_ITEM_CATEGORY$$", DoUrlEncode(urlEncode, failedItem.Category));
+            text = text.Replace(@"$$FAILED_ATTEMPTS$$", failedItem.Attempts.ToString());
 
-                text = text.Replace(@"$$FAILED_ITEM$$", DoUrlEncode(urlEncode, sequenceItem.Name));
-                text = text.Replace(@"$$FAILED_ATTEMPTS$$", sequenceItem.Attempts.ToString());
+            text = !string.IsNullOrEmpty(failedItem.ParentName)
+                ? text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, failedItem.ParentName))
+                : text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, "----"));
 
-                text = !string.IsNullOrEmpty(sequenceItem.Parent?.Name.ToString())
-                    ? text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, sequenceItem.Parent.Name))
-                    : text.Replace(@"$$FAILED_INSTR_SET$$", DoUrlEncode(urlEncode, "----"));
+            var reasonList = new List<string>();
 
-                if (sequenceItem is IValidatable validatableItem) {
-                    errorList = validatableItem.Issues as List<string>;
+            if (failedItem.Reasons.Count > 0) {
+                foreach (var reason in failedItem.Reasons) {
+                    reasonList.Add(reason.Reason);
                 }
-
-                text = errorList?.Count > 0
-                    ? text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Join(", ", errorList)))
-                    : text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Empty));
+            } else {
+                reasonList.Add(string.Empty);
             }
+
+            text = text.Replace(@"$$ERROR_LIST$$", DoUrlEncode(urlEncode, string.Join(", ", reasonList)));
 
             return text;
         }
@@ -146,6 +149,66 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
         private static string DoUrlEncode(bool doUrlEncode, string text) {
             return doUrlEncode ? HttpUtility.UrlEncode(text) : text;
+        }
+
+        private static FailedItem GetFailedItem(ISequenceItem sequenceItem) {
+            var failedItem = new FailedItem();
+
+            if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
+                failedItem.Name = sequenceItem.Name;
+                failedItem.ParentName = sequenceItem.Parent.Name;
+                failedItem.Attempts = sequenceItem.Attempts;
+                failedItem.Description = sequenceItem.Description;
+                failedItem.Category = sequenceItem.Category;
+
+                if (sequenceItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
+                    foreach (var issue in validatableItem.Issues) {
+                        var failureReason = new FailureReason {
+                            Reason = string.IsNullOrEmpty(issue) ? RuntimeErrorMessage : issue,
+                        };
+
+                        failedItem.Reasons.Add(failureReason);
+                    }
+                } else {
+                    var failureReason = new FailureReason {
+                        Reason = RuntimeErrorMessage,
+                    };
+
+                    failedItem.Reasons.Add(failureReason);
+                }
+
+                Logger.Debug($"Failed item: {failedItem.Name}, Reason count: {failedItem.Reasons.Count}");
+            }
+
+            return failedItem;
+        }
+
+        public static List<FailedItem> GetFailedItems(ISequenceItem sequenceItem) {
+            var failedItems = new List<FailedItem>();
+
+            if (sequenceItem is ISequenceContainer sequenceContainer && sequenceContainer is ParallelContainer) {
+                var sequenceItems = sequenceContainer.GetItemsSnapshot();
+
+                Logger.Debug($"Found a ParallelContainer with {sequenceItems.Count} items in it");
+
+                foreach (SequenceItem item in sequenceItems) {
+                    if (item.Status == SequenceEntityStatus.FAILED) {
+                        var failedItem = GetFailedItem(item);
+
+                        if (!string.IsNullOrEmpty(failedItem.Name)) {
+                            failedItems.Add(failedItem);
+                        }
+                    }
+                }
+            } else if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
+                var failedItem = GetFailedItem(sequenceItem);
+
+                if (!string.IsNullOrEmpty(failedItem.Name)) {
+                    failedItems.Add(failedItem);
+                }
+            }
+
+            return failedItems;
         }
     }
 }

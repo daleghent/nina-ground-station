@@ -64,7 +64,7 @@
       <DependentUpon>SendToMqttTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pushover\PushoverCommon.cs" />
-    <Compile Include="Utilities\FailureList.cs" />
+    <Compile Include="Utilities\FailedItem.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Utilities\Security.cs" />
     <Compile Include="Email\FailuresToEmailTrigger.cs" />
@@ -172,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit">
-      <Version>2.15.0</Version>
+      <Version>3.0.0</Version>
     </PackageReference>
     <PackageReference Include="MQTTnet">
       <Version>3.1.1</Version>
@@ -222,27 +222,28 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-      if not exist "%25localappdata%25\NINA\Plugins" (
+    <PostBuildEvent>if not exist "%25localappdata%25\NINA\Plugins" (
       echo "Creating $(PlatformName) Plugins folder"
       mkdir  "%25localappdata%25\NINA\Plugins"
-      )
-      if not exist "%25localappdata%25\NINA\Plugin\$(TargetName)" (
+)
+
+if not exist "%25localappdata%25\NINA\Plugin\$(TargetName)" (
       echo "Creating $(PlatformName) Plugins $(TargetName) folder"
       mkdir  "%25localappdata%25\NINA\Plugins\$(TargetName)"
-      )
+)
 
-      echo "Copying $(PlatformName) $(TargetFileName)"
-      xcopy "$(TargetPath)" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)PushoverClient.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)ServiceStack.Text.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)System.Memory.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)System.Buffers.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)System.Numerics.Vectors.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)MailKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)MimeKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)BouncyCastle.Crypto.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)Telegram.Bot.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
-      xcopy "$(TargetDir)MQTTnet.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y</PostBuildEvent>
+echo "Copying $(PlatformName) $(TargetFileName)"
+xcopy "$(TargetPath)" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)\$(TargetName).pdb" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)PushoverClient.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)ServiceStack.Text.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)System.Memory.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)System.Buffers.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)System.Numerics.Vectors.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)MailKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)MimeKit.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)BouncyCastle.Crypto.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)Telegram.Bot.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y
+xcopy "$(TargetDir)MQTTnet.dll" "%25localappdata%25\NINA\Plugins\$(TargetName)" /h/i/c/k/e/r/y</PostBuildEvent>
   </PropertyGroup>
 </Project>

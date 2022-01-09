@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -72,38 +73,38 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var target = Utilities.FindDsoInfo(previousItem.Parent);
+            var target = Utilities.Utilities.FindDsoInfo(previousItem.Parent);
             var now = DateTime.Now;
 
-            var itemInfo = new PreviousItem {
-                version = 2,
-                name = previousItem.Name,
-                description = previousItem.Description,
-                attempts = previousItem.Attempts,
-                date_local = now.ToString("o"),
-                date_utc = now.ToUniversalTime().ToString("o"),
-                date_unix = Utilities.UnixEpoch(),
-                target_info = new List<TargetInfo>(),
-                error_list = new List<ErrorItems>()
-            };
+            foreach (var failedItem in FailedItems) {
+                var itemInfo = new PreviousItem {
+                    version = 2,
+                    name = previousItem.Name,
+                    description = previousItem.Description,
+                    attempts = previousItem.Attempts,
+                    date_local = now.ToString("o"),
+                    date_utc = now.ToUniversalTime().ToString("o"),
+                    date_unix = Utilities.Utilities.UnixEpoch(),
+                    target_info = new List<TargetInfo>(),
+                    error_list = failedItem.Reasons,
+                };
 
-            if (target != null) {
-                itemInfo.target_info.Add(new TargetInfo {
-                    target_name = target.Name,
-                    target_ra = target.Coordinates.RAString,
-                    target_dec = target.Coordinates.DecString
-                });
+                if (target != null) {
+                    itemInfo.target_info.Add(new TargetInfo {
+                        target_name = target.Name,
+                        target_ra = target.Coordinates.RAString,
+                        target_dec = target.Coordinates.DecString
+                    });
+                }
+
+                string payload = JsonConvert.SerializeObject(itemInfo);
+
+                Logger.Debug($"{this}: {payload}");
+
+                await mqtt.PublishMessage(Topic, payload, QoS, ct);
             }
 
-            foreach (var e in PreviousItemIssues) {
-                itemInfo.error_list.Add(new ErrorItems { reason = e, });
-            }
-
-            string payload = JsonConvert.SerializeObject(itemInfo);
-
-            Logger.Trace($"{this}: {payload}");
-
-            await mqtt.PublishMessage(Topic, payload, QoS, ct);
+            FailedItems.Clear();
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -111,28 +112,22 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            bool shouldTrigger = false;
-
             if (previousItem == null) {
-                Logger.Debug("MqttTrigger: Previous item is null. Asserting false");
-                return shouldTrigger; ;
+                Logger.Debug("Previous item is null. Asserting false");
+                return false;
             }
 
             this.previousItem = previousItem;
 
-            if (this.previousItem.Status == SequenceEntityStatus.FAILED && !this.previousItem.Name.Contains("MQTT")) {
-                Logger.Debug($"MqttTrigger: Previous item \"{this.previousItem.Name}\" failed. Asserting true");
-                shouldTrigger = true;
-
-                if (this.previousItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
-                    PreviousItemIssues = validatableItem.Issues;
-                    Logger.Debug($"MqttTrigger: Previous item \"{this.previousItem.Name}\" had {PreviousItemIssues.Count} issues: {string.Join(", ", PreviousItemIssues)}");
-                }
-            } else {
-                Logger.Debug($"MqttTrigger: Previous item \"{this.previousItem.Name}\" did not fail. Asserting false");
+            if (this.previousItem.Name.Contains("MQTT") && this.previousItem.Category.Equals(Category)) {
+                Logger.Debug("Previous item is related. Asserting false");
+                return false;
             }
 
-            return shouldTrigger;
+            FailedItems.Clear();
+            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
+
+            return FailedItems.Count > 0;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -153,13 +148,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override object Clone() {
-            return new FailuresToMqttTrigger() {
-                Icon = Icon,
-                Name = Name,
+            return new FailuresToMqttTrigger(this) {
                 Topic = Topic,
                 QoS = QoS,
-                Category = Category,
-                Description = Description,
             };
         }
 
@@ -167,7 +158,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             return $"Category: {Category}, Item: {nameof(FailuresToMqttTrigger)}, Topic: {Topic}, QoS: {QoS}";
         }
 
-        private IList<string> PreviousItemIssues { get; set; } = new List<string>();
+        private List<Utilities.FailedItem> FailedItems { get; set; } = new List<Utilities.FailedItem>();
 
         private class PreviousItem {
             public int version { get; set; }
@@ -178,17 +169,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             public long date_unix { get; set; }
             public int attempts { get; set; }
             public List<TargetInfo> target_info { get; set; }
-            public List<ErrorItems> error_list { get; set; }
+            public List<FailureReason> error_list { get; set; }
         }
 
         public class TargetInfo {
             public string target_name { get; set; }
             public string target_ra { get; set; }
             public string target_dec { get; set; }
-        }
-
-        public class ErrorItems {
-            public string reason { get; set; }
         }
     }
 }

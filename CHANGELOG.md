@@ -1,9 +1,12 @@
 ﻿# Ground Station
 
 ## 1.10.0.0 - 2022-01-02
+* Instructions inside of **Parallel Instruction Sets** are now detected and alerted on by the **Failures To...** triggers. Alerts are emitted upon completion of the Parallel Instruction Set
 * Pushover: Fixed failure to observe new Pushover user key by already-instantiated Pushover instructions/triggers in a sequence
 * Removed unnecessary property copies when cloning instructions
 * Removed unnecessary WPF data context bindings that just love to hold on to memory when they really should not be doing that
+* Package now includes a PDB file for debugging purposes
+* Updated MimeKit to 3.0.0
 * Minimum supported NINA version is now 2.0 Beta 21
  
 ## 1.9.5.0 - 2021-12-17

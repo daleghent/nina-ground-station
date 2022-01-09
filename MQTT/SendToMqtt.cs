@@ -78,7 +78,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         public IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var payload = Utilities.ResolveTokens(Payload, this);
+            var payload = Utilities.Utilities.ResolveTokens(Payload, this);
 
             Logger.Trace($"{this}: {payload}");
             await mqtt.PublishMessage(Topic, payload, QoS, ct);
@@ -106,14 +106,10 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         }
 
         public override object Clone() {
-            return new SendToMqtt() {
-                Icon = Icon,
-                Name = Name,
+            return new SendToMqtt(this) {
                 Topic = Topic,
                 QoS = QoS,
                 Payload = Payload,
-                Category = Category,
-                Description = Description,
             };
         }
 
