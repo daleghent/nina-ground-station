@@ -23,6 +23,8 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -451,6 +453,24 @@ namespace DaleGhent.NINA.GroundStation {
         public string TokenTimeUtc => DateTime.UtcNow.ToString("T");
         public string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
         public string TokenUnixEpoch => Utilities.Utilities.UnixEpoch().ToString();
+
+        public void SetSmtpPassword(SecureString s) {
+            SmtpPassword = SecureStringToString(s);
+        }
+
+        public void SetMqttPassword(SecureString s) {
+            MqttPassword = SecureStringToString(s);
+        }
+
+        private string SecureStringToString(SecureString value) {
+            IntPtr valuePtr = IntPtr.Zero;
+            try {
+                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(value);
+                return Marshal.PtrToStringUni(valuePtr);
+            } finally {
+                Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+            }
+        }
 
         public static string GetVersion() {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();

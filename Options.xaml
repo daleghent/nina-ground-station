@@ -339,15 +339,22 @@
                             <TextBlock.Text>Password</TextBlock.Text>
                             <TextBlock.ToolTip>SMTP service password</TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
+                        <PasswordBox
                             Margin="5,0,0,0"
                             Width="400"
+                            Height="20"
                             VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SmtpPassword" />
-                            </TextBox.Text>
-                        </TextBox>
+                            VerticalContentAlignment="Center"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            CaretBrush="{StaticResource PrimaryBrush}"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            Loaded="PasswordBox_Smtp_Loaded"
+                            PasswordChanged="PasswordBox_Smtp_PasswordChanged">
+                            <PasswordBox.Background>
+                                <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                            </PasswordBox.Background>
+                        </PasswordBox>
                     </StackPanel>
 
                     <GroupBox Header="Failure message template" Margin="0,10,0,0">
@@ -606,15 +613,22 @@
                             <TextBlock.Text>Password</TextBlock.Text>
                             <TextBlock.ToolTip>MQTT broker password</TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
+                        <PasswordBox
                             Margin="5,0,0,0"
                             Width="400"
+                            Height="20"
                             VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="MqttPassword" />
-                            </TextBox.Text>
-                        </TextBox>
+                            VerticalContentAlignment="Center"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            CaretBrush="{StaticResource PrimaryBrush}"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            Loaded="PasswordBox_Mqtt_Loaded"
+                            PasswordChanged="PasswordBox_Mqtt_PasswordChanged">
+                            <PasswordBox.Background>
+                                <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                            </PasswordBox.Background>
+                        </PasswordBox>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">

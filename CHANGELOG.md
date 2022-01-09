@@ -3,6 +3,7 @@
 ## 1.10.0.0 - 2022-01-02
 * Instructions inside of **Parallel Instruction Sets** are now detected and alerted on by the **Failures To...** triggers. Alerts are emitted upon completion of the Parallel Instruction Set
 * Pushover: Fixed failure to observe new Pushover user key by already-instantiated Pushover instructions/triggers in a sequence
+* Password fields under options no longer display the set password in visible text
 * Removed unnecessary property copies when cloning instructions
 * Removed unnecessary WPF data context bindings that just love to hold on to memory when they really should not be doing that
 * Package now includes a PDB file for debugging purposes
