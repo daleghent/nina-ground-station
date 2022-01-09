@@ -1145,7 +1145,7 @@
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Text="The description of the faied instruction" />
+                                    Text="A description of the failed instruction" />
 
                                 <TextBox
                                     Grid.Row="2"
@@ -1159,7 +1159,7 @@
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="1"
-                                    Text="The category name of the failed instruction" />
+                                    Text="The category name that the failed instruction belongs to" />
 
                                 <TextBox
                                     Grid.Row="3"

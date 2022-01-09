@@ -1,6 +1,10 @@
 ﻿# Ground Station
 
 ## 1.10.0.0 - 2022-01-09
+* Two new message tokens for failures:
+    - `$$FAILED_ITEM_DESC$$` - A description of the failed instruction
+    - `$$FAILED_ITEM_CATEGORY$$` - The category name that the failed instruction belongs to
+<!-- -->
 * Instructions inside of **Parallel Instruction Sets** are now detected and alerted on by the **Failures To...** triggers. Alerts are emitted upon completion of the Parallel Instruction Set
 * Pushover: Fixed failure to observe new Pushover user key by already-instantiated Pushover instructions/triggers in a sequence
 * The **Failures to...** triggers now give themselves more time to get the word out in the specific case of a failed instruction that has its On Error property set to skip-to-end
