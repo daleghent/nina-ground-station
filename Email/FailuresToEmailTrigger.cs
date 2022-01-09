@@ -83,7 +83,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 message.Subject = subject;
                 message.Body = new TextPart("plain") { Text = body };
 
-                await email.SendEmail(message, ct);
+                var newCts = new CancellationTokenSource();
+                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                    await email.SendEmail(message, newCts.Token);
+                }
             }
 
             FailedItems.Clear();

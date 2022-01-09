@@ -56,7 +56,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, previousItem);
                 message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
-                await telegram.SendTelegram(message, true, ct);
+                var newCts = new CancellationTokenSource();
+                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                    await telegram.SendTelegram(message, true, newCts.Token);
+                }
             }
 
             FailedItems.Clear();

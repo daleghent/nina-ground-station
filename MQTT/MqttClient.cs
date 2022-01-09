@@ -102,7 +102,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 IsConnected = mqttClient.IsConnected;
 
                 mqttClient.UseDisconnectedHandler(e => {
-                    if (!Shutdown) {
+                    if (!Shutdown && !ct.IsCancellationRequested) {
                         Logger.Error($"MQTT client has been disconnected from {MqttBrokerHost}:{MqttBrokerPort}. Reconnecting...");
                         mqttClient.ReconnectAsync(ct);
                     }

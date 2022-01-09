@@ -27,6 +27,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
     internal class Utilities {
         internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
+        internal const int cancelTimeout = 10; // in seconds
 
         internal static string ResolveTokens(string text, ISequenceItem sequenceItem = null, bool urlEncode = false) {
             DeepSkyObject target = null;

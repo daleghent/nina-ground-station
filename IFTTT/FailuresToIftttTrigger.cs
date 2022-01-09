@@ -80,7 +80,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
                 Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
-                await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
+                var newCts = new CancellationTokenSource();
+                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                    await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
+                }
             }
 
             FailedItems.Clear();

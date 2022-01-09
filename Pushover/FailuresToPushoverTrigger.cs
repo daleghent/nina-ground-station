@@ -89,7 +89,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
                 message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
-                await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
+                var newCts = new CancellationTokenSource();
+                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                    await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
+                }
             }
 
             FailedItems.Clear();

@@ -101,7 +101,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
                 Logger.Debug($"{this}: {payload}");
 
-                await mqtt.PublishMessage(Topic, payload, QoS, ct);
+                var newCts = new CancellationTokenSource();
+                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                    await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
+                }
             }
 
             FailedItems.Clear();
