@@ -8,7 +8,8 @@
 <ResourceDictionary
     x:Class="DaleGhent.NINA.GroundStation.Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core">
 
     <DataTemplate x:Key="Ground Station_Options">
         <TabControl TabStripPlacement="Top">
@@ -643,6 +644,29 @@
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             IsChecked="{Binding MqttBrokerUseTls, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Width="110">
+                            <TextBlock.Text>Reconnect attempts</TextBlock.Text>
+                            <TextBlock.ToolTip>The maximum number of reconnect attempts that will be made if a session is interrupted</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Width="75"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttMaxReconnectAttempts" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                     </StackPanel>
 
                     <GroupBox Header="Last Will &amp; Testament" Margin="0,5,0,0">

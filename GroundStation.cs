@@ -387,6 +387,15 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        public int MqttMaxReconnectAttempts {
+            get => Properties.Settings.Default.MqttMaxReconnectAttempts;
+            set {
+                Properties.Settings.Default.MqttMaxReconnectAttempts = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
         public bool MqttLwtEnable {
             get => Properties.Settings.Default.MqttLwtEnable;
             set {

@@ -481,5 +481,17 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["MqttLwtClosePayload"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int MqttMaxReconnectAttempts {
+            get {
+                return ((int)(this["MqttMaxReconnectAttempts"]));
+            }
+            set {
+                this["MqttMaxReconnectAttempts"] = value;
+            }
+        }
     }
 }

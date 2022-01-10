@@ -19,6 +19,7 @@ using MQTTnet.Client.Publishing;
 using MQTTnet.Client.Subscribing;
 using MQTTnet.Protocol;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using System;
 using System.Text;
 using System.Threading;
@@ -40,15 +41,17 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
         public string LastWillTopic { get; set; } = string.Empty;
         public string LastWillPayload { get; set; } = string.Empty;
         public int Qos { get; set; } = Properties.Settings.Default.MqttDefaultQoSLevel;
-        public string MqttBrokerHost { get; set; } = Properties.Settings.Default.MqttBrokerHost;
-        public ushort MqttBrokerPort { get; set; } = Properties.Settings.Default.MqttBrokerPort;
-        public bool UseTls { get; set; } = Properties.Settings.Default.MqttBrokerUseTls;
-        public string MqttUsername { get; set; } = Security.Decrypt(Properties.Settings.Default.MqttUsername);
-        public string MqttPassword { get; set; } = Security.Decrypt(Properties.Settings.Default.MqttPassword);
+        public string MqttBrokerHost { get; } = Properties.Settings.Default.MqttBrokerHost;
+        public ushort MqttBrokerPort { get; } = Properties.Settings.Default.MqttBrokerPort;
+        public bool UseTls { get; } = Properties.Settings.Default.MqttBrokerUseTls;
+        public int MaxReconnectAttempts { get; } = Properties.Settings.Default.MqttMaxReconnectAttempts;
+        public string MqttUsername { get; } = Security.Decrypt(Properties.Settings.Default.MqttUsername);
+        public string MqttPassword { get; } = Security.Decrypt(Properties.Settings.Default.MqttPassword);
         public bool IsConnected { get; set; } = false;
         public bool Shutdown { get; set; } = false;
         public MqttClientConnectResult MqttClientConnectResult { get; set; }
         public MqttApplicationMessage MqttApplicationMessage { get; set; }
+        private int ReconnectAttempts { get; set; } = 0;
 
         public IMqttClientOptions Prepare() {
             var clientOptions = new MqttClientOptionsBuilder()
@@ -61,10 +64,10 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 var clientIdBytes = new byte[23];
                 Array.Copy(cidb, clientIdBytes, clientIdBytes.Length);
 
-                var cids = Encoding.UTF8.GetString(clientIdBytes);
-                Logger.Info($"Using client ID {cids}");
+                ClientId = Encoding.UTF8.GetString(clientIdBytes);
+                Logger.Info($"Using client ID {ClientId}");
 
-                clientOptions.WithClientId(cids);
+                clientOptions.WithClientId(ClientId);
             }
 
             if (!string.IsNullOrEmpty(LastWillTopic) && !string.IsNullOrWhiteSpace(LastWillTopic) && !string.IsNullOrEmpty(LastWillPayload) && !string.IsNullOrWhiteSpace(LastWillPayload)) {
@@ -101,10 +104,25 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 MqttClientConnectResult = await mqttClient.ConnectAsync(clientOptions, ct);
                 IsConnected = mqttClient.IsConnected;
 
-                mqttClient.UseDisconnectedHandler(e => {
+                mqttClient.UseDisconnectedHandler(async e => {
                     if (!Shutdown && !ct.IsCancellationRequested) {
-                        Logger.Error($"MQTT client has been disconnected from {MqttBrokerHost}:{MqttBrokerPort}. Reconnecting...");
-                        mqttClient.ReconnectAsync(ct);
+                        if (ReconnectAttempts < MaxReconnectAttempts) {
+                            ReconnectAttempts++;
+                            Logger.Error($"MQTT client has been disconnected from {MqttBrokerHost}:{MqttBrokerPort}. Reconnecting({ReconnectAttempts})...");
+
+                            if (ReconnectAttempts > 1) {
+                                await Task.Delay(TimeSpan.FromSeconds(10), ct);
+                            }
+
+                            var reconnectResult = await mqttClient.ReconnectAsync(ct);
+
+                            if (reconnectResult.IsSessionPresent) {
+                                ReconnectAttempts = 0;
+                            }
+                        } else {
+                            Logger.Error($"MQTT broker reconnect attempts reached. Giving up.");
+                            Notification.ShowError($"MQTT broker disconnected suddenly and could not be reconnected after {MaxReconnectAttempts} attempts. NINA client ID: {ClientId}");
+                        }
                     }
                 });
 
