@@ -79,9 +79,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             foreach (var failedItem in FailedItems) {
                 var itemInfo = new PreviousItem {
                     version = 2,
-                    name = previousItem.Name,
-                    description = previousItem.Description,
-                    attempts = previousItem.Attempts,
+                    name = failedItem.Name,
+                    description = failedItem.Description,
+                    attempts = failedItem.Attempts,
                     date_local = now.ToString("o"),
                     date_utc = now.ToUniversalTime().ToString("o"),
                     date_unix = Utilities.Utilities.UnixEpoch(),
