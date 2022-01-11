@@ -2,6 +2,7 @@
 
 ## 1.10.5.0 - 2022-01-10
 * Pushover: Reinstate the copying of the message title when cloning a **Send to Pushover** instruction
+* MQTT: Implement retry attempt limit to prevent limitless retry attempts
 
 ## 1.10.0.0 - 2022-01-09
 * Two new message tokens for failures:
