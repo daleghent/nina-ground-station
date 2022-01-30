@@ -77,6 +77,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
             this.previousItem = previousItem;
 
+            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
+            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
+
             if (this.previousItem.Name.Contains("Telegram") && this.previousItem.Category.Equals(Category)) {
                 Logger.Debug("Previous item is related. Asserting false");
                 return false;

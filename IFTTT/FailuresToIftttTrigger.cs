@@ -101,6 +101,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
             this.previousItem = previousItem;
 
+            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
+            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
+
             if (this.previousItem.Name.Contains("IFTTT") && this.previousItem.Category.Equals(Category)) {
                 Logger.Debug("Previous item is related. Asserting false");
                 return false;

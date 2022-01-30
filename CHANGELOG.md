@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.10.6.0 - 2022-01-30
+* Fixed tripping over a null reference if the failing entity's Name or Category are not available
+
 ## 1.10.5.0 - 2022-01-10
 * Pushover: Reinstate the copying of the message title when cloning a **Send to Pushover** instruction
 * MQTT: Implement retry attempt limit to prevent limitless retry attempts

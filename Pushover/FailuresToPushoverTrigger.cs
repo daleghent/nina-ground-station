@@ -110,6 +110,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
             this.previousItem = previousItem;
 
+            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
+            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
+
             if (this.previousItem.Name.Contains("Pushover") && this.previousItem.Category.Equals(Category)) {
                 Logger.Debug("Previous item is related. Asserting false");
                 return false;
