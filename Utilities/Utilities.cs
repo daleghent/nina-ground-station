@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using NINA.Astrometry;
+using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Sequencer.Container;
@@ -30,7 +31,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         internal const int cancelTimeout = 10; // in seconds
 
         internal static string ResolveTokens(string text, ISequenceItem sequenceItem = null, bool urlEncode = false) {
-            DeepSkyObject target = null;
+            IDeepSkyObject target = null;
 
             if (sequenceItem != null) {
                 target = FindDsoInfo(sequenceItem.Parent);
@@ -110,14 +111,16 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return text;
         }
 
-        public static DeepSkyObject FindDsoInfo(ISequenceContainer container) {
-            DeepSkyObject target = null;
+        public static IDeepSkyObject FindDsoInfo(ISequenceContainer container) {
+            IDeepSkyObject target = null;
             ISequenceContainer acontainer = container;
 
             while (acontainer != null) {
                 if (acontainer is IDeepSkyObjectContainer dsoContainer) {
-                    target = dsoContainer.Target.DeepSkyObject;
-                    break;
+                    if (dsoContainer.Target.DeepSkyObject != null) {
+                        target = dsoContainer.Target.DeepSkyObject;
+                        break;
+                    }
                 }
 
                 acontainer = acontainer.Parent;

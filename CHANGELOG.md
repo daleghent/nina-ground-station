@@ -1,5 +1,9 @@
 ﻿# Ground Station
 
+## 1.11.0.0 - 2022-03-13
+* Updated to support changes to DSO containers in NINA 2.0 beta 50
+* Minimum supported NINA version is now 2.0 Beta 50
+
 ## 1.10.6.0 - 2022-01-30
 * Fixed tripping over a null reference if the failing entity's Name or Category are not available
 * Minimum supported NINA version is now 2.0 Beta 37
