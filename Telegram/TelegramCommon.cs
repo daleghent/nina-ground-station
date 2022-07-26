@@ -39,7 +39,7 @@ namespace DaleGhent.NINA.GroundStation.Telegram {
                 await bclient.SendTextMessageAsync(TelegramChatId, message, disableNotification: doNotNotify, cancellationToken: ct);
             } catch (Exception ex) {
                 Logger.Error($"Error sending to Telegram: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 

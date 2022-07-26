@@ -35,7 +35,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
             failedItem.Name = entity.Name;
             failedItem.ParentName = entity?.Parent?.Name ?? "";
-            if (failedItem is ISequenceItem item) {
+            if (entity is ISequenceItem item) {
+                // Todo this will always report the total attempts, but we are more fine granular now and see a failure after one attempt already
                 failedItem.Attempts = item.Attempts;
             }
             failedItem.Description = entity.Description;
