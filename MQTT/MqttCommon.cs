@@ -47,7 +47,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 await mqttClient.Disconnect(ct);
             } catch (Exception ex) {
                 Logger.Error($"Error sending to MQTT broker: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 

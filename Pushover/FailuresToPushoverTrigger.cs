@@ -20,6 +20,7 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
+using NINA.Sequencer.Utility;
 using PushoverClient;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Nito.AsyncEx;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
@@ -40,9 +42,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable {
         private PushoverCommon pushover;
-        private ISequenceItem previousItem;
         private Priority priority;
         private NotificationSound notificationSound;
+
+        private CancellationTokenSource workerCts;
+        private AsyncProducerConsumerQueue<SequenceEntityFailureEventArgs> messageQueue;
 
         [ImportingConstructor]
         public FailuresToPushoverTrigger() {
@@ -58,6 +62,116 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this() {
             CopyMetaData(copyMe);
+        }
+
+        private ISequenceRootContainer failureHook;
+
+        public override void Initialize() {
+            workerCts = new CancellationTokenSource();
+            _ = RunMessageQueueWorker();
+        }
+
+        public override void Teardown() {
+            try {
+                // Cancel running worker
+                workerCts?.Dispose();
+                messageQueue.CompleteAdding();
+            } catch (Exception) { }
+        }
+
+        public override void AfterParentChanged() {
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root == null && failureHook != null) {
+                // When trigger is removed from sequence, unregister event handler
+                // This could potentially be skipped by just using weak events instead
+                failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
+            } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                try {
+                    // Cancel running worker
+                    workerCts?.Dispose();
+                } catch (Exception) { }
+                // When dragging the item into the sequence while the sequence is already running
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                failureHook = root;
+                failureHook.FailureEvent += Root_FailureEvent;
+                workerCts = new CancellationTokenSource();
+                _ = RunMessageQueueWorker();
+            }
+            base.AfterParentChanged();
+        }
+
+        public override void SequenceBlockInitialize() {
+            // Register failure event when the parent context starts
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.SequenceBlockInitialize();
+        }
+
+        public override void SequenceBlockTeardown() {
+            // Unregister failure event when the parent context ends
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent -= Root_FailureEvent;
+            }
+        }
+
+        private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            if (arg2.Entity == null) {
+                // An exception without context has occurred. Not sure when this can happen
+                // Todo: Might be worthwile to send in a different style
+                return;
+            }
+
+            if (arg2.Entity is FailuresToPushoverTrigger || arg2.Entity is SendToPushover.SendToPushover) {
+                // Prevent pushover items to send pushover failures
+                return;
+            }
+
+            await messageQueue.EnqueueAsync(arg2);
+        }
+
+        private async Task RunMessageQueueWorker() {
+            try {
+                messageQueue = new AsyncProducerConsumerQueue<SequenceEntityFailureEventArgs>(1000);
+                while (await messageQueue.OutputAvailableAsync(workerCts.Token)) {
+                    try {
+                        var item = await messageQueue.DequeueAsync(workerCts.Token);
+
+                        var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+
+                        var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity);
+                        var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity);
+
+                        title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
+                        message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+
+                        var attempts = 3; // Todo: Make it configurable?
+                        for (int i = 0; i < attempts; i++) {
+                            try {
+                                var newCts = CancellationTokenSource.CreateLinkedTokenSource(workerCts.Token);
+                                using (workerCts.Token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                                    workerCts.Token.ThrowIfCancellationRequested();
+                                    await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
+                                    // When successful break the retry loop
+                                    break;
+                                }
+                            } catch (Exception ex) {
+                                Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                            }
+                        }
+                    } catch (OperationCanceledException) {
+                        throw;
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                    }
+                }
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         [JsonProperty]
@@ -81,21 +195,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
-        public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            foreach (var failedItem in FailedItems) {
-                var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
-                var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
-
-                title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
-                message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
-
-                var newCts = new CancellationTokenSource();
-                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                    await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
-                }
-            }
-
-            FailedItems.Clear();
+        public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Task.CompletedTask;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -103,25 +204,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (previousItem == null) {
-                Logger.Debug("Previous item is null. Asserting false");
-                return false;
-            }
-
-            this.previousItem = previousItem;
-
-            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
-            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
-
-            if (this.previousItem.Name.Contains("Pushover") && this.previousItem.Category.Equals(Category)) {
-                Logger.Debug("Previous item is related. Asserting false");
-                return false;
-            }
-
-            FailedItems.Clear();
-            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
-
-            return FailedItems.Count > 0;
+            return false;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -147,8 +230,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(FailuresToPushoverTrigger)}";
         }
-
-        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private string PushoverFailureTitleText { get; set; }
         private string PushoverFailureBodyText { get; set; }

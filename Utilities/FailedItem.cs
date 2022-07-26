@@ -10,6 +10,10 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
+using NINA.Sequencer;
+using NINA.Sequencer.SequenceItem;
+using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +29,37 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public string ParentName { get; set; } = string.Empty;
         public int Attempts { get; set; } = 0;
         public List<FailureReason> Reasons { get; set; } = new List<FailureReason>();
+
+        public static FailedItem FromEntity(ISequenceEntity entity, Exception failureReason) {
+            var failedItem = new FailedItem();
+
+            failedItem.Name = entity.Name;
+            failedItem.ParentName = entity?.Parent?.Name ?? "";
+            if (entity is ISequenceItem item) {
+                // Todo this will always report the total attempts, but we are more fine granular now and see a failure after one attempt already
+                failedItem.Attempts = item.Attempts;
+            }
+            failedItem.Description = entity.Description;
+            failedItem.Category = entity.Category;
+
+            failedItem.Reasons.Add(new FailureReason() { Reason = failureReason.Message });
+
+            if (entity is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
+                foreach (var issue in validatableItem.Issues) {
+                    if (!string.IsNullOrEmpty(issue)) {
+                        var reason = new FailureReason {
+                            Reason = issue
+                        };
+
+                        failedItem.Reasons.Add(reason);
+                    }
+                }
+            }
+
+            Logger.Debug($"Failed item: {failedItem.Name}, Reason count: {failedItem.Reasons.Count}");
+
+            return failedItem;
+        }
     }
 
     public class FailureReason {

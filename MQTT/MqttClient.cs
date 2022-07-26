@@ -129,7 +129,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 return;
             } catch (Exception ex) {
                 Logger.Error($"Error connecting to broker: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 
@@ -151,7 +151,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error publishing to broker: {ex.Message}");
-                throw ex;
+                throw;
             }
 
             return result;
@@ -166,7 +166,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error pinging broker: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 
@@ -182,7 +182,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error disconnecting from broker: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 
@@ -204,7 +204,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error subscribing to topic \"{Topic}\": {ex.Message}");
-                throw ex;
+                throw;
             }
         }
     }

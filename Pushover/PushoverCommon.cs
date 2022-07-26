@@ -49,7 +49,7 @@ namespace DaleGhent.NINA.GroundStation.Pushover {
                 }
             } catch (Exception ex) {
                 Logger.Error($"Error sending to Pushover: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 

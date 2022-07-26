@@ -14,6 +14,7 @@ using NINA.Astrometry;
 using NINA.Astrometry.Interfaces;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Sequencer;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -30,7 +31,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
         internal const int cancelTimeout = 10; // in seconds
 
-        internal static string ResolveTokens(string text, ISequenceItem sequenceItem = null, bool urlEncode = false) {
+        internal static string ResolveTokens(string text, ISequenceEntity sequenceItem = null, bool urlEncode = false) {
             IDeepSkyObject target = null;
 
             if (sequenceItem != null) {
