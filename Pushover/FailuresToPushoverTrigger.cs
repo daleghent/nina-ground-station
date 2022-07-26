@@ -20,6 +20,7 @@ using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Validations;
+using NINA.Sequencer.Utility;
 using PushoverClient;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,56 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             CopyMetaData(copyMe);
         }
 
+        private ISequenceRootContainer failureHook;
+
+        public override void AfterParentChanged() {
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root == null && failureHook != null) {
+                // When trigger is removed from sequence, unregister event handler
+                // This could potentially be skipped by just using weak events instead
+                failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
+            } else if (root != null && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                // When dragging the item into the sequence while the sequence is already running
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                failureHook = root;
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.AfterParentChanged();
+        }
+
+        public override void SequenceBlockInitialize() {
+            // Register failure event when the parent context starts
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.SequenceBlockInitialize();
+        }
+
+        public override void SequenceBlockTeardown() {
+            // Unregister failure event when the parent context ends
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent -= Root_FailureEvent;
+            }
+        }
+
+        private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            var failedItem = FailedItem.FromEntity(arg2.Entity, arg2.Exception);
+
+            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
+            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
+
+            title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
+            message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+
+            var newCts = new CancellationTokenSource();
+            using (newCts.Token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
+            }
+        }
+
         [JsonProperty]
         public Priority Priority {
             get => priority;
@@ -81,21 +132,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
-        public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            foreach (var failedItem in FailedItems) {
-                var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
-                var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
-
-                title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
-                message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
-
-                var newCts = new CancellationTokenSource();
-                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                    await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
-                }
-            }
-
-            FailedItems.Clear();
+        public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Task.CompletedTask;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -103,25 +141,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (previousItem == null) {
-                Logger.Debug("Previous item is null. Asserting false");
-                return false;
-            }
-
-            this.previousItem = previousItem;
-
-            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
-            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
-
-            if (this.previousItem.Name.Contains("Pushover") && this.previousItem.Category.Equals(Category)) {
-                Logger.Debug("Previous item is related. Asserting false");
-                return false;
-            }
-
-            FailedItems.Clear();
-            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
-
-            return FailedItems.Count > 0;
+            return false;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -147,8 +167,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(FailuresToPushoverTrigger)}";
         }
-
-        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private string PushoverFailureTitleText { get; set; }
         private string PushoverFailureBodyText { get; set; }
