@@ -41,7 +41,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable {
         private PushoverCommon pushover;
-        private ISequenceItem previousItem;
         private Priority priority;
         private NotificationSound notificationSound;
 
@@ -97,10 +96,21 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            if (arg2.Entity == null) {
+                // An exception without context has occurred. Not sure when this can happen
+                // Todo: Might be worthwile to send in a different style
+                return;
+            }
+
+            if (arg2.Entity is FailuresToPushoverTrigger || arg2.Entity is SendToPushover.SendToPushover) {
+                // Prevent pushover items to send pushover failures
+                return;
+            }
+
             var failedItem = FailedItem.FromEntity(arg2.Entity, arg2.Exception);
 
-            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, previousItem);
-            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, previousItem);
+            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, arg2.Entity);
+            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, arg2.Entity);
 
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
