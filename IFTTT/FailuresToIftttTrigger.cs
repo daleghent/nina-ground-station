@@ -19,6 +19,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -38,11 +39,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToIftttTrigger : SequenceTrigger, IValidatable, INotifyPropertyChanged {
         private IftttCommon ifttt;
-        private ISequenceItem previousItem;
         private string eventName = "nina";
+
+        private ISequenceRootContainer failureHook;
+        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToIftttTrigger() {
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             ifttt = new IftttCommon();
 
             IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
@@ -70,23 +74,91 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             }
         }
 
-        public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            foreach (var failedItem in FailedItems) {
-                var dict = new Dictionary<string, string>();
+        public override void Initialize() {
+            queueWorker.Stop();
+            _ = queueWorker.Start();
+        }
 
-                dict.Add("value1", ResolveAllTokens(IftttFailureValue1, failedItem));
-                dict.Add("value2", ResolveAllTokens(IftttFailureValue2, failedItem));
-                dict.Add("value3", ResolveAllTokens(IftttFailureValue3, failedItem));
+        public override void Teardown() {
+            queueWorker.Stop();
+        }
 
-                Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
+        public override void AfterParentChanged() {
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root == null && failureHook != null) {
+                // When trigger is removed from sequence, unregister event handler
+                // This could potentially be skipped by just using weak events instead
+                failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
+            } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                queueWorker.Stop();
+                // When dragging the item into the sequence while the sequence is already running
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                failureHook = root;
+                failureHook.FailureEvent += Root_FailureEvent;
+                _ = queueWorker.Start();
+            }
+            base.AfterParentChanged();
+        }
 
-                var newCts = new CancellationTokenSource();
-                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                    await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
-                }
+        public override void SequenceBlockInitialize() {
+            // Register failure event when the parent context starts
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.SequenceBlockInitialize();
+        }
+
+        public override void SequenceBlockTeardown() {
+            // Unregister failure event when the parent context ends
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent -= Root_FailureEvent;
+            }
+        }
+
+        private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            if (arg2.Entity == null) {
+                // An exception without context has occurred. Not sure when this can happen
+                // Todo: Might be worthwile to send in a different style
+                return;
             }
 
-            FailedItems.Clear();
+            if (arg2.Entity is FailuresToIftttTrigger || arg2.Entity is SendToIftttWebhook.SendToIftttWebhook) {
+                // Prevent ifttt items to send ifttt failures
+                return;
+            }
+
+            await queueWorker.Enqueue(arg2);
+        }
+
+        private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
+            var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+
+            var dict = new Dictionary<string, string>();
+
+            dict.Add("value1", ResolveAllTokens(IftttFailureValue1, failedItem));
+            dict.Add("value2", ResolveAllTokens(IftttFailureValue2, failedItem));
+            dict.Add("value3", ResolveAllTokens(IftttFailureValue3, failedItem));
+
+            Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
+
+            var attempts = 3; // Todo: Make it configurable?
+            for (int i = 0; i < attempts; i++) {
+                try {
+                    var newCts = new CancellationTokenSource();
+                    using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                        await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error($"Email failed to send message. Attempt {i + 1}/{attempts}", ex);
+                }
+            }
+        }
+
+        public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Task.CompletedTask;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -94,25 +166,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (previousItem == null) {
-                Logger.Debug("Previous item is null. Asserting false");
-                return false;
-            }
-
-            this.previousItem = previousItem;
-
-            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
-            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
-
-            if (this.previousItem.Name.Contains("IFTTT") && this.previousItem.Category.Equals(Category)) {
-                Logger.Debug("Previous item is related. Asserting false");
-                return false;
-            }
-
-            FailedItems.Clear();
-            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
-
-            return FailedItems.Count > 0;
+            return false;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -141,8 +195,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(FailuresToIftttTrigger)}";
         }
-
-        private List<FailedItem> FailedItems { get; set; } = new List<FailedItem>();
 
         private string IftttFailureValue1 { get; set; }
         private string IftttFailureValue2 { get; set; }

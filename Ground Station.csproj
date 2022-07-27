@@ -64,6 +64,7 @@
       <DependentUpon>SendToMqttTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pushover\PushoverCommon.cs" />
+    <Compile Include="Utilities\BackgroundQueueWorker.cs" />
     <Compile Include="Utilities\FailedItem.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Utilities\Security.cs" />
