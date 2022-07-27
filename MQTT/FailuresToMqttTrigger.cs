@@ -19,6 +19,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToMqttTrigger : SequenceTrigger, IValidatable {
         private MqttCommon mqtt;
-        private ISequenceItem previousItem;
         private string topic;
         private int qos = 0;
 
+        private ISequenceRootContainer failureHook;
+        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+
         [ImportingConstructor]
         public FailuresToMqttTrigger() {
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             mqtt = new MqttCommon();
             Topic = Properties.Settings.Default.MqttDefaultTopic;
             QoS = Properties.Settings.Default.MqttDefaultFailureQoSLevel;
@@ -70,44 +74,111 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             }
         }
 
-        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+        public override void Initialize() {
+            queueWorker.Stop();
+            _ = queueWorker.Start();
+        }
 
-        public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var target = Utilities.Utilities.FindDsoInfo(previousItem.Parent);
-            var now = DateTime.Now;
+        public override void Teardown() {
+            queueWorker.Stop();
+        }
 
-            foreach (var failedItem in FailedItems) {
-                var itemInfo = new PreviousItem {
-                    version = 2,
-                    name = failedItem.Name,
-                    description = failedItem.Description,
-                    attempts = failedItem.Attempts,
-                    date_local = now.ToString("o"),
-                    date_utc = now.ToUniversalTime().ToString("o"),
-                    date_unix = Utilities.Utilities.UnixEpoch(),
-                    target_info = new List<TargetInfo>(),
-                    error_list = failedItem.Reasons,
-                };
+        public override void AfterParentChanged() {
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root == null && failureHook != null) {
+                // When trigger is removed from sequence, unregister event handler
+                // This could potentially be skipped by just using weak events instead
+                failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
+            } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                queueWorker.Stop();
+                // When dragging the item into the sequence while the sequence is already running
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                failureHook = root;
+                failureHook.FailureEvent += Root_FailureEvent;
+                _ = queueWorker.Start();
+            }
+            base.AfterParentChanged();
+        }
 
-                if (target != null) {
-                    itemInfo.target_info.Add(new TargetInfo {
-                        target_name = target.Name,
-                        target_ra = target.Coordinates.RAString,
-                        target_dec = target.Coordinates.DecString
-                    });
-                }
+        public override void SequenceBlockInitialize() {
+            // Register failure event when the parent context starts
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.SequenceBlockInitialize();
+        }
 
-                string payload = JsonConvert.SerializeObject(itemInfo);
+        public override void SequenceBlockTeardown() {
+            // Unregister failure event when the parent context ends
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent -= Root_FailureEvent;
+            }
+        }
 
-                Logger.Debug($"{this}: {payload}");
-
-                var newCts = new CancellationTokenSource();
-                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                    await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
-                }
+        private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            if (arg2.Entity == null) {
+                // An exception without context has occurred. Not sure when this can happen
+                // Todo: Might be worthwile to send in a different style
+                return;
             }
 
-            FailedItems.Clear();
+            if (arg2.Entity is FailuresToMqttTrigger || arg2.Entity is SendToMqtt.SendToMqtt) {
+                // Prevent mqtt items to send mqtt failures
+                return;
+            }
+
+            await queueWorker.Enqueue(arg2);
+        }
+
+        private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
+            var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+            var target = Utilities.Utilities.FindDsoInfo(item.Entity.Parent);
+            var now = DateTime.Now;
+
+            var itemInfo = new PreviousItem {
+                version = 2,
+                name = failedItem.Name,
+                description = failedItem.Description,
+                attempts = failedItem.Attempts,
+                date_local = now.ToString("o"),
+                date_utc = now.ToUniversalTime().ToString("o"),
+                date_unix = Utilities.Utilities.UnixEpoch(),
+                target_info = new List<TargetInfo>(),
+                error_list = failedItem.Reasons,
+            };
+
+            if (target != null) {
+                itemInfo.target_info.Add(new TargetInfo {
+                    target_name = target.Name,
+                    target_ra = target.Coordinates.RAString,
+                    target_dec = target.Coordinates.DecString
+                });
+            }
+
+            string payload = JsonConvert.SerializeObject(itemInfo);
+
+            Logger.Debug($"{this}: {payload}");
+
+            var attempts = 3; // Todo: Make it configurable?
+            for (int i = 0; i < attempts; i++) {
+                try {
+                    var newCts = new CancellationTokenSource();
+                    using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                        await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                }
+            }
+        }
+
+        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+
+        public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Task.CompletedTask;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -115,25 +186,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (previousItem == null) {
-                Logger.Debug("Previous item is null. Asserting false");
-                return false;
-            }
-
-            this.previousItem = previousItem;
-
-            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
-            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
-
-            if (this.previousItem.Name.Contains("MQTT") && this.previousItem.Category.Equals(Category)) {
-                Logger.Debug("Previous item is related. Asserting false");
-                return false;
-            }
-
-            FailedItems.Clear();
-            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
-
-            return FailedItems.Count > 0;
+            return false;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -163,8 +216,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(FailuresToMqttTrigger)}, Topic: {Topic}, QoS: {QoS}";
         }
-
-        private List<Utilities.FailedItem> FailedItems { get; set; } = new List<Utilities.FailedItem>();
 
         private class PreviousItem {
             public int version { get; set; }

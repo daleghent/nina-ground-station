@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Telegram;
+using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -18,6 +19,7 @@ using NINA.Core.Utility;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
+using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
@@ -37,10 +39,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToTelegramTrigger : SequenceTrigger, IValidatable {
         private TelegramCommon telegram;
-        private ISequenceItem previousItem;
+
+        private ISequenceRootContainer failureHook;
+        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToTelegramTrigger() {
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             telegram = new TelegramCommon();
 
             TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
@@ -51,18 +56,86 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
             CopyMetaData(copyMe);
         }
 
-        public override async Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            foreach (var failedItem in FailedItems) {
-                var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, previousItem);
-                message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+        public override void Initialize() {
+            queueWorker.Stop();
+            _ = queueWorker.Start();
+        }
 
-                var newCts = new CancellationTokenSource();
-                using (ct.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                    await telegram.SendTelegram(message, true, newCts.Token);
-                }
+        public override void Teardown() {
+            queueWorker.Stop();
+        }
+
+        public override void AfterParentChanged() {
+            var root = ItemUtility.GetRootContainer(this.Parent);
+            if (root == null && failureHook != null) {
+                // When trigger is removed from sequence, unregister event handler
+                // This could potentially be skipped by just using weak events instead
+                failureHook.FailureEvent -= Root_FailureEvent;
+                failureHook = null;
+            } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
+                queueWorker.Stop();
+                // When dragging the item into the sequence while the sequence is already running
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                failureHook = root;
+                failureHook.FailureEvent += Root_FailureEvent;
+                _ = queueWorker.Start();
+            }
+            base.AfterParentChanged();
+        }
+
+        public override void SequenceBlockInitialize() {
+            // Register failure event when the parent context starts
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent += Root_FailureEvent;
+            }
+            base.SequenceBlockInitialize();
+        }
+
+        public override void SequenceBlockTeardown() {
+            // Unregister failure event when the parent context ends
+            failureHook = ItemUtility.GetRootContainer(this.Parent);
+            if (failureHook != null) {
+                failureHook.FailureEvent -= Root_FailureEvent;
+            }
+        }
+
+        private async Task Root_FailureEvent(object arg1, SequenceEntityFailureEventArgs arg2) {
+            if (arg2.Entity == null) {
+                // An exception without context has occurred. Not sure when this can happen
+                // Todo: Might be worthwile to send in a different style
+                return;
             }
 
-            FailedItems.Clear();
+            if (arg2.Entity is FailuresToTelegramTrigger || arg2.Entity is SendToTelegram.SendToTelegram) {
+                // Prevent pushover items to send pushover failures
+                return;
+            }
+
+            await queueWorker.Enqueue(arg2);
+        }
+
+        private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
+            var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+
+            var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, item.Entity);
+            message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+
+            var attempts = 3; // Todo: Make it configurable?
+            for (int i = 0; i < attempts; i++) {
+                try {
+                    var newCts = new CancellationTokenSource();
+                    using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                        await telegram.SendTelegram(message, true, newCts.Token);
+                    }
+                } catch (Exception ex) {
+                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                }
+            }
+        }
+
+        public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            return Task.CompletedTask;
         }
 
         public override bool ShouldTrigger(ISequenceItem previousItem, ISequenceItem nextItem) {
@@ -70,25 +143,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            if (previousItem == null) {
-                Logger.Debug("Previous item is null. Asserting false");
-                return false;
-            }
-
-            this.previousItem = previousItem;
-
-            this.previousItem.Name = this.previousItem.Name ?? this.previousItem.ToString();
-            this.previousItem.Category = this.previousItem.Category ?? this.previousItem.ToString();
-
-            if (this.previousItem.Name.Contains("Telegram") && this.previousItem.Category.Equals(Category)) {
-                Logger.Debug("Previous item is related. Asserting false");
-                return false;
-            }
-
-            FailedItems.Clear();
-            FailedItems = Utilities.Utilities.GetFailedItems(this.previousItem);
-
-            return FailedItems.Count > 0;
+            return false;
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -112,8 +167,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(FailuresToTelegramTrigger)}";
         }
-
-        private List<Utilities.FailedItem> FailedItems { get; set; } = new List<Utilities.FailedItem>();
 
         private string TelegramFailureBodyText { get; set; }
 

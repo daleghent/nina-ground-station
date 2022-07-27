@@ -45,11 +45,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         private Priority priority;
         private NotificationSound notificationSound;
 
-        private CancellationTokenSource workerCts;
-        private AsyncProducerConsumerQueue<SequenceEntityFailureEventArgs> messageQueue;
+        private ISequenceRootContainer failureHook;
+        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToPushoverTrigger() {
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             pushover = new PushoverCommon();
 
             PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
@@ -64,19 +65,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             CopyMetaData(copyMe);
         }
 
-        private ISequenceRootContainer failureHook;
-
         public override void Initialize() {
-            workerCts = new CancellationTokenSource();
-            _ = RunMessageQueueWorker();
+            queueWorker.Stop();
+            _ = queueWorker.Start();
         }
 
         public override void Teardown() {
-            try {
-                // Cancel running worker
-                workerCts?.Dispose();
-                messageQueue.CompleteAdding();
-            } catch (Exception) { }
+            queueWorker.Stop();
         }
 
         public override void AfterParentChanged() {
@@ -87,16 +82,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                try {
-                    // Cancel running worker
-                    workerCts?.Dispose();
-                } catch (Exception) { }
+                queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                workerCts = new CancellationTokenSource();
-                _ = RunMessageQueueWorker();
+                _ = queueWorker.Start();
             }
             base.AfterParentChanged();
         }
@@ -130,47 +121,31 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 return;
             }
 
-            await messageQueue.EnqueueAsync(arg2);
+            await queueWorker.Enqueue(arg2);
         }
 
-        private async Task RunMessageQueueWorker() {
-            try {
-                messageQueue = new AsyncProducerConsumerQueue<SequenceEntityFailureEventArgs>(1000);
-                while (await messageQueue.OutputAvailableAsync(workerCts.Token)) {
-                    try {
-                        var item = await messageQueue.DequeueAsync(workerCts.Token);
+        private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
+            var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-                        var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity);
+            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity);
 
-                        var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity);
-                        var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity);
+            title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
+            message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
-                        title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
-                        message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
-
-                        var attempts = 3; // Todo: Make it configurable?
-                        for (int i = 0; i < attempts; i++) {
-                            try {
-                                var newCts = CancellationTokenSource.CreateLinkedTokenSource(workerCts.Token);
-                                using (workerCts.Token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                                    workerCts.Token.ThrowIfCancellationRequested();
-                                    await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
-                                    // When successful break the retry loop
-                                    break;
-                                }
-                            } catch (Exception ex) {
-                                Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
-                            }
-                        }
-                    } catch (OperationCanceledException) {
-                        throw;
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
+            var attempts = 3; // Todo: Make it configurable?
+            for (int i = 0; i < attempts; i++) {
+                try {
+                    var newCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                    using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                        token.ThrowIfCancellationRequested();
+                        await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
+                        // When successful break the retry loop
+                        break;
                     }
+                } catch (Exception ex) {
+                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
                 }
-            } catch (OperationCanceledException) {
-            } catch (Exception ex) {
-                Logger.Error(ex);
             }
         }
 
