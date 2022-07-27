@@ -12,7 +12,9 @@
 
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.Utilities;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Notification;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
@@ -41,6 +43,12 @@ namespace DaleGhent.NINA.GroundStation {
                 Properties.Settings.Default.UpgradeSettings = false;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
             }
+
+            PushoverTestCommand = new AsyncCommand<bool>(PushoverTest);
+            EmailTestCommand = new AsyncCommand<bool>(EmailTest);
+            TelegramTestCommand = new AsyncCommand<bool>(TelegramTest);
+            MQTTTestCommand = new AsyncCommand<bool>(MQTTTest);
+            IFTTTTestCommand = new AsyncCommand<bool>(IFTTTTest);
         }
 
         public override Task Initialize() {
@@ -59,6 +67,96 @@ namespace DaleGhent.NINA.GroundStation {
             }
 
             return;
+        }
+
+        private async Task<bool> PushoverTest(object arg) {
+            var send = new SendToPushover.SendToPushover() {
+                Message = "Test Message",
+                Title = "Test Title",
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send message to pushover.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Pushover Error");
+                return false;
+            } else {
+                Notification.ShowSuccess("Pushover message sent");
+                return true;
+            }
+        }
+
+        private async Task<bool> EmailTest(object arg) {
+            var send = new SendToEmail.SendToEmail() {
+                Subject = "Test Subject",
+                Body = "Test Body",
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send email.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Email Error");
+                return false;
+            } else {
+                Notification.ShowSuccess("Email sent");
+                return true;
+            }
+        }
+
+        private async Task<bool> TelegramTest(object arg) {
+            var send = new SendToTelegram.SendToTelegram() {
+                Message = "Test Message",
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send message to telegram.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Telegram Error");
+                return false;
+            } else {
+                Notification.ShowSuccess("Telegram message sent");
+                return true;
+            }
+        }
+
+        private async Task<bool> MQTTTest(object arg) {
+            var send = new SendToMqtt.SendToMqtt() {
+                Topic = "Test Topic",
+                Payload = "Test Payload",
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send message to MQTT.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "MQTT Error");
+                return false;
+            } else {
+                Notification.ShowSuccess("MQTT message sent");
+                return true;
+            }
+        }
+
+        private async Task<bool> IFTTTTest(object arg) {
+            var send = new SendToIftttWebhook.SendToIftttWebhook() {
+                Value1 = "Test Value1",
+                Value2 = "Test Value2",
+                Value3 = "Test Value3",
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send message to IFTTT.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "IFTTT Error");
+                return false;
+            } else {
+                Notification.ShowSuccess("IFTTT message sent");
+                return true;
+            }
         }
 
         private Task LwtStartWorker() {
@@ -91,6 +189,12 @@ namespace DaleGhent.NINA.GroundStation {
 
             return;
         }
+
+        public IAsyncCommand PushoverTestCommand { get; }
+        public IAsyncCommand EmailTestCommand { get; }
+        public IAsyncCommand IFTTTTestCommand { get; }
+        public IAsyncCommand TelegramTestCommand { get; }
+        public IAsyncCommand MQTTTestCommand { get; }
 
         public string IFTTTWebhookKey {
             get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
