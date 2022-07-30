@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     internal class TTS {
         private static SpeechSynthesizer synthesizer;
 
-        public TTS() {
+        static TTS() {
             synthesizer = new SpeechSynthesizer();
         }
 
