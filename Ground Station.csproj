@@ -37,7 +37,9 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -64,6 +66,15 @@
       <DependentUpon>SendToMqttTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pushover\PushoverCommon.cs" />
+    <Compile Include="TTS\FailuresToTTS.cs" />
+    <Compile Include="TTS\FailuresToTTSTemplate.xaml.cs">
+      <DependentUpon>FailuresToTTSTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TTS\SendToTTS.cs" />
+    <Compile Include="TTS\SendToTTSTemplate.xaml.cs">
+      <DependentUpon>SendToTTSTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TTS\TTS.cs" />
     <Compile Include="Utilities\BackgroundQueueWorker.cs" />
     <Compile Include="Utilities\FailedItem.cs" />
     <Compile Include="Utilities\Utilities.cs" />
@@ -169,6 +180,14 @@
     <Page Include="Telegram\SendToTelegramTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TTS\FailuresToTTSTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TTS\SendToTTSTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
