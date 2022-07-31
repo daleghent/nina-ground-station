@@ -79,7 +79,7 @@ namespace DaleGhent.NINA.GroundStation {
             await send.Run(default, default);
 
             if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send message to pushover.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Pushover Error");
+                Notification.ShowExternalError($"Failed to send message to Pushover:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Pushover Error");
                 return false;
             } else {
                 Notification.ShowSuccess("Pushover message sent");
@@ -97,7 +97,7 @@ namespace DaleGhent.NINA.GroundStation {
             await send.Run(default, default);
 
             if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send email.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Email Error");
+                Notification.ShowExternalError($"Failed to send email:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Email Error");
                 return false;
             } else {
                 Notification.ShowSuccess("Email sent");
@@ -114,7 +114,7 @@ namespace DaleGhent.NINA.GroundStation {
             await send.Run(default, default);
 
             if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send message to telegram.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Telegram Error");
+                Notification.ShowExternalError($"Failed to send message to Telegram:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Telegram Error");
                 return false;
             } else {
                 Notification.ShowSuccess("Telegram message sent");
@@ -132,7 +132,7 @@ namespace DaleGhent.NINA.GroundStation {
             await send.Run(default, default);
 
             if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send message to MQTT.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "MQTT Error");
+                Notification.ShowExternalError($"Failed to send message to MQTT:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "MQTT Error");
                 return false;
             } else {
                 Notification.ShowSuccess("MQTT message sent");
@@ -151,7 +151,7 @@ namespace DaleGhent.NINA.GroundStation {
             await send.Run(default, default);
 
             if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send message to IFTTT.{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "IFTTT Error");
+                Notification.ShowExternalError($"Failed to send message to IFTTT:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "IFTTT Error");
                 return false;
             } else {
                 Notification.ShowSuccess("IFTTT message sent");
