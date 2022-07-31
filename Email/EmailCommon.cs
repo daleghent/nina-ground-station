@@ -53,7 +53,7 @@ namespace DaleGhent.NINA.GroundStation.Email {
                 Logger.Error($"SmtpEmail: Connection to {SmtpHostName}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
                 throw;
             } catch (AuthenticationException ex) {
-                Logger.Error($"SendEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}");
+                Logger.Error($"SendEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}: {ex.Message}");
                 throw;
             }
         }
