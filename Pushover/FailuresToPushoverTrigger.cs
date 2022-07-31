@@ -30,7 +30,6 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Nito.AsyncEx;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
@@ -144,7 +143,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                         break;
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
                 }
             }
         }

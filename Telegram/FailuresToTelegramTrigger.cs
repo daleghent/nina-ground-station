@@ -129,7 +129,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                         await telegram.SendTelegram(message, true, newCts.Token);
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
                 }
             }
         }

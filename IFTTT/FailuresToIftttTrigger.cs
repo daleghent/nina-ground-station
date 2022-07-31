@@ -136,11 +136,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var dict = new Dictionary<string, string>();
-
-            dict.Add("value1", ResolveAllTokens(IftttFailureValue1, failedItem));
-            dict.Add("value2", ResolveAllTokens(IftttFailureValue2, failedItem));
-            dict.Add("value3", ResolveAllTokens(IftttFailureValue3, failedItem));
+            var dict = new Dictionary<string, string> {
+                { "value1", ResolveAllTokens(IftttFailureValue1, failedItem) },
+                { "value2", ResolveAllTokens(IftttFailureValue2, failedItem) },
+                { "value3", ResolveAllTokens(IftttFailureValue3, failedItem) }
+            };
 
             Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
 
@@ -152,7 +152,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                         await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Email failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
                 }
             }
         }

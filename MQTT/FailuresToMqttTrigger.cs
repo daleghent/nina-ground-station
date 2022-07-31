@@ -170,7 +170,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                         await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Pushover failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send payload. Attempt {i + 1}/{attempts}", ex);
                 }
             }
         }

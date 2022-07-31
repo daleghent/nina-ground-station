@@ -155,7 +155,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                         await email.SendEmail(message, newCts.Token);
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Email failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
                 }
             }
         }
