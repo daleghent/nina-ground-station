@@ -128,5 +128,8 @@ Reasons: $$ERROR_LIST$$
     <Setting Name="MqttMaxReconnectAttempts" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
+    <Setting Name="TTSFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts! Reasons: $$ERROR_LIST$$</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
