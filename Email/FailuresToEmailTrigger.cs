@@ -141,23 +141,31 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);
             body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
 
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
+            message.To.AddRange(InternetAddressList.Parse(Recipient));
+            message.Subject = subject;
+            message.Body = new TextPart("plain") { Text = body };
+
+            var newCts = new CancellationTokenSource();
+            var tokenRegistration = new CancellationTokenRegistration();
             var attempts = 3; // Todo: Make it configurable?
+
             for (int i = 0; i < attempts; i++) {
                 try {
-                    var message = new MimeMessage();
-                    message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
-                    message.To.AddRange(InternetAddressList.Parse(Recipient));
-                    message.Subject = subject;
-                    message.Body = new TextPart("plain") { Text = body };
-
-                    var newCts = new CancellationTokenSource();
-                    using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await email.SendEmail(message, newCts.Token);
+                    using (tokenRegistration = token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+                        await email.SendMessage(message, newCts.Token);
+                        break;
                     }
                 } catch (Exception ex) {
-                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
+                    Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex.Message);
+                } finally {
+                    tokenRegistration.Dispose();
+                    newCts.Dispose();
                 }
             }
+
+            message.Dispose();
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {

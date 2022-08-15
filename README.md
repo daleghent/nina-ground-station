@@ -11,7 +11,7 @@ The provided instructions and triggers can be broken down in to two general cate
 
 * Pushover — Simple and reliable desktop and iOS/Android push messaging. Pushover charges a one-time $5 per-device fee to support its service
 * Telegram — Utilize the [Telegram bot API](https://core.telegram.org/bots/api) to send messages a Telegram channel
-* Email — Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
+* Email — Who doesn't love plain old email? Supports plain SMTP with user auth and SSL/TLS support as well as sending via Google OAuth2 authenticated Gmail API
 * HTTP - Send a generic HTTP GET or POST request to a URL
 * IFTTT Webhooks — If This Then That. An easy to use configurable webhooks-based gateway to control a wide variety of messaging platforms and IoT devices. Taking full advantage requires an IFTTT Pro account
 * MQTT — Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object

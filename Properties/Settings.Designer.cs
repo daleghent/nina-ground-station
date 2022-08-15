@@ -506,5 +506,41 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["TTSFailureMessage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public ushort EmailSystem {
+            get {
+                return ((ushort)(this["EmailSystem"]));
+            }
+            set {
+                this["EmailSystem"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GmailOauth2Token {
+            get {
+                return ((string)(this["GmailOauth2Token"]));
+            }
+            set {
+                this["GmailOauth2Token"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GoogleAccountName {
+            get {
+                return ((string)(this["GoogleAccountName"]));
+            }
+            set {
+                this["GoogleAccountName"] = value;
+            }
+        }
     }
 }

@@ -42,7 +42,6 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         public SendToEmail() {
             email = new EmailCommon();
 
-            SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
             SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
             Recipient = SmtpDefaultRecipients;
 
@@ -82,12 +81,15 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
             message.To.AddRange(InternetAddressList.Parse(Recipient));
             message.Subject = Utilities.Utilities.ResolveTokens(Subject, this);
             message.Body = new TextPart("plain") { Text = Utilities.Utilities.ResolveTokens(Body, this) };
 
-            await email.SendEmail(message, ct);
+            try {
+                await email.SendMessage(message, ct);
+            } catch (Exception ex) {
+                throw new SequenceEntityFailedException(ex.Message);
+            }
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -97,10 +99,6 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
             if (string.IsNullOrEmpty(Recipient) || string.IsNullOrWhiteSpace(Recipient)) {
                 i.Add("Email recipient is missing");
-            }
-
-            if (string.IsNullOrEmpty(SmtpFromAddress) || string.IsNullOrWhiteSpace(SmtpFromAddress)) {
-                i.Add("Email from address is missing");
             }
 
             if (string.IsNullOrEmpty(Subject) || string.IsNullOrWhiteSpace(Subject)) {
@@ -131,15 +129,10 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             return $"Category: {Category}, Item: {nameof(SendToEmail)}";
         }
 
-        private string SmtpFromAddress { get; set; }
         private string SmtpDefaultRecipients { get; set; }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "SmtpFromAddress":
-                    SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-                    break;
-
                 case "SmtpDefaultRecipients":
                     SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
                     Recipient = SmtpDefaultRecipients;

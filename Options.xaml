@@ -8,8 +8,9 @@
     x:Class="DaleGhent.NINA.GroundStation.Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
-    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core">
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary">
 
     <GeometryGroup x:Key="TTS_SVG">
         <PathGeometry Figures="M 11.36,16.9693C 11.36,17.5213 10.912,17.9693 10.36,17.9693C 9.808,17.9693 9.36,17.5213 9.36,16.9693C 9.36,16.4173 9.808,15.9693 10.36,15.9693C 10.912,15.9693 11.36,16.4173 11.36,16.9693 Z M 14.36,15.9693C 13.808,15.9693 13.36,16.4173 13.36,16.9693C 13.36,17.5213 13.808,17.9693 14.36,17.9693C 14.912,17.9693 15.36,17.5213 15.36,16.9693C 15.36,16.4173 14.912,15.9693 14.36,15.9693 Z M 6.36,15.9693C 5.808,15.9693 5.36,16.4173 5.36,16.9693C 5.36,17.5213 5.808,17.9693 6.36,17.9693C 6.912,17.9693 7.36,17.5213 7.36,16.9693C 7.36,16.4173 6.912,15.9693 6.36,15.9693 Z M 12.0627,30.6667L 8.16667,24.8293L 2.36,24.8293C 1.05733,24.8293 5.96046e-007,23.772 5.96046e-007,22.4693L 5.96046e-007,11.4693C 5.96046e-007,10.1667 1.05733,9.10933 2.36,9.10933L 18,9.10933L 18,0.469334C 18,0.271997 18.1627,0.109333 18.36,0.109333L 30.36,0.109333C 30.5573,0.109333 30.72,0.271997 30.72,0.469334L 30.72,14.4693C 30.72,14.6667 30.5573,14.8293 30.36,14.8293L 20.72,14.8293L 20.72,22.4693C 20.72,23.772 19.6627,24.8293 18.36,24.8293L 12.36,24.8293L 12.36,24.1093L 18.36,24.1093C 19.2667,24.1093 20,23.376 20,22.4693L 20,11.4693C 20,10.5627 19.2667,9.82933 18.36,9.82933L 2.36,9.82933C 1.45333,9.82933 0.720001,10.5627 0.720001,11.4693L 0.720001,22.4693C 0.720001,23.376 1.45333,24.1093 2.36,24.1093L 8.36,24.1093C 8.48,24.1093 8.59467,24.172 8.65733,24.272L 12.6573,30.272M 20.72,14.1093L 30,14.1093L 30,0.829334L 18.72,0.829334L 18.72,9.136C 19.4067,9.24533 20,9.652 20.36,10.22L 20.36,10.1093L 28.36,10.1093L 28.36,10.8333L 20.6307,10.8293C 20.688,11.032 20.72,11.2453 20.72,11.4693M 24.9333,27.5533L 22.1053,24.724C 21.964,24.584 21.964,24.3547 22.1053,24.2147L 24.9333,21.3867L 25.444,21.896L 23.2293,24.1093L 26.36,24.1093C 27.2667,24.1093 28,23.376 28,22.4693L 28,18.4693L 28.72,18.4693L 28.72,22.4693C 28.72,23.772 27.6627,24.8293 26.36,24.8293L 23.2293,24.8293L 25.444,27.0427M 28.36,7.82933L 20.36,7.82933L 20.36,7.10933L 28.36,7.10933M 28.36,4.82933L 20.36,4.82933L 20.36,4.10933L 28.36,4.10933" />
@@ -259,24 +260,6 @@
 
             <TabItem Name="Email" Header="Email">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>From address</TextBlock.Text>
-                            <TextBlock.ToolTip>The email address which will be used as the From address of the email being sent</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="400"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SmtpFromAddress" />
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock
@@ -297,93 +280,212 @@
                         </TextBox>
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>SMTP host</TextBlock.Text>
-                            <TextBlock.ToolTip>SMTP/outgoing mail server hostname or IP address</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="400"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SmtpHostName" />
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>SMTP port</TextBlock.Text>
-                            <TextBlock.ToolTip>SMTP/outgoing mail server service port. Commmonly 25 or 587. Sometimes 465. Default: 587</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="75"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SmtpHostPort" />
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>Username</TextBlock.Text>
-                            <TextBlock.ToolTip>SMTP service username</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="400"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SmtpUsername" />
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-
                     <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
                         <TextBlock
                             Width="110"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock.Text>Password</TextBlock.Text>
-                            <TextBlock.ToolTip>SMTP service password</TextBlock.ToolTip>
+                            <TextBlock.Text>Email system</TextBlock.Text>
+                            <TextBlock.ToolTip>The email or messaging system that you wish to use.</TextBlock.ToolTip>
                         </TextBlock>
-                        <PasswordBox
-                            Width="400"
-                            Height="20"
+                        <ComboBox
+                            Name="cbEmailSystem"
+                            MinWidth="125"
                             Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="0"
-                            CaretBrush="{StaticResource PrimaryBrush}"
-                            Foreground="{StaticResource PrimaryBrush}"
-                            Loaded="PasswordBox_Smtp_Loaded"
-                            PasswordChanged="PasswordBox_Smtp_PasswordChanged">
-                            <PasswordBox.Background>
-                                <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
-                            </PasswordBox.Background>
-                        </PasswordBox>
+                            ItemsSource="{Binding EmailSystemList}"
+                            SelectedIndex="{Binding EmailSystem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
+
+                    <!-- Start SMTP -->
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=cbEmailSystem}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>From address</TextBlock.Text>
+                                <TextBlock.ToolTip>The email address which will be used as the From address of the email being sent</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="400"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SmtpFromAddress" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>SMTP host</TextBlock.Text>
+                                <TextBlock.ToolTip>SMTP/outgoing mail server hostname or IP address</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="400"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SmtpHostName" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>SMTP port</TextBlock.Text>
+                                <TextBlock.ToolTip>SMTP/outgoing mail server service port. Commmonly 25 or 587. Sometimes 465. Default: 587</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="75"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SmtpHostPort" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>Username</TextBlock.Text>
+                                <TextBlock.ToolTip>SMTP service username</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="400"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SmtpUsername" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>Password</TextBlock.Text>
+                                <TextBlock.ToolTip>SMTP service password</TextBlock.ToolTip>
+                            </TextBlock>
+                            <PasswordBox
+                                Width="400"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                CaretBrush="{StaticResource PrimaryBrush}"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Loaded="PasswordBox_Smtp_Loaded"
+                                PasswordChanged="PasswordBox_Smtp_PasswordChanged">
+                                <PasswordBox.Background>
+                                    <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                                </PasswordBox.Background>
+                            </PasswordBox>
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- End SMTP -->
+
+                    <!-- Start Gmail -->
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedIndex, ElementName=cbEmailSystem}" Value="1">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>Google account</TextBlock.Text>
+                                <TextBlock.ToolTip>Your Google user name or Gmail address</TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Width="400"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="GoogleAccountName" />
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock
+                                Width="110"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                                <TextBlock.Text>Valid auth token?</TextBlock.Text>
+                                <TextBlock.ToolTip>Denotes whether the current authentication token is valid. You will need to authenticate your Google account if it is not.</TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="15"
+                                Height="15"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                BorderBrush="Transparent"
+                                IsHitTestVisible="False"
+                                Focusable="False"
+                                IsChecked="{Binding GoogleTokenIsValid, FallbackValue=False, Mode=OneWay}"
+                                Style="{StaticResource CheckmarkCheckbox}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <ninactrl:AsyncProcessButton
+                                Width="515"
+                                Height="25"
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Left"
+                                IsEnabled="{Binding HasGoogleAccountName}"
+                                ButtonText="Authenticate with Gmail"
+                                Command="{Binding GmailOauth2Command}"
+                                ToolTip="Press to open your web browser and authenticate with Google"
+                                CancelCommand="{Binding CancelGmailOauth2Command}"
+                                CancelButtonImage="{StaticResource CancelSVG}"
+                                CancelToolTip="{ns:Loc LblCancel}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- End Gmail -->
 
                     <ninactrl:AsyncProcessButton
                         Width="515"
                         Height="25"
-                        Margin="0,0,0,5"
+                        Margin="0,15,0,5"
                         HorizontalAlignment="Left"
                         ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
                         ButtonText="Send Test Message"

@@ -12,6 +12,12 @@
 
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.Utilities;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Util;
+using Google.Apis.Util.Store;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -23,18 +29,21 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation {
 
     [Export(typeof(IPluginManifest))]
     public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
         private MqttClient mqttClient;
+        private readonly CancellationTokenSource cancelGmailOauth2Source;
 
         [ImportingConstructor]
         public GroundStation() {
@@ -49,16 +58,44 @@ namespace DaleGhent.NINA.GroundStation {
             TelegramTestCommand = new AsyncCommand<bool>(TelegramTest);
             MQTTTestCommand = new AsyncCommand<bool>(MQTTTest);
             IFTTTTestCommand = new AsyncCommand<bool>(IFTTTTest);
+            GmailOauth2Command = new AsyncCommand<bool>(DoGmailOauth2);
+            CancelGmailOauth2Command = new RelayCommand(CancelGmailOauth2);
+
+            cancelGmailOauth2Source = new CancellationTokenSource();
         }
 
-        public override Task Initialize() {
+        public override async Task Initialize() {
             if (MqttLwtEnable) {
-                LwtStartWorker();
+                await LwtStartWorker();
+            }
+
+            if (!string.IsNullOrEmpty(GoogleAccountName) && !string.IsNullOrWhiteSpace(GoogleAccountName) && Directory.Exists(GoogleOauth2.KeyFileLocation)) {
+                var initializer = new GoogleAuthorizationCodeFlow.Initializer {
+                    ClientSecrets = new ClientSecrets {
+                        ClientId = GoogleOauth2.googleApiClientId,
+                        ClientSecret = GoogleOauth2.googleApiClientSecret
+                    },
+                    Scopes = new[] { GmailService.Scope.GmailSend },
+                };
+
+                var flow = new GoogleAuthorizationCodeFlow(initializer);
+
+                var dataStore = new FileDataStore(GoogleOauth2.KeyFileLocation, true);
+                var token = await dataStore.GetAsync<TokenResponse>(GoogleAccountName);
+
+                var cred = new UserCredential(flow, GoogleAccountName, token);
+
+                await cred.RefreshTokenAsync(CancellationToken.None);
+                GoogleTokenIsValid = !cred.Token.IsExpired(SystemClock.Default);
+
+                if (cred.Token.IsExpired(SystemClock.Default) && (cred.Token.IssuedUtc.AddDays(100) >= DateTime.UtcNow)) {
+                    Notification.ShowError($"Gmail authentication token has expired!{Environment.NewLine}You will need to reauthenticate with Google in Ground Station.");
+                }
+            } else {
+                Logger.Debug("No Google account or credentials file present");
             }
 
             Logger.Debug("Init completed");
-
-            return Task.CompletedTask;
         }
 
         public override async Task Teardown() {
@@ -88,20 +125,27 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         private async Task<bool> EmailTest(object arg) {
+            Logger.Debug($"Sending test email to {SmtpDefaultRecipients}");
+
             var send = new SendToEmail.SendToEmail() {
                 Subject = "Test Subject",
                 Body = "Test Body",
                 Attempts = 1
             };
 
-            await send.Run(default, default);
-
-            if (send.Status == SequenceEntityStatus.FAILED) {
+            if (send.Validate()) {
+                await send.Run(default, default);
+            } else {
                 Notification.ShowExternalError($"Failed to send email:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Email Error");
                 return false;
-            } else {
+            }
+
+            if (send.Status == SequenceEntityStatus.FINISHED) {
                 Notification.ShowSuccess("Email sent");
                 return true;
+            } else {
+                // Something bad happened further down and should have produced an error notification. (runtime exception)
+                return false;
             }
         }
 
@@ -159,6 +203,35 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        private async Task<bool> DoGmailOauth2(object arg) {
+            var secrets = new ClientSecrets {
+                ClientId = GoogleOauth2.googleApiClientId,
+                ClientSecret = GoogleOauth2.googleApiClientSecret
+            };
+
+            var cred = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                secrets,
+                new[] { GmailService.Scope.GmailSend },
+                GoogleAccountName,
+                cancelGmailOauth2Source.Token,
+                new FileDataStore(GoogleOauth2.KeyFileLocation, true));
+
+            if (cred.Token.IsExpired(SystemClock.Default)) {
+                await cred.RefreshTokenAsync(cancelGmailOauth2Source.Token);
+            }
+
+            GoogleTokenIsValid = !cred.Token.IsExpired(SystemClock.Default);
+
+            return true;
+        }
+
+        private void CancelGmailOauth2(object arg) {
+            try {
+                cancelGmailOauth2Source?.Cancel();
+            } catch {
+            }
+        }
+
         private Task LwtStartWorker() {
             return Task.Run(async () => {
                 Logger.Info($"Starting MQTT LWT service. Sending to topic {MqttLwtTopic}");
@@ -195,6 +268,8 @@ namespace DaleGhent.NINA.GroundStation {
         public IAsyncCommand IFTTTTestCommand { get; }
         public IAsyncCommand TelegramTestCommand { get; }
         public IAsyncCommand MQTTTestCommand { get; }
+        public IAsyncCommand GmailOauth2Command { get; }
+        public ICommand CancelGmailOauth2Command { get; }
 
         public string IFTTTWebhookKey {
             get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
@@ -307,6 +382,46 @@ namespace DaleGhent.NINA.GroundStation {
                 RaisePropertyChanged();
             }
         }
+
+        public ushort EmailSystem {
+            get => Properties.Settings.Default.EmailSystem;
+            set {
+                Properties.Settings.Default.EmailSystem = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string GmailOauth2Token {
+            get => Security.Decrypt(Properties.Settings.Default.GmailOauth2Token);
+            set {
+                Properties.Settings.Default.GmailOauth2Token = Security.Encrypt(value.Trim());
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string GoogleAccountName {
+            get => Properties.Settings.Default.GoogleAccountName;
+            set {
+                Properties.Settings.Default.GoogleAccountName = value.Trim();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+                RaisePropertyChanged("HasGoogleAccountName");
+            }
+        }
+
+        private bool googleTokenIsValid = false;
+
+        public bool GoogleTokenIsValid {
+            get => googleTokenIsValid;
+            private set {
+                googleTokenIsValid = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HasGoogleAccountName => !string.IsNullOrEmpty(GoogleAccountName) && !string.IsNullOrWhiteSpace(GoogleAccountName);
 
         public string SmtpFromAddress {
             get => Properties.Settings.Default.SmtpFromAddress;
@@ -556,6 +671,8 @@ namespace DaleGhent.NINA.GroundStation {
                 RaisePropertyChanged();
             }
         }
+
+        public IList<string> EmailSystemList => Lists.EmailSystemList;
 
         public IList<string> QoSLevels => MqttCommon.QoSLevels;
 

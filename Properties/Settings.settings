@@ -131,5 +131,14 @@ Reasons: $$ERROR_LIST$$
     <Setting Name="TTSFailureMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts! Reasons: $$ERROR_LIST$$</Value>
     </Setting>
+    <Setting Name="EmailSystem" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="GmailOauth2Token" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="GoogleAccountName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
