@@ -52,6 +52,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                     }
                 }
             } catch (OperationCanceledException) {
+            } catch (ObjectDisposedException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
