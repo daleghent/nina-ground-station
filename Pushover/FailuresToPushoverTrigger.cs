@@ -139,7 +139,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         token.ThrowIfCancellationRequested();
                         await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
-                        // When successful break the retry loop
                         break;
                     }
                 } catch (Exception ex) {

@@ -168,6 +168,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
+                        break;
                     }
                 } catch (Exception ex) {
                     Logger.Error($"Failed to send payload. Attempt {i + 1}/{attempts}", ex);

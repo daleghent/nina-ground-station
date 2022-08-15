@@ -150,6 +150,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
+                        break;
                     }
                 } catch (Exception ex) {
                     Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);

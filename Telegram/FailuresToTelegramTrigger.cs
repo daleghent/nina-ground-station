@@ -127,6 +127,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         await telegram.SendTelegram(message, true, newCts.Token);
+                        break;
                     }
                 } catch (Exception ex) {
                     Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
