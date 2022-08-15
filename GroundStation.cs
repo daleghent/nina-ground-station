@@ -72,8 +72,8 @@ namespace DaleGhent.NINA.GroundStation {
             if (!string.IsNullOrEmpty(GoogleAccountName) && !string.IsNullOrWhiteSpace(GoogleAccountName) && Directory.Exists(GoogleOauth2.KeyFileLocation)) {
                 var initializer = new GoogleAuthorizationCodeFlow.Initializer {
                     ClientSecrets = new ClientSecrets {
-                        ClientId = GoogleOauth2.googleApiClientId,
-                        ClientSecret = GoogleOauth2.googleApiClientSecret
+                        ClientId = GoogleOauth2.GoogleApiClientId,
+                        ClientSecret = GoogleOauth2.GoogleApiClientSecret
                     },
                     Scopes = new[] { GmailService.Scope.GmailSend },
                 };
@@ -205,8 +205,8 @@ namespace DaleGhent.NINA.GroundStation {
 
         private async Task<bool> DoGmailOauth2(object arg) {
             var secrets = new ClientSecrets {
-                ClientId = GoogleOauth2.googleApiClientId,
-                ClientSecret = GoogleOauth2.googleApiClientSecret
+                ClientId = GoogleOauth2.GoogleApiClientId,
+                ClientSecret = GoogleOauth2.GoogleApiClientSecret
             };
 
             var cred = await GoogleWebAuthorizationBroker.AuthorizeAsync(

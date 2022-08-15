@@ -23,6 +23,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
     public static class GoogleOauth2 {
         internal static readonly string KeyFileLocation = Path.Combine(Constants.UserExtensionsFolder, "Ground Station", ".gs_creds");
+        internal static readonly string GoogleApiClientId = "";
+        internal static readonly string GoogleApiClientSecret = "";
 
         private static readonly string[] gmailScopes = new[] { GmailService.Scope.GmailSend };
 
@@ -50,8 +52,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 }
 
                 var clientSecrets = new ClientSecrets {
-                    ClientId = googleApiClientId,
-                    ClientSecret = googleApiClientSecret
+                    ClientId = GoogleApiClientId,
+                    ClientSecret = GoogleApiClientSecret
                 };
 
                 var credential = GoogleWebAuthorizationBroker.AuthorizeAsync(

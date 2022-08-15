@@ -7,6 +7,7 @@
     - All Failures To... instructions will attempt to resend these critical messages 3 times before giving up
 <!-- -->
 * Email: Added Google OAuth2 authentication and sending mails via the GMail API. This means you no longer have to configure your GMail account to allow SMTP server use.
+* MQTTnet: Updated to 3.1.2
 * Minimum supported NINA version is now 2.0.1 (2.0 HF1)
 
 ## 1.11.0.0 - 2022-03-13
