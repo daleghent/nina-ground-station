@@ -31,7 +31,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation {
-
     [Export(typeof(IPluginManifest))]
     public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
         private MqttClient mqttClient;
@@ -94,14 +93,19 @@ namespace DaleGhent.NINA.GroundStation {
                 Attempts = 1
             };
 
-            await send.Run(default, default);
-
-            if (send.Status == SequenceEntityStatus.FAILED) {
+            if (send.Validate()) {
+                await send.Run(default, default);
+            } else {
                 Notification.ShowExternalError($"Failed to send email:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "Email Error");
                 return false;
-            } else {
+            }
+
+            if (send.Status == SequenceEntityStatus.FINISHED) {
                 Notification.ShowSuccess("Email sent");
                 return true;
+            } else {
+                // Something bad happened further down and should have produced an error notification. (runtime exception)
+                return false;
             }
         }
 
