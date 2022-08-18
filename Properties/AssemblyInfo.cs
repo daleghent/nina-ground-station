@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("Ground Station")]
-[assembly: AssemblyCopyright("Copyright © 2022 Dale Ghent")]
+[assembly: AssemblyCopyright("Copyright © 2022 Dale Ghent and contributors")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
 [assembly: AssemblyMetadata("MinimumApplicationVersion", "2.0.1.2012")]
@@ -65,6 +65,7 @@ The provided instructions and triggers can be broken down in to two general cate
 * HTTP - Send a generic HTTP GET or POST request to a URL
 * IFTTT Webhooks — If This Then That. An easy to use configurable webhooks-based gateway to control a wide variety of messaging platforms and IoT devices. Taking full advantage requires an IFTTT Pro account
 * MQTT — Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object
+* TTS - Reads out a Ground Station message through Windows' Text-to-Speech facility
 
 Information about your session or any failures may be inserted into the messages by the use of tokens. These tokens are described on the **Message Token Help** tab.
 
