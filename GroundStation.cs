@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
@@ -31,6 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation {
+
     [Export(typeof(IPluginManifest))]
     public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
         private MqttClient mqttClient;
@@ -48,6 +50,7 @@ namespace DaleGhent.NINA.GroundStation {
             TelegramTestCommand = new AsyncCommand<bool>(TelegramTest);
             MQTTTestCommand = new AsyncCommand<bool>(MQTTTest);
             IFTTTTestCommand = new AsyncCommand<bool>(IFTTTTest);
+            TtsTestCommand = new AsyncCommand<bool>(TtsTest);
         }
 
         public override Task Initialize() {
@@ -163,6 +166,22 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        private async Task<bool> TtsTest(object arg) {
+            var send = new SendToTTS() {
+                Message = TtsTestMessage,
+                Attempts = 1
+            };
+
+            await send.Run(default, default);
+
+            if (send.Status == SequenceEntityStatus.FAILED) {
+                Notification.ShowExternalError($"Failed to send message to TTS:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "TTS Error");
+                return false;
+            }
+
+            return true;
+        }
+
         private Task LwtStartWorker() {
             return Task.Run(async () => {
                 Logger.Info($"Starting MQTT LWT service. Sending to topic {MqttLwtTopic}");
@@ -199,6 +218,7 @@ namespace DaleGhent.NINA.GroundStation {
         public IAsyncCommand IFTTTTestCommand { get; }
         public IAsyncCommand TelegramTestCommand { get; }
         public IAsyncCommand MQTTTestCommand { get; }
+        public IAsyncCommand TtsTestCommand { get; }
 
         public string IFTTTWebhookKey {
             get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
@@ -556,6 +576,17 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.MqttLwtClosePayload;
             set {
                 Properties.Settings.Default.MqttLwtClosePayload = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TtsTestMessage { get; set; } = "It's full of stars!";
+
+        public string TTSFailureMessage {
+            get => Properties.Settings.Default.TTSFailureMessage;
+            set {
+                Properties.Settings.Default.TTSFailureMessage = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
