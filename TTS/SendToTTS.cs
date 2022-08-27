@@ -31,7 +31,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToTTS : SequenceItem, IValidatable {
-        private TTS tts;
+        private readonly TTS tts;
         private string message;
 
         [ImportingConstructor]

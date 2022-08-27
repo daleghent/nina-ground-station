@@ -41,9 +41,9 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToTTS : SequenceTrigger, IValidatable {
-        private TTS tts;
+        private readonly TTS tts;
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToTTS() {
