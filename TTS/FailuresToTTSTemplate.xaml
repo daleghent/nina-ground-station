@@ -14,9 +14,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
+
     <DataTemplate DataType="{x:Type local:FailuresToTTS}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
