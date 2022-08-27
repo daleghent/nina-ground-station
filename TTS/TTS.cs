@@ -58,6 +58,10 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         public async Task Speak(string text, CancellationToken token) {
             var voice = GetVoice();
             if (voice != null) {
+                while (synthesizer.State == SynthesizerState.Speaking) {
+                    await Task.Delay(100, token);
+                }
+
                 synthesizer.SetOutputToDefaultAudioDevice();
                 synthesizer.SelectVoice(voice);
                 synthesizer.SpeakAsync(text);
