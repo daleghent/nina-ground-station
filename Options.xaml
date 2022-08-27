@@ -21,7 +21,7 @@
             <TabItem Name="Pushover" Header="Pushover">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
-                        Website:<Hyperlink NavigateUri="https://pushover.net/" RequestNavigate="Hyperlink_RequestNavigate">https://pushover.net/</Hyperlink>
+                        Website: <Hyperlink NavigateUri="https://pushover.net/" RequestNavigate="Hyperlink_RequestNavigate">https://pushover.net/</Hyperlink>
                     </TextBlock>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -182,10 +182,10 @@
             <TabItem Name="Telegram" Header="Telegram">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
-                        Website:<Hyperlink NavigateUri="https://telegram.org/" RequestNavigate="Hyperlink_RequestNavigate">https://telegram.org/</Hyperlink>
+                        Website: <Hyperlink NavigateUri="https://telegram.org/" RequestNavigate="Hyperlink_RequestNavigate">https://telegram.org/</Hyperlink>
                     </TextBlock>
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
-                        Bot info:<Hyperlink NavigateUri="https://core.telegram.org/bots" RequestNavigate="Hyperlink_RequestNavigate">https://core.telegram.org/bots</Hyperlink>
+                        Bot info: <Hyperlink NavigateUri="https://core.telegram.org/bots" RequestNavigate="Hyperlink_RequestNavigate">https://core.telegram.org/bots</Hyperlink>
                     </TextBlock>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -432,7 +432,7 @@
             <TabItem Name="IFTTT_Webhooks" Header="IFTTT Webhooks">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
-                        Website:<Hyperlink NavigateUri="https://ifttt.com/maker_webhooks" RequestNavigate="Hyperlink_RequestNavigate">https://ifttt.com/maker_webhooks</Hyperlink>
+                        Website: <Hyperlink NavigateUri="https://ifttt.com/maker_webhooks" RequestNavigate="Hyperlink_RequestNavigate">https://ifttt.com/maker_webhooks</Hyperlink>
                     </TextBlock>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -515,7 +515,7 @@
             <TabItem Name="MQTT" Header="MQTT">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
-                        Website:<Hyperlink NavigateUri="https://mqtt.org/" RequestNavigate="Hyperlink_RequestNavigate">https://mqtt.org/</Hyperlink>
+                        Website: <Hyperlink NavigateUri="https://mqtt.org/" RequestNavigate="Hyperlink_RequestNavigate">https://mqtt.org/</Hyperlink>
                     </TextBlock>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -962,7 +962,7 @@
                                 <TextBlock Grid.Row="7" Grid.Column="1">
                                     Inserts a custom local date and time format. Replace <Span FontWeight="Bold"><Span FontStyle="Italic">format</Span></Span>
                                     with any<LineBreak />
-                                    arrangement of<Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
+                                    arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                                 </TextBlock>
 
                                 <TextBox
