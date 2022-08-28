@@ -172,10 +172,11 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
         public async Task Disconnect(CancellationToken ct) {
             try {
-                Logger.Debug("Sending Disconnect to broker");
                 Shutdown = true;
 
                 if (mqttClient.IsConnected) {
+                    Logger.Debug("Sending Disconnect to broker");
+
                     await mqttClient.DisconnectAsync(ct);
                     IsConnected = mqttClient.IsConnected;
                     mqttClient.Dispose();
