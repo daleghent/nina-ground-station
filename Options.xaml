@@ -850,7 +850,7 @@
                         Margin="0,0,0,5"
                         HorizontalAlignment="Left"
                         ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                        ButtonText="Send Test Message"
+                        ButtonText="Speak Test Message"
                         Command="{Binding TtsTestCommand}"
                         LoadingImageBrush="{StaticResource PrimaryBrush}" />
 
