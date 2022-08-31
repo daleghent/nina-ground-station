@@ -820,11 +820,13 @@
 
             <TabItem Name="TTS" Header="Text-to-Speech">
                 <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                    <!--
                     <TextBlock Margin="0,5,0,5" VerticalAlignment="Center">
                         <Hyperlink NavigateUri="ms-settings:speech" RequestNavigate="Hyperlink_RequestNavigate">
                             <Run Text="Open Windows Text-to-speech settings" />
                         </Hyperlink>
                     </TextBlock>
+                    -->
 
                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                         <TextBlock
