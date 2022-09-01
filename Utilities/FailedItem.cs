@@ -31,10 +31,11 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public List<FailureReason> Reasons { get; set; } = new List<FailureReason>();
 
         public static FailedItem FromEntity(ISequenceEntity entity, Exception failureReason) {
-            var failedItem = new FailedItem();
+            var failedItem = new FailedItem {
+                Name = entity.Name,
+                ParentName = entity?.Parent?.Name ?? ""
+            };
 
-            failedItem.Name = entity.Name;
-            failedItem.ParentName = entity?.Parent?.Name ?? "";
             if (entity is ISequenceItem item) {
                 // Todo this will always report the total attempts, but we are more fine granular now and see a failure after one attempt already
                 failedItem.Attempts = item.Attempts;
