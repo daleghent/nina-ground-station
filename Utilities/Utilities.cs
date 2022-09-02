@@ -39,7 +39,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             }
 
             var datetime = DateTime.Now;
-            var datetimeUtc = DateTime.UtcNow;
+            var datetimeUtc = datetime.ToUniversalTime();
 
             text = !string.IsNullOrEmpty(target?.Name)
                 ? text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, target.Name))
