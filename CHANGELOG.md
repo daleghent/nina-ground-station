@@ -1,11 +1,12 @@
 ﻿# Ground Station
 
-## 1.12.0.0 - 2022-08-16
+## 1.12.0.0 - 2022-09-04
 * Thanks to Stefan Berg for contributing the following:
     - *Ground Station* now uses the new *FailedItem* facility, introduced in NINA 2.0.1. This simplifies detection of runtime errors in sequences and makes alerting on them more reliable
     - Send to the Windows Text To Speach (TTS) facility. Listen to your errors in addition to reading them!
     - All Failures To... instructions will attempt to resend these critical messages 3 times before giving up
 <!-- -->
+* Added message tokens for equipment information. The list of new tokens is too large to list here. Please refer to the **Message Token Help** tab for the full list with descriptions
 * Fixed spacing in `$$FORMAT_DATETIME$$` descriptions
 * MQTTnet: Updated to 3.1.2
 * Minimum supported NINA version is now 2.0.1 (2.0 HF1)
