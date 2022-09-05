@@ -9,6 +9,7 @@
 <!-- -->
 * Added message tokens for equipment information. The list of new tokens is too large to list here. Please refer to the **Message Token Help** tab for the full list with descriptions
 * Fixed spacing in `$$FORMAT_DATETIME$$` descriptions
+* Various UI adjustments to the **Send to ...** instructions
 * MQTTnet: Updated to 3.1.2
 * MailKit: Updated to 3.4.0
 * Telegram.Bot: Updated to 18.0.0

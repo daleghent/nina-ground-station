@@ -26,32 +26,40 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Recipient" />
                     <TextBox
-                        MinWidth="100"
-                        Margin="5,0,0,0"
+                        MinWidth="150"
+                        MaxWidth="150"
+                        Margin="5,3,0,3"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
+                        TextWrapping="Wrap"
                         Text="{Binding Recipient}" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Subject" />
                     <TextBox
-                        MinWidth="100"
-                        Margin="5,0,0,0"
-                        MaxLines="1"
-                        TextWrapping="NoWrap"
+                        MinWidth="250"
+                        MaxWidth="250"
+                        Margin="5,3,0,3"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
+                        TextWrapping="Wrap"
                         Text="{Binding Subject}" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Message" />
                     <TextBox
-                        MinWidth="300"
-                        MaxWidth="400"
+                        MinWidth="500"
+                        MaxWidth="500"
+                        MaxHeight="150"
+                        Margin="5,3,0,3"
                         TextWrapping="Wrap"
-                        HorizontalScrollBarVisibility="Visible"
-                        VerticalScrollBarVisibility="Visible"
-                        Margin="5,0,0,0"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
                         AcceptsReturn="True"
                         AcceptsTab="True"
+                        TextAlignment="Left"
                         Text="{Binding Body}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>

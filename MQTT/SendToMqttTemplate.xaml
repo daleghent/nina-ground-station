@@ -29,7 +29,7 @@
                         MinWidth="100"
                         MaxLines="1"
                         TextWrapping="NoWrap"
-                        Margin="5,0,0,0"
+                        Margin="5,3,0,3"
                         Text="{Binding Topic}"
                         TextAlignment="Left" />
 
@@ -37,16 +37,17 @@
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Payload" />
                     <TextBox
-                        MinWidth="200"
-                        MaxWidth="400"
+                        MinWidth="500"
+                        MaxWidth="500"
+                        MaxHeight="150"
+                        Margin="5,3,0,3"
                         TextWrapping="Wrap"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
                         AcceptsReturn="True"
                         AcceptsTab="True"
-                        HorizontalScrollBarVisibility="Visible"
-                        VerticalScrollBarVisibility="Visible"
-                        Margin="5,0,0,0"
-                        Text="{Binding Payload}"
-                        TextAlignment="Left" />
+                        TextAlignment="Left"
+                        Text="{Binding Payload}" />
 
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
 

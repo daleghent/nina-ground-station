@@ -21,20 +21,20 @@
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
-                        Margin="10,0,0,0"
                         VerticalAlignment="Center"
                         Text="Message" />
                     <TextBox
-                        MinWidth="100"
-                        MaxWidth="400"
-                        Margin="5,0,0,0"
+                        MinWidth="500"
+                        MaxWidth="500"
+                        MaxHeight="150"
+                        Margin="5,3,0,3"
                         AcceptsReturn="True"
                         AcceptsTab="True"
-                        HorizontalScrollBarVisibility="Visible"
-                        Text="{Binding Message}"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto"
                         TextAlignment="Left"
                         TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Visible" />
+                        Text="{Binding Message}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
