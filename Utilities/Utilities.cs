@@ -20,6 +20,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -32,7 +33,11 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
         internal static string ResolveTokens(string text, ISequenceEntity sequenceItem = null, IMetadata metadata = null, bool urlEncode = false) {
             IDeepSkyObject target = null;
-            var culture = metadata.CultureInfo;
+            CultureInfo culture = CultureInfo.InvariantCulture;
+
+            if (metadata != null) {
+                culture = metadata.CultureInfo;
+            }
 
             if (sequenceItem != null) {
                 target = FindDsoInfo(sequenceItem.Parent);
