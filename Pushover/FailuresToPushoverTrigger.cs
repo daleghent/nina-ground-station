@@ -30,6 +30,8 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Equipment.Interfaces.Mediator;
+using DaleGhent.NINA.GroundStation.MetadataClient;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
@@ -47,8 +49,50 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         private ISequenceRootContainer failureHook;
         private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
+        private readonly ICameraMediator cameraMediator;
+        private readonly IDomeMediator domeMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly IFlatDeviceMediator flatDeviceMediator;
+        private readonly IFocuserMediator focuserMediator;
+        private readonly IGuiderMediator guiderMediator;
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly ISwitchMediator switchMediator;
+        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IWeatherDataMediator weatherDataMediator;
+
+        private readonly IMetadata metadata;
+
         [ImportingConstructor]
-        public FailuresToPushoverTrigger() {
+        public FailuresToPushoverTrigger(ICameraMediator cameraMediator,
+                             IDomeMediator domeMediator,
+                             IFilterWheelMediator filterWheelMediator,
+                             IFlatDeviceMediator flatDeviceMediator,
+                             IFocuserMediator focuserMediator,
+                             IGuiderMediator guiderMediator,
+                             IRotatorMediator rotatorMediator,
+                             ISafetyMonitorMediator safetyMonitorMediator,
+                             ISwitchMediator switchMediator,
+                             ITelescopeMediator telescopeMediator,
+                             IWeatherDataMediator weatherDataMediator) {
+
+            this.cameraMediator = cameraMediator;
+            this.domeMediator = domeMediator;
+            this.guiderMediator = guiderMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
+            this.focuserMediator = focuserMediator;
+            this.guiderMediator = guiderMediator;
+            this.rotatorMediator = rotatorMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
+            this.switchMediator = switchMediator;
+            this.telescopeMediator = telescopeMediator;
+            this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             pushover = new PushoverCommon();
 
@@ -60,7 +104,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this() {
+        public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
+                                                                            domeMediator: copyMe.domeMediator,
+                                                                            filterWheelMediator: copyMe.filterWheelMediator,
+                                                                            flatDeviceMediator: copyMe.flatDeviceMediator,
+                                                                            focuserMediator: copyMe.focuserMediator,
+                                                                            guiderMediator: copyMe.guiderMediator,
+                                                                            rotatorMediator: copyMe.rotatorMediator,
+                                                                            safetyMonitorMediator: copyMe.safetyMonitorMediator,
+                                                                            switchMediator: copyMe.switchMediator,
+                                                                            telescopeMediator: copyMe.telescopeMediator,
+                                                                            weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
         }
 
@@ -126,8 +180,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity);
-            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity);
+            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity, metadata);
+            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity, metadata);
 
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);

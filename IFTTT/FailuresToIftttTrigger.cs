@@ -11,11 +11,13 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Ifttt;
+using DaleGhent.NINA.GroundStation.MetadataClient;
 using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
@@ -44,8 +46,51 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private ISequenceRootContainer failureHook;
         private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
+        private readonly ICameraMediator cameraMediator;
+        private readonly IDomeMediator domeMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly IFlatDeviceMediator flatDeviceMediator;
+        private readonly IFocuserMediator focuserMediator;
+        private readonly IGuiderMediator guiderMediator;
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly ISwitchMediator switchMediator;
+        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IWeatherDataMediator weatherDataMediator;
+
+        private readonly IMetadata metadata;
+
         [ImportingConstructor]
-        public FailuresToIftttTrigger() {
+        public FailuresToIftttTrigger(ICameraMediator cameraMediator,
+                             IDomeMediator domeMediator,
+                             IFilterWheelMediator filterWheelMediator,
+                             IFlatDeviceMediator flatDeviceMediator,
+                             IFocuserMediator focuserMediator,
+                             IGuiderMediator guiderMediator,
+                             IRotatorMediator rotatorMediator,
+                             ISafetyMonitorMediator safetyMonitorMediator,
+                             ISwitchMediator switchMediator,
+                             ITelescopeMediator telescopeMediator,
+                             IWeatherDataMediator weatherDataMediator) {
+
+            this.cameraMediator = cameraMediator;
+            this.domeMediator = domeMediator;
+            this.guiderMediator = guiderMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
+            this.focuserMediator = focuserMediator;
+            this.guiderMediator = guiderMediator;
+            this.rotatorMediator = rotatorMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
+            this.switchMediator = switchMediator;
+            this.telescopeMediator = telescopeMediator;
+            this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
+
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             ifttt = new IftttCommon();
 
@@ -56,7 +101,18 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public FailuresToIftttTrigger(FailuresToIftttTrigger copyMe) : this() {
+        public FailuresToIftttTrigger(FailuresToIftttTrigger copyMe) : this(
+                                                                        cameraMediator: copyMe.cameraMediator,
+                                                                        domeMediator: copyMe.domeMediator,
+                                                                        filterWheelMediator: copyMe.filterWheelMediator,
+                                                                        flatDeviceMediator: copyMe.flatDeviceMediator,
+                                                                        focuserMediator: copyMe.focuserMediator,
+                                                                        guiderMediator: copyMe.guiderMediator,
+                                                                        rotatorMediator: copyMe.rotatorMediator,
+                                                                        safetyMonitorMediator: copyMe.safetyMonitorMediator,
+                                                                        switchMediator: copyMe.switchMediator,
+                                                                        telescopeMediator: copyMe.telescopeMediator,
+                                                                        weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
         }
 
@@ -137,9 +193,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
             var dict = new Dictionary<string, string> {
-                { "value1", ResolveAllTokens(IftttFailureValue1, failedItem) },
-                { "value2", ResolveAllTokens(IftttFailureValue2, failedItem) },
-                { "value3", ResolveAllTokens(IftttFailureValue3, failedItem) }
+                { "value1", ResolveAllTokens(IftttFailureValue1, failedItem, metadata) },
+                { "value2", ResolveAllTokens(IftttFailureValue2, failedItem, metadata) },
+                { "value3", ResolveAllTokens(IftttFailureValue3, failedItem, metadata) }
             };
 
             Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
@@ -201,8 +257,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private string IftttFailureValue2 { get; set; }
         private string IftttFailureValue3 { get; set; }
 
-        private string ResolveAllTokens(string text, FailedItem failedItem) {
-            text = Utilities.Utilities.ResolveTokens(text, this.Parent);
+        private string ResolveAllTokens(string text, FailedItem failedItem, IMetadata metadata) {
+            text = Utilities.Utilities.ResolveTokens(text, this.Parent, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
             return text;

@@ -11,12 +11,14 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Email;
+using DaleGhent.NINA.GroundStation.MetadataClient;
 using DaleGhent.NINA.GroundStation.Utilities;
 using MimeKit;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
@@ -45,8 +47,50 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         private ISequenceRootContainer failureHook;
         private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
+        private readonly ICameraMediator cameraMediator;
+        private readonly IDomeMediator domeMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly IFlatDeviceMediator flatDeviceMediator;
+        private readonly IFocuserMediator focuserMediator;
+        private readonly IGuiderMediator guiderMediator;
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly ISwitchMediator switchMediator;
+        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IWeatherDataMediator weatherDataMediator;
+
+        private readonly IMetadata metadata;
+
         [ImportingConstructor]
-        public FailuresToEmailTrigger() {
+        public FailuresToEmailTrigger(ICameraMediator cameraMediator,
+                             IDomeMediator domeMediator,
+                             IFilterWheelMediator filterWheelMediator,
+                             IFlatDeviceMediator flatDeviceMediator,
+                             IFocuserMediator focuserMediator,
+                             IGuiderMediator guiderMediator,
+                             IRotatorMediator rotatorMediator,
+                             ISafetyMonitorMediator safetyMonitorMediator,
+                             ISwitchMediator switchMediator,
+                             ITelescopeMediator telescopeMediator,
+                             IWeatherDataMediator weatherDataMediator) {
+            this.cameraMediator = cameraMediator;
+            this.domeMediator = domeMediator;
+            this.guiderMediator = guiderMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
+            this.focuserMediator = focuserMediator;
+            this.guiderMediator = guiderMediator;
+            this.rotatorMediator = rotatorMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
+            this.switchMediator = switchMediator;
+            this.telescopeMediator = telescopeMediator;
+            this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
+
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             email = new EmailCommon();
 
@@ -60,7 +104,17 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public FailuresToEmailTrigger(FailuresToEmailTrigger copyMe) : this() {
+        public FailuresToEmailTrigger(FailuresToEmailTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
+                                                                            domeMediator: copyMe.domeMediator,
+                                                                            filterWheelMediator: copyMe.filterWheelMediator,
+                                                                            flatDeviceMediator: copyMe.flatDeviceMediator,
+                                                                            focuserMediator: copyMe.focuserMediator,
+                                                                            guiderMediator: copyMe.guiderMediator,
+                                                                            rotatorMediator: copyMe.rotatorMediator,
+                                                                            safetyMonitorMediator: copyMe.safetyMonitorMediator,
+                                                                            switchMediator: copyMe.switchMediator,
+                                                                            telescopeMediator: copyMe.telescopeMediator,
+                                                                            weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
         }
 
@@ -135,7 +189,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, item.Entity);
+            var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, item.Entity, metadata);
             var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, item.Entity);
 
             subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);

@@ -10,8 +10,10 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -34,12 +36,68 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         private readonly TTS tts;
         private string message;
 
+        private readonly ICameraMediator cameraMediator;
+        private readonly IDomeMediator domeMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly IFlatDeviceMediator flatDeviceMediator;
+        private readonly IFocuserMediator focuserMediator;
+        private readonly IGuiderMediator guiderMediator;
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly ISwitchMediator switchMediator;
+        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IWeatherDataMediator weatherDataMediator;
+
+        private readonly IMetadata metadata;
+
         [ImportingConstructor]
+        public SendToTTS(ICameraMediator cameraMediator,
+                        IDomeMediator domeMediator,
+                        IFilterWheelMediator filterWheelMediator,
+                        IFlatDeviceMediator flatDeviceMediator,
+                        IFocuserMediator focuserMediator,
+                        IGuiderMediator guiderMediator,
+                        IRotatorMediator rotatorMediator,
+                        ISafetyMonitorMediator safetyMonitorMediator,
+                        ISwitchMediator switchMediator,
+                        ITelescopeMediator telescopeMediator,
+                        IWeatherDataMediator weatherDataMediator) {
+            this.cameraMediator = cameraMediator;
+            this.domeMediator = domeMediator;
+            this.guiderMediator = guiderMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
+            this.focuserMediator = focuserMediator;
+            this.guiderMediator = guiderMediator;
+            this.rotatorMediator = rotatorMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
+            this.switchMediator = switchMediator;
+            this.telescopeMediator = telescopeMediator;
+            this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
+
+            tts = new TTS();
+        }
+
         public SendToTTS() {
             tts = new TTS();
         }
 
-        public SendToTTS(SendToTTS copyMe) : this() {
+        public SendToTTS(SendToTTS copyMe) : this(cameraMediator: copyMe.cameraMediator,
+                                                domeMediator: copyMe.domeMediator,
+                                                filterWheelMediator: copyMe.filterWheelMediator,
+                                                flatDeviceMediator: copyMe.flatDeviceMediator,
+                                                focuserMediator: copyMe.focuserMediator,
+                                                guiderMediator: copyMe.guiderMediator,
+                                                rotatorMediator: copyMe.rotatorMediator,
+                                                safetyMonitorMediator: copyMe.safetyMonitorMediator,
+                                                switchMediator: copyMe.switchMediator,
+                                                telescopeMediator: copyMe.telescopeMediator,
+                                                weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
         }
 
@@ -58,7 +116,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var text = Utilities.Utilities.ResolveTokens(Message, this);
+            var text = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
             await tts.Speak(text, ct);
         }

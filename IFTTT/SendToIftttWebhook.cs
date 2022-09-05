@@ -11,8 +11,10 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Ifttt;
+using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -37,12 +39,69 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         private string value2 = string.Empty;
         private string value3 = string.Empty;
 
+        private readonly ICameraMediator cameraMediator;
+        private readonly IDomeMediator domeMediator;
+        private readonly IFilterWheelMediator filterWheelMediator;
+        private readonly IFlatDeviceMediator flatDeviceMediator;
+        private readonly IFocuserMediator focuserMediator;
+        private readonly IGuiderMediator guiderMediator;
+        private readonly IRotatorMediator rotatorMediator;
+        private readonly ISafetyMonitorMediator safetyMonitorMediator;
+        private readonly ISwitchMediator switchMediator;
+        private readonly ITelescopeMediator telescopeMediator;
+        private readonly IWeatherDataMediator weatherDataMediator;
+
+        private readonly IMetadata metadata;
+
         [ImportingConstructor]
+        public SendToIftttWebhook(ICameraMediator cameraMediator,
+                             IDomeMediator domeMediator,
+                             IFilterWheelMediator filterWheelMediator,
+                             IFlatDeviceMediator flatDeviceMediator,
+                             IFocuserMediator focuserMediator,
+                             IGuiderMediator guiderMediator,
+                             IRotatorMediator rotatorMediator,
+                             ISafetyMonitorMediator safetyMonitorMediator,
+                             ISwitchMediator switchMediator,
+                             ITelescopeMediator telescopeMediator,
+                             IWeatherDataMediator weatherDataMediator) {
+
+            this.cameraMediator = cameraMediator;
+            this.domeMediator = domeMediator;
+            this.guiderMediator = guiderMediator;
+            this.filterWheelMediator = filterWheelMediator;
+            this.flatDeviceMediator = flatDeviceMediator;
+            this.focuserMediator = focuserMediator;
+            this.guiderMediator = guiderMediator;
+            this.rotatorMediator = rotatorMediator;
+            this.safetyMonitorMediator = safetyMonitorMediator;
+            this.switchMediator = switchMediator;
+            this.telescopeMediator = telescopeMediator;
+            this.weatherDataMediator = weatherDataMediator;
+
+            metadata = new Metadata(cameraMediator,
+                domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
+                guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
+                telescopeMediator, weatherDataMediator);
+
+            ifttt = new IftttCommon();
+        }
+
         public SendToIftttWebhook() {
             ifttt = new IftttCommon();
         }
 
-        public SendToIftttWebhook(SendToIftttWebhook copyMe) : this() {
+        public SendToIftttWebhook(SendToIftttWebhook copyMe) : this(cameraMediator: copyMe.cameraMediator,
+                                                                    domeMediator: copyMe.domeMediator,
+                                                                    filterWheelMediator: copyMe.filterWheelMediator,
+                                                                    flatDeviceMediator: copyMe.flatDeviceMediator,
+                                                                    focuserMediator: copyMe.focuserMediator,
+                                                                    guiderMediator: copyMe.guiderMediator,
+                                                                    rotatorMediator: copyMe.rotatorMediator,
+                                                                    safetyMonitorMediator: copyMe.safetyMonitorMediator,
+                                                                    switchMediator: copyMe.switchMediator,
+                                                                    telescopeMediator: copyMe.telescopeMediator,
+                                                                    weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
         }
 
@@ -87,9 +146,9 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string> {
-                { "value1", Utilities.Utilities.ResolveTokens(Value1, this) },
-                { "value2", Utilities.Utilities.ResolveTokens(Value2, this) },
-                { "value3", Utilities.Utilities.ResolveTokens(Value3, this) }
+                { "value1", Utilities.Utilities.ResolveTokens(Value1, this, metadata) },
+                { "value2", Utilities.Utilities.ResolveTokens(Value2, this, metadata) },
+                { "value3", Utilities.Utilities.ResolveTokens(Value3, this, metadata) }
             };
 
             await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);

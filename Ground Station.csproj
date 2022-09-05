@@ -55,6 +55,8 @@
     <Compile Include="HTTP\HttpClientTemplate.xaml.cs">
       <DependentUpon>HttpClientTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MetadataClient\Metadata.cs" />
+    <Compile Include="MetadataClient\IMetadata.cs" />
     <Compile Include="MQTT\MqttClient.cs" />
     <Compile Include="MQTT\FailuresToMqttTrigger.cs" />
     <Compile Include="MQTT\FailuresToMqttTriggerTemplate.xaml.cs">

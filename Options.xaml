@@ -887,7 +887,7 @@
                         TextWrapping="Wrap">
                         Regular and Failure messages can contain tokens that allow you to insert dynamic information into the message. Tokens take the form of $$TOKEN_NAME$$, similar to how N.I.N.A. file patterns work. Ground Station provides its own list of supported tokens, which are listed below.<LineBreak />
                         <LineBreak />
-                        Global tokens are available in both regular and failure messages. Failure message tokens are will be resolved only in failure messages.</TextBlock>
+                        Global tokens are available in both regular and failure messages. Failure tokens are will be resolved only in failure messages.</TextBlock>
 
                     <TextBlock Margin="0,10,0,0" />
 
@@ -900,6 +900,8 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
+
+                                    <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
@@ -910,8 +912,16 @@
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
 
-                                <TextBox
+                                <TextBlock
                                     Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    TextDecorations="Underline"
+                                    FontSize="16"
+                                    Text="Date &amp; Time" />
+
+                                <TextBox
+                                    Grid.Row="1"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -920,12 +930,12 @@
                                     IsReadOnly="True"
                                     Text="$$DATE$$" />
                                 <TextBlock
-                                    Grid.Row="0"
+                                    Grid.Row="1"
                                     Grid.Column="1"
                                     Text="{Binding TokenDate}" />
 
                                 <TextBox
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -934,12 +944,12 @@
                                     IsReadOnly="True"
                                     Text="$$TIME$$" />
                                 <TextBlock
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="1"
                                     Text="{Binding TokenTime}" />
 
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -948,12 +958,12 @@
                                     IsReadOnly="True"
                                     Text="$$DATETIME$$" />
                                 <TextBlock
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="1"
                                     Text="{Binding TokenDateTime}" />
 
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -962,12 +972,12 @@
                                     IsReadOnly="True"
                                     Text="$$DATE_UTC$$" />
                                 <TextBlock
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="1"
                                     Text="{Binding TokenDateUtc}" />
 
                                 <TextBox
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -976,12 +986,12 @@
                                     IsReadOnly="True"
                                     Text="$$TIME_UTC$$" />
                                 <TextBlock
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="1"
                                     Text="{Binding TokenTimeUtc}" />
 
                                 <TextBox
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -990,23 +1000,9 @@
                                     IsReadOnly="True"
                                     Text="$$DATETIME_UTC$$" />
                                 <TextBlock
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Grid.Column="1"
                                     Text="{Binding TokenDateTimeUtc}" />
-
-                                <TextBox
-                                    Grid.Row="6"
-                                    Grid.Column="0"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsReadOnly="True"
-                                    Text="$$UNIX_EPOCH$$" />
-                                <TextBlock
-                                    Grid.Row="6"
-                                    Grid.Column="1"
-                                    Text="{Binding TokenUnixEpoch}" />
 
                                 <TextBox
                                     Grid.Row="7"
@@ -1015,17 +1011,31 @@
                                     VerticalContentAlignment="Center"
                                     Background="Transparent"
                                     BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$UNIX_EPOCH$$" />
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenUnixEpoch}" />
+
+                                <TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
                                     IsReadOnly="True">
                                     $$FORMAT_DATETIME format$$
                                 </TextBox>
-                                <TextBlock Grid.Row="7" Grid.Column="1">
+                                <TextBlock Grid.Row="8" Grid.Column="1">
                                     Inserts a custom local date and time format. Replace <Span FontWeight="Bold"><Span FontStyle="Italic">format</Span></Span>
                                     with any<LineBreak />
                                     arrangement of <Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
                                 </TextBlock>
 
                                 <TextBox
-                                    Grid.Row="8"
+                                    Grid.Row="9"
                                     Grid.Column="0"
                                     Margin="0,5,0,0"
                                     VerticalAlignment="Center"
@@ -1036,7 +1046,7 @@
                                     $$FORMAT_DATETIME_UTC format$$
                                 </TextBox>
                                 <TextBlock
-                                    Grid.Row="8"
+                                    Grid.Row="9"
                                     Grid.Column="1"
                                     Margin="0,5,0,0">
                                     Same as <Span FontWeight="Bold">
@@ -1050,6 +1060,8 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
+
+                                    <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
@@ -1058,8 +1070,16 @@
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
 
-                                <TextBox
+                                <TextBlock
                                     Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    TextDecorations="Underline"
+                                    FontSize="16"
+                                    Text="Target info" />
+
+                                <TextBox
+                                    Grid.Row="1"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1068,12 +1088,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="0"
+                                    Grid.Row="1"
                                     Grid.Column="1"
                                     Text="The name of the target being imaged" />
 
                                 <TextBox
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1082,12 +1102,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_RA$$" />
                                 <TextBlock
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="1"
                                     Text="The right ascension of the target being imaged, in 24 hour format" />
 
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1096,12 +1116,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_DEC$$" />
                                 <TextBlock
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="1"
                                     Text="The declination of the target being imaged, in sexagesimal format" />
 
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1110,12 +1130,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_RA_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="1"
                                     Text="The right ascension of the target being imaged, decimal format" />
 
                                 <TextBox
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1124,12 +1144,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_DEC_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="1"
                                     Text="The declination of the target being imaged, decimal format" />
 
                                 <TextBox
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1138,12 +1158,12 @@
                                     IsReadOnly="True"
                                     Text="$$TARGET_EPOCH$$" />
                                 <TextBlock
-                                    Grid.Row="5"
+                                    Grid.Row="6"
                                     Grid.Column="1"
                                     Text="The epoch of the target's coordinates" />
 
                                 <TextBox
-                                    Grid.Row="6"
+                                    Grid.Row="7"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1152,7 +1172,7 @@
                                     IsReadOnly="True"
                                     Text="$$INSTRUCTION_SET$$" />
                                 <TextBlock
-                                    Grid.Row="6"
+                                    Grid.Row="7"
                                     Grid.Column="1"
                                     Text="The name of the enclosing instruction set" />
                             </Grid>
@@ -1164,13 +1184,730 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
+
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition /> <!-- 49 -->
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    TextDecorations="Underline"
+                                    FontSize="16"
+                                    Text="Equipment info" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$CAMERA_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="Name of the camera device" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$CAMERA_BATTERY$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Camera battery level" />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$CAMERA_SENSOR_TEMP$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="Camera sensor temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$DOME_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of the dome device" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$DOME_IS_PARKED$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="True/False regarding parked state" />
+
+                                <TextBox
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$DOME_IS_HOME$$" />
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Text="True/False regarding homed state" />
+
+                                <TextBox
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$DOME_SHUTTER$$" />
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="Disposition of the shutter" />
+
+                                <TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$DOME_AZ_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    Text="Dome pointing azimuth, in degrees" />
+
+                                <TextBox
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FWHEEL_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Filter wheel device name" />
+
+                                <TextBox
+                                    Grid.Row="10"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FWHEEL_FILTER_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="10"
+                                    Grid.Column="1"
+                                    Text="Name of the current filter" />
+
+                                <TextBox
+                                    Grid.Row="11"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FWHEEL_FILTER_POS$$" />
+                                <TextBlock
+                                    Grid.Row="11"
+                                    Grid.Column="1"
+                                    Text="Position number of the current filter. 0-indexed" />
+
+                                <TextBox
+                                    Grid.Row="12"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FLAT_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="12"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Flat field device name" />
+
+                                <TextBox
+                                    Grid.Row="13"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FLAT_COVER_STATUS$$" />
+                                <TextBlock
+                                    Grid.Row="13"
+                                    Grid.Column="1"
+                                    Text="Flat field cover state" />
+
+                                <TextBox
+                                    Grid.Row="14"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FLAT_LAMP_STATUS$$" />
+                                <TextBlock
+                                    Grid.Row="14"
+                                    Grid.Column="1"
+                                    Text="Flat field lamp state" />
+
+                                <TextBox
+                                    Grid.Row="15"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FOCUSER_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="15"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of focuser device" />
+
+                                <TextBox
+                                    Grid.Row="16"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FOCUSER_POSITION$$" />
+                                <TextBlock
+                                    Grid.Row="16"
+                                    Grid.Column="1"
+                                    Text="Current step number" />
+
+                                <TextBox
+                                    Grid.Row="17"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$FOCUSER_TEMP$$" />
+                                <TextBlock
+                                    Grid.Row="17"
+                                    Grid.Column="1"
+                                    Text="Focuser measured temperature" />
+
+                                <TextBox
+                                    Grid.Row="18"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$ROTATOR_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="18"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of rotator device" />
+
+                                <TextBox
+                                    Grid.Row="19"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$ROTATOR_ANGLE$$" />
+                                <TextBlock
+                                    Grid.Row="19"
+                                    Grid.Column="1"
+                                    Text="Current angle of the rotator, degrees" />
+
+                                <TextBox
+                                    Grid.Row="20"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$SAFETY_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="20"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of safety monitor device" />
+
+                                <TextBox
+                                    Grid.Row="21"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$SAFETY_IS_SAFE$$" />
+                                <TextBlock
+                                    Grid.Row="21"
+                                    Grid.Column="1"
+                                    Text="True/False regarding safety state" />
+
+                                <TextBox
+                                    Grid.Row="22"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="22"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of mount device" />
+
+                                <TextBox
+                                    Grid.Row="23"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_POINTING_STATE$$" />
+                                <TextBlock
+                                    Grid.Row="23"
+                                    Grid.Column="1"
+                                    Text="Current pointing state (aka side of pier)" />
+
+                                <TextBox
+                                    Grid.Row="24"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_RA$$" />
+                                <TextBlock
+                                    Grid.Row="24"
+                                    Grid.Column="1"
+                                    Text="Current RA, in H:M:S" />
+
+                                <TextBox
+                                    Grid.Row="25"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_RA_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="25"
+                                    Grid.Column="1"
+                                    Text="Current RA, degrees" />
+
+                                <TextBox
+                                    Grid.Row="26"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_DEC$$" />
+                                <TextBlock
+                                    Grid.Row="26"
+                                    Grid.Column="1"
+                                    Text="Current declination, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="27"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_DEC_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="27"
+                                    Grid.Column="1"
+                                    Text="Current declination, degrees" />
+
+                                <TextBox
+                                    Grid.Row="28"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_IS_PARKED$$" />
+                                <TextBlock
+                                    Grid.Row="28"
+                                    Grid.Column="1"
+                                    Text="True/Fase regarding parked state" />
+
+                                <TextBox
+                                    Grid.Row="29"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_IS_HOME$$" />
+                                <TextBlock
+                                    Grid.Row="29"
+                                    Grid.Column="1"
+                                    Text="True/False regarding homed state" />
+
+                                <TextBox
+                                    Grid.Row="30"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_ALT$$" />
+                                <TextBlock
+                                    Grid.Row="30"
+                                    Grid.Column="1"
+                                    Text="Current pointing altitude, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="31"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_ALT_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="31"
+                                    Grid.Column="1"
+                                    Text="Current pointing altitude, degrees" />
+
+                                <TextBox
+                                    Grid.Row="32"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_AZ$$" />
+                                <TextBlock
+                                    Grid.Row="32"
+                                    Grid.Column="1"
+                                    Text="Current pointing azimuth, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="33"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_AZ_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="33"
+                                    Grid.Column="1"
+                                    Text="Current pointing azimuth, degrees" />
+
+                                <TextBox
+                                    Grid.Row="34"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$MOUNT_TTF$$" />
+                                <TextBlock
+                                    Grid.Row="34"
+                                    Grid.Column="1"
+                                    Text="Time until flip, in H:M:S" />
+
+                                <TextBox
+                                    Grid.Row="35"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="35"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of weather device" />
+
+                                <TextBox
+                                    Grid.Row="36"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_CLOUD_COVER$$" />
+                                <TextBlock
+                                    Grid.Row="36"
+                                    Grid.Column="1"
+                                    Text="Cloud cover, in %" />
+
+                                <TextBox
+                                    Grid.Row="37"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_DEWPOINT$$" />
+                                <TextBlock
+                                    Grid.Row="37"
+                                    Grid.Column="1"
+                                    Text="Dewpoint, in C" />
+
+                                <TextBox
+                                    Grid.Row="38"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_HUMIDITY$$" />
+                                <TextBlock
+                                    Grid.Row="38"
+                                    Grid.Column="1"
+                                    Text="Relative humidity, in %" />
+
+                                <TextBox
+                                    Grid.Row="39"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_PRESSURE$$" />
+                                <TextBlock
+                                    Grid.Row="39"
+                                    Grid.Column="1"
+                                    Text="Air pressure, in hectopascals (hPa)" />
+
+                                <TextBox
+                                    Grid.Row="40"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_RAINRATE$$" />
+                                <TextBlock
+                                    Grid.Row="40"
+                                    Grid.Column="1"
+                                    Text="Rain rate, in mm/hour" />
+
+                                <TextBox
+                                    Grid.Row="41"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_SKYBRT$$" />
+                                <TextBlock
+                                    Grid.Row="41"
+                                    Grid.Column="1"
+                                    Text="Sky brightness, in lux" />
+
+                                <TextBox
+                                    Grid.Row="42"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_SKYQUAL$$" />
+                                <TextBlock
+                                    Grid.Row="42"
+                                    Grid.Column="1"
+                                    Text="Sky quality, in magnitudes per square arc second" />
+
+                                <TextBox
+                                    Grid.Row="43"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_SKYTEMP$$" />
+                                <TextBlock
+                                    Grid.Row="43"
+                                    Grid.Column="1"
+                                    Text="Sky temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="44"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_STARFWHM$$" />
+                                <TextBlock
+                                    Grid.Row="44"
+                                    Grid.Column="1"
+                                    Text="Star FHWM, in arcseconds" />
+
+                                <TextBox
+                                    Grid.Row="45"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_AMBTEMP$$" />
+                                <TextBlock
+                                    Grid.Row="45"
+                                    Grid.Column="1"
+                                    Text="Ambient air temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="46"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_WINDDIR$$" />
+                                <TextBlock
+                                    Grid.Row="46"
+                                    Grid.Column="1"
+                                    Text="Wind direction, in degrees" />
+
+                                <TextBox
+                                    Grid.Row="47"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_WINDGUST$$" />
+                                <TextBlock
+                                    Grid.Row="47"
+                                    Grid.Column="1"
+                                    Text="Wind gust, in m/s" />
+
+                                <TextBox
+                                    Grid.Row="48"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    Text="$$WX_WINDSPD$$" />
+                                <TextBlock
+                                    Grid.Row="48"
+                                    Grid.Column="1"
+                                    Text="Wind speed, in m/s" />
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                    <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
 
-                                <TextBox
+                                <TextBlock
                                     Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    TextDecorations="Underline"
+                                    FontSize="16"
+                                    Text="System info" />
+
+                                <TextBox
+                                    Grid.Row="1"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1179,12 +1916,12 @@
                                     IsReadOnly="True"
                                     Text="$$SYSTEM_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="0"
+                                    Grid.Row="1"
                                     Grid.Column="1"
                                     Text="The name of the computer" />
 
                                 <TextBox
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1193,12 +1930,12 @@
                                     IsReadOnly="True"
                                     Text="$$USER_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="1"
                                     Text="The name of the user running N.I.N.A." />
 
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1207,12 +1944,12 @@
                                     IsReadOnly="True"
                                     Text="$$NINA_VERSION$$" />
                                 <TextBlock
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="1"
                                     Text="The version of N.I.N.A." />
 
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
@@ -1221,14 +1958,14 @@
                                     IsReadOnly="True"
                                     Text="$$GS_VERSION$$" />
                                 <TextBlock
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="1"
                                     Text="The version of Ground Station" />
                             </Grid>
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="Failure message tokens">
+                    <GroupBox Header="Failure tokens">
                         <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.ColumnDefinitions>
