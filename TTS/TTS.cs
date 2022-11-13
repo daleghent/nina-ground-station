@@ -21,6 +21,7 @@ using System.Windows.Threading;
 
 namespace DaleGhent.NINA.GroundStation.TTS {
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "NINA is currently Windows-only")]
     internal class TTS {
         private static SpeechSynthesizer synthesizer;
 

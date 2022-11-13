@@ -16,6 +16,7 @@ using System.Text;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "NINA is currently Windows-only")]
     public class Security {
 
         public static string Encrypt(string secret) {
