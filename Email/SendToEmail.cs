@@ -35,7 +35,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToEmail : SequenceItem, IValidatable {
-        private EmailCommon email;
+        private readonly EmailCommon email;
         private string recipient;
         private string subject = string.Empty;
         private string body = string.Empty;

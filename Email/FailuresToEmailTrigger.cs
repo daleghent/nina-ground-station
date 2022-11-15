@@ -41,11 +41,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToEmailTrigger : SequenceTrigger, IValidatable {
-        private EmailCommon email;
+        private readonly EmailCommon email;
         private string recipient;
 
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -196,6 +196,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
 
             var attempts = 3; // Todo: Make it configurable?
+
             for (int i = 0; i < attempts; i++) {
                 try {
                     var message = new MimeMessage();
@@ -207,6 +208,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         await email.SendEmail(message, newCts.Token);
+                        break;
                     }
                 } catch (Exception ex) {
                     Logger.Error($"Failed to send message. Attempt {i + 1}/{attempts}", ex);
