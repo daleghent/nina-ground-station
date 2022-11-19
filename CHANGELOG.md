@@ -1,5 +1,12 @@
 ﻿# Ground Station
 
+## 1.13.0.0 - 2022-11-19
+* Maintenance update:
+    - Fixed - *Failures to Email* would send 3 emails instead of 1
+    - Fixed - Instructions that failed due to validation errors would see the validation errors listed twice in the `$$ERROR_LIST$$` token. This is fixed
+    - Fixed - A corner case that could lead to lost Failure messages if there were more than one failing instruction at the conclusion of a sequence
+    - Fixed - The recipients field in the Failures to Email trigger was not getting populated with the configured default recipient email address
+
 ## 1.12.0.0 - 2022-09-05
 * Thanks to Stefan Berg for contributing the following:
     - *Ground Station* now uses the new *FailedItem* facility, introduced in NINA 2.0.1. This simplifies detection of runtime errors in sequences and makes alerting on them more reliable
