@@ -39,11 +39,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToTelegramTrigger : SequenceTrigger, IValidatable {
-        private TelegramCommon telegram;
+    public class FailuresToTelegramTrigger : SequenceTrigger, IValidatable, IDisposable {
+        private readonly TelegramCommon telegram;
 
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -111,12 +111,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -175,7 +178,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
             var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, item.Entity, metadata);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
+            Logger.Info($"{this.Name}: Sending {message}");
+
             var attempts = 3; // Todo: Make it configurable?
+
             for (int i = 0; i < attempts; i++) {
                 try {
                     var newCts = new CancellationTokenSource();

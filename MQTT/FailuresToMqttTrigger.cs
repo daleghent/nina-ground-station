@@ -36,13 +36,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToMqttTrigger : SequenceTrigger, IValidatable {
-        private MqttCommon mqtt;
+    public class FailuresToMqttTrigger : SequenceTrigger, IValidatable, IDisposable {
+        private readonly MqttCommon mqtt;
         private string topic;
         private int qos = 0;
 
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToMqttTrigger() {
@@ -75,12 +75,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -160,7 +163,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
             string payload = JsonConvert.SerializeObject(itemInfo);
 
-            Logger.Debug($"{this}: {payload}");
+            Logger.Info($"{this.Name}: {payload}");
 
             var attempts = 3; // Todo: Make it configurable?
             for (int i = 0; i < attempts; i++) {

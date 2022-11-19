@@ -10,17 +10,19 @@
 
 #endregion "copyright"
 
+using DaleGhent.NINA.GroundStation.MetadataClient;
 using DaleGhent.NINA.GroundStation.Pushover;
 using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
-using NINA.Sequencer.Validations;
 using NINA.Sequencer.Utility;
+using NINA.Sequencer.Validations;
 using PushoverClient;
 using System;
 using System.Collections.Generic;
@@ -30,8 +32,6 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Equipment.Interfaces.Mediator;
-using DaleGhent.NINA.GroundStation.MetadataClient;
 
 namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
@@ -41,13 +41,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable {
-        private PushoverCommon pushover;
+    public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable, IDisposable {
+        private readonly PushoverCommon pushover;
         private Priority priority;
         private NotificationSound notificationSound;
 
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -75,7 +75,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
                              IWeatherDataMediator weatherDataMediator) {
-
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -119,12 +118,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -186,7 +188,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
+            Logger.Info($"{this.Name}: Sending {title}");
+
             var attempts = 3; // Todo: Make it configurable?
+
             for (int i = 0; i < attempts; i++) {
                 try {
                     var newCts = CancellationTokenSource.CreateLinkedTokenSource(token);

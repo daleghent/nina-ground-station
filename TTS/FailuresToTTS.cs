@@ -24,15 +24,10 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Speech.Synthesis;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace DaleGhent.NINA.GroundStation.TTS {
 
@@ -42,7 +37,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToTTS : SequenceTrigger, IValidatable {
+    public class FailuresToTTS : SequenceTrigger, IValidatable, IDisposable {
         private readonly TTS tts;
         private ISequenceRootContainer failureHook;
         private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
@@ -129,12 +124,15 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         private string TTSFailureMessage { get; set; }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -192,6 +190,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             var text = Utilities.Utilities.ResolveTokens(TTSFailureMessage, item.Entity, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
+            Logger.Info($"{this.Name}: Speaking \"{text}\"");
             await tts.Speak(text, token);
         }
 
