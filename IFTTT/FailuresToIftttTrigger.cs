@@ -39,12 +39,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToIftttTrigger : SequenceTrigger, IValidatable, INotifyPropertyChanged {
-        private IftttCommon ifttt;
+    public class FailuresToIftttTrigger : SequenceTrigger, IValidatable, INotifyPropertyChanged, IDisposable {
+        private readonly IftttCommon ifttt;
         private string eventName = "nina";
 
         private ISequenceRootContainer failureHook;
-        private BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
+        private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -72,7 +72,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
                              IWeatherDataMediator weatherDataMediator) {
-
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -131,12 +130,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -198,9 +200,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                 { "value3", ResolveAllTokens(IftttFailureValue3, failedItem, metadata) }
             };
 
-            Logger.Debug($"Pushing message: {string.Join(" || ", dict.Values)}");
+            Logger.Info($"{this.Name}: Pushing message: {string.Join(" || ", dict.Values)}");
 
             var attempts = 3; // Todo: Make it configurable?
+
             for (int i = 0; i < attempts; i++) {
                 try {
                     var newCts = new CancellationTokenSource();

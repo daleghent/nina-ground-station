@@ -40,7 +40,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class FailuresToEmailTrigger : SequenceTrigger, IValidatable {
+    public class FailuresToEmailTrigger : SequenceTrigger, IValidatable, IDisposable {
         private readonly EmailCommon email;
         private string recipient;
 
@@ -95,8 +95,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             email = new EmailCommon();
 
             SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-            SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-            Recipient = SmtpDefaultRecipients;
+            Recipient = Properties.Settings.Default.SmtpDefaultRecipients;
 
             EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
             EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
@@ -128,12 +127,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override void Initialize() {
-            queueWorker.Stop();
             _ = queueWorker.Start();
         }
 
         public override void Teardown() {
             queueWorker.Stop();
+        }
+
+        public void Dispose() {
+            queueWorker.Dispose();
         }
 
         public override void AfterParentChanged() {
@@ -183,11 +185,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 return;
             }
 
+            Logger.Debug($"{this.Name} received FailureEvent from {arg2.Entity.Name}");
             await queueWorker.Enqueue(arg2);
         }
 
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
+
+            Logger.Info($"{this.Name}: Sending message to [{Recipient}] because {failedItem.Name} failed");
 
             var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, item.Entity, metadata);
             var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, item.Entity);
@@ -260,7 +265,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         private string SmtpFromAddress { get; set; }
-        private string SmtpDefaultRecipients { get; set; }
         private string EmailFailureSubjectText { get; set; }
         private string EmailFailureBodyText { get; set; }
 
@@ -271,7 +275,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                     break;
 
                 case "SmtpDefaultRecipients":
-                    SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
+                    Recipient = Properties.Settings.Default.SmtpDefaultRecipients;
                     break;
 
                 case "EmailFailureSubjectText":

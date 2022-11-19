@@ -10,11 +10,11 @@
 
 #endregion "copyright"
 
+using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Speech.Synthesis;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -22,7 +22,7 @@ using System.Windows.Threading;
 namespace DaleGhent.NINA.GroundStation.TTS {
 
     internal class TTS {
-        private static SpeechSynthesizer synthesizer;
+        private static readonly SpeechSynthesizer synthesizer;
 
         static TTS() {
             synthesizer = new SpeechSynthesizer();
@@ -30,7 +30,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         private string GetVoice() {
             lock (synthesizer) {
-                List<VoiceInfo> voices = new List<VoiceInfo>();
+                List<VoiceInfo> voices = new();
 
                 foreach (var voice in synthesizer.GetInstalledVoices()) {
                     if (voice.Enabled) {
@@ -59,12 +59,12 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             var voice = GetVoice();
             if (voice != null) {
                 while (synthesizer.State == SynthesizerState.Speaking) {
-                    await Task.Delay(100, token);
+                    await Task.Delay(TimeSpan.FromSeconds(1.5), token);
                 }
 
                 synthesizer.SetOutputToDefaultAudioDevice();
                 synthesizer.SelectVoice(voice);
-                synthesizer.SpeakAsync(text);
+                synthesizer.Speak(text);
 
                 while (synthesizer.State == SynthesizerState.Speaking) {
                     await Task.Delay(100, token);
