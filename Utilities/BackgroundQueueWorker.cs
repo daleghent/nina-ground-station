@@ -16,7 +16,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public BackgroundQueueWorker(int queueSize, Func<T, CancellationToken, Task> workerFn) {
             this.queueSize = queueSize;
             this.workerFn = workerFn;
-            semaphore = new(initialCount: 1);
+            semaphore = new SemaphoreSlim(initialCount: 1);
         }
 
         public async Task Enqueue(T item) {
