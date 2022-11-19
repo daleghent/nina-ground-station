@@ -40,14 +40,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 // Todo this will always report the total attempts, but we are more fine granular now and see a failure after one attempt already
                 failedItem.Attempts = item.Attempts;
             }
+
             failedItem.Description = entity.Description;
             failedItem.Category = entity.Category;
 
-            failedItem.Reasons.Add(new FailureReason() { Reason = failureReason.Message });
-
             if (entity is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
                 foreach (var issue in validatableItem.Issues) {
-                    if (!string.IsNullOrEmpty(issue)) {
+                    if (!string.IsNullOrEmpty(issue) && !ContainsReason(failedItem, issue)) {
                         var reason = new FailureReason {
                             Reason = issue
                         };
@@ -55,11 +54,21 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         failedItem.Reasons.Add(reason);
                     }
                 }
+            } else {
+                failedItem.Reasons.Add(new FailureReason() { Reason = failureReason.Message });
             }
 
             Logger.Debug($"Failed item: {failedItem.Name}, Reason count: {failedItem.Reasons.Count}");
 
             return failedItem;
+        }
+
+        private static bool ContainsReason(FailedItem failedItem, string message) {
+            foreach (var failureReason in failedItem.Reasons) {
+                if (failureReason.Reason.Equals(message)) { return true; }
+            }
+
+            return false;
         }
     }
 
