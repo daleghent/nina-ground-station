@@ -26,7 +26,12 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-            _ = Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            var procStartInfo = new ProcessStartInfo() {
+                FileName = e.Uri.AbsoluteUri,
+                UseShellExecute = true,
+            };
+
+            _ = Process.Start(procStartInfo);
             e.Handled = true;
         }
 
