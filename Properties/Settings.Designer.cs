@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -170,9 +170,9 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Pushover")]
-        public global::PushoverClient.NotificationSound PushoverDefaultNotificationSound {
+        public string PushoverDefaultNotificationSound {
             get {
-                return ((global::PushoverClient.NotificationSound)(this["PushoverDefaultNotificationSound"]));
+                return ((string)(this["PushoverDefaultNotificationSound"]));
             }
             set {
                 this["PushoverDefaultNotificationSound"] = value;
@@ -182,9 +182,9 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Siren")]
-        public global::PushoverClient.NotificationSound PushoverDefaultFailureSound {
+        public string PushoverDefaultFailureSound {
             get {
-                return ((global::PushoverClient.NotificationSound)(this["PushoverDefaultFailureSound"]));
+                return ((string)(this["PushoverDefaultFailureSound"]));
             }
             set {
                 this["PushoverDefaultFailureSound"] = value;
@@ -194,9 +194,9 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
-        public global::PushoverClient.Priority PushoverDefaultNotificationPriority {
+        public string PushoverDefaultNotificationPriority {
             get {
-                return ((global::PushoverClient.Priority)(this["PushoverDefaultNotificationPriority"]));
+                return ((string)(this["PushoverDefaultNotificationPriority"]));
             }
             set {
                 this["PushoverDefaultNotificationPriority"] = value;
@@ -206,9 +206,9 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("High")]
-        public global::PushoverClient.Priority PushoverDefaultFailurePriority {
+        public string PushoverDefaultFailurePriority {
             get {
-                return ((global::PushoverClient.Priority)(this["PushoverDefaultFailurePriority"]));
+                return ((string)(this["PushoverDefaultFailurePriority"]));
             }
             set {
                 this["PushoverDefaultFailurePriority"] = value;
