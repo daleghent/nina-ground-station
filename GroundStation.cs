@@ -317,18 +317,26 @@ namespace DaleGhent.NINA.GroundStation {
         public int PushoverEmergRetryInterval {
             get => Properties.Settings.Default.PushoverEmergRetryInterval;
             set {
-                Properties.Settings.Default.PushoverEmergRetryInterval = value;
-                CoreUtil.SaveSettings(Properties.Settings.Default);
-                RaisePropertyChanged();
+                if (value >= 30 && value <= 86400) {
+                    Properties.Settings.Default.PushoverEmergRetryInterval = value;
+                    CoreUtil.SaveSettings(Properties.Settings.Default);
+                    RaisePropertyChanged();
+                } else {
+                    RaisePropertyChanged();
+                }
             }
         }
 
         public int PushoverEmergExpireAfter {
             get => Properties.Settings.Default.PushoverEmergExpireAfter;
             set {
-                Properties.Settings.Default.PushoverEmergExpireAfter = value;
-                CoreUtil.SaveSettings(Properties.Settings.Default);
-                RaisePropertyChanged();
+                if (value >= 30 && value <= 86400) {
+                    Properties.Settings.Default.PushoverEmergExpireAfter = value;
+                    CoreUtil.SaveSettings(Properties.Settings.Default);
+                    RaisePropertyChanged();
+                } else {
+                    RaisePropertyChanged();
+                }
             }
         }
 
