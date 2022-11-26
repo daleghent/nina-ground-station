@@ -147,7 +147,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             }
         }
 
-        public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
+        public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {

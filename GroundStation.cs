@@ -274,7 +274,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
-        public Priority[] PushoverPriorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
+        public Priority[] PushoverPriorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
 
         public NotificationSound[] PushoverNotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
@@ -309,6 +309,24 @@ namespace DaleGhent.NINA.GroundStation {
             get => (Priority)Enum.Parse(typeof(Priority), Properties.Settings.Default.PushoverDefaultFailurePriority);
             set {
                 Properties.Settings.Default.PushoverDefaultFailurePriority = value.ToString();
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PushoverEmergRetryInterval {
+            get => Properties.Settings.Default.PushoverEmergRetryInterval;
+            set {
+                Properties.Settings.Default.PushoverEmergRetryInterval = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public int PushoverEmergExpireAfter {
+            get => Properties.Settings.Default.PushoverEmergExpireAfter;
+            set {
+                Properties.Settings.Default.PushoverEmergExpireAfter = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
