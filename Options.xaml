@@ -136,7 +136,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                             <TextBlock.Text>Emergency retry interval</TextBlock.Text>
-                            <TextBlock.ToolTip>The interval in which a message with an Emergency prioity will alert in the Pushover client until it is acknowledged</TextBlock.ToolTip>
+                            <TextBlock.ToolTip>The interval in which a message with an Emergency prioity will alert in the Pushover client until it is acknowledged. Minimum = 30 seconds. Maximum = 86400 seconds (24 hours)</TextBlock.ToolTip>
                         </TextBlock>
                         <ninactrl:UnitTextBox
                             Width="75"
@@ -147,7 +147,11 @@
                             <TextBox.Text>
                                 <Binding Mode="TwoWay" Path="PushoverEmergRetryInterval">
                                     <Binding.ValidationRules>
-                                        <rules:GreaterThanZeroRule />
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Minimum="30" Maximum="86400" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -160,7 +164,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                             <TextBlock.Text>Emergency retry limit</TextBlock.Text>
-                            <TextBlock.ToolTip>The time limit for which Emergency priority messages will alert for after being received</TextBlock.ToolTip>
+                            <TextBlock.ToolTip>The time limit for which Emergency priority messages will alert for after being received. Minimum = 30 seconds. Maximum = 86400 seconds (24 hours)</TextBlock.ToolTip>
                         </TextBlock>
                         <ninactrl:UnitTextBox
                             Width="75"
@@ -171,7 +175,11 @@
                             <TextBox.Text>
                                 <Binding Mode="TwoWay" Path="PushoverEmergExpireAfter">
                                     <Binding.ValidationRules>
-                                        <rules:GreaterThanZeroRule />
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Minimum="30" Maximum="86400" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
