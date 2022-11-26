@@ -13,13 +13,13 @@
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
+using DaleGhent.NINA.GroundStation.PushoverClient;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
 using NINA.Plugin;
 using NINA.Plugin.Interfaces;
 using NINA.Profile.Interfaces;
-using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -279,36 +279,36 @@ namespace DaleGhent.NINA.GroundStation {
         public NotificationSound[] PushoverNotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public NotificationSound PushoverDefaultNotificationSound {
-            get => Properties.Settings.Default.PushoverDefaultNotificationSound;
+            get => Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
             set {
-                Properties.Settings.Default.PushoverDefaultNotificationSound = value;
+                Properties.Settings.Default.PushoverDefaultNotificationSound = value.ToString();
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
 
         public Priority PushoverDefaultNotificationPriority {
-            get => Properties.Settings.Default.PushoverDefaultNotificationPriority;
+            get => Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultNotificationPriority);
             set {
-                Properties.Settings.Default.PushoverDefaultNotificationPriority = value;
+                Properties.Settings.Default.PushoverDefaultNotificationPriority = value.ToString();
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
 
         public NotificationSound PushoverDefaultFailureSound {
-            get => Properties.Settings.Default.PushoverDefaultFailureSound;
+            get => Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultFailureSound);
             set {
-                Properties.Settings.Default.PushoverDefaultFailureSound = value;
+                Properties.Settings.Default.PushoverDefaultFailureSound = value.ToString();
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
         }
 
         public Priority PushoverDefaultFailurePriority {
-            get => Properties.Settings.Default.PushoverDefaultFailurePriority;
+            get => Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultFailurePriority);
             set {
-                Properties.Settings.Default.PushoverDefaultFailurePriority = value;
+                Properties.Settings.Default.PushoverDefaultFailurePriority = value.ToString();
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }
