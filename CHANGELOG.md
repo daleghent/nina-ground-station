@@ -1,5 +1,13 @@
 ﻿# Ground Station
 
+## 2.1.0.0 - 2022-11-26
+* Pushover client library replaced with internal one (Credit: Stefan Berg)
+* Replacing the internal Pushover client allows the implementation of Emergency priority messages for Pushover:
+    - Emergency priority messages are the most critical class of Pushover message
+    - Emergency priority messages will trigger an alert in the Pushover client, and this alert will repeat until acknowledged (not just viewed!) by the user
+    - The repeat interval and maximum repeat time are adjustable settings. The minimum is 30 seconds and the maximum is 86400 seconds (24 hours). The default in Ground Station is 60 and 600 seconds respectively
+* Fixed: Clicking on URLs in the Options page didn not work because .NET7 requires `UseShellExec=true`
+
 ## 2.0.0.1 - 2022-11-13
 * Ported Test-to-speech to support .NET 7
 * Compiler warning cleanups
