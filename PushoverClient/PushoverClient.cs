@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright Dale Ghent <daleg@elemental.org> and contributors
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,20 +11,19 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.Utilities;
-using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.PushoverClient {
 
     public class PushoverClient {
+
         // https://pushover.net/api
         private const string API_URL = "https://api.pushover.net/1/messages.json";
 
@@ -85,21 +84,24 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
 
     [JsonObject]
     public class PushoverRequestArguments {
+
         public static string CreateJSON(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound) {
             return JsonConvert.SerializeObject(PushoverRequestArguments.Create(appKey, userKey, title, message, device, priority, timestamp, notificationSound), Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
+
         public static PushoverRequestArguments Create(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound) {
             if (string.IsNullOrEmpty(userKey)) {
                 throw new ArgumentException("User key must be supplied", nameof(userKey));
-            }           
-            
-            var time = new DateTimeOffset(timestamp).ToUnixTimeSeconds();            
+            }
+
+            var time = new DateTimeOffset(timestamp).ToUnixTimeSeconds();
             var sound = notificationSound == NotificationSound.NotSet ? null : notificationSound.ToString().ToLower();
 
             var arguments = new PushoverRequestArguments(token: appKey, user: userKey, device: device, title: title, message: message, priority: (int)priority, timestamp: time, sound: sound);
 
             return arguments;
         }
+
         private PushoverRequestArguments(string token, string user, string device, string title, string message, int priority, long timestamp, string sound) {
             Token = token;
             User = user;
@@ -113,18 +115,25 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
 
         [JsonProperty(PropertyName = "token")]
         public string Token { get; }
+
         [JsonProperty(PropertyName = "user")]
         public string User { get; }
+
         [JsonProperty(PropertyName = "device")]
         public string Device { get; }
+
         [JsonProperty(PropertyName = "title")]
         public string Title { get; }
+
         [JsonProperty(PropertyName = "message")]
         public string Message { get; }
+
         [JsonProperty(PropertyName = "priority")]
         public int Priority { get; }
+
         [JsonProperty(PropertyName = "timestamp")]
         public long Timestamp { get; }
+
         [JsonProperty(PropertyName = "sound")]
         public string Sound { get; }
     }
