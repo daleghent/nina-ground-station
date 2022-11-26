@@ -11,7 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
-using DaleGhent.NINA.GroundStation.Pushover;
+using DaleGhent.NINA.GroundStation.PushoverClient;
 using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
@@ -23,7 +23,6 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Trigger;
 using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
-using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,7 +41,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToPushoverTrigger : SequenceTrigger, IValidatable, IDisposable {
-        private readonly PushoverCommon pushover;
+        private readonly PushoverClient.PushoverClient pushover;
         private Priority priority;
         private NotificationSound notificationSound;
 
@@ -93,12 +92,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-            pushover = new PushoverCommon();
+            pushover = new PushoverClient.PushoverClient();
 
             PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
             PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
-            NotificationSound = Properties.Settings.Default.PushoverDefaultFailureSound;
-            Priority = Properties.Settings.Default.PushoverDefaultFailurePriority;
+            NotificationSound = (NotificationSound)Enum.Parse(typeof(NotificationSound), Properties.Settings.Default.PushoverDefaultFailureSound);
+            Priority = (Priority)Enum.Parse(typeof(Priority), Properties.Settings.Default.PushoverDefaultFailurePriority);
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }

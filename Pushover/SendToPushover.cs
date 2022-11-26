@@ -11,13 +11,12 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
-using DaleGhent.NINA.GroundStation.Pushover;
+using DaleGhent.NINA.GroundStation.PushoverClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
-using PushoverClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,7 +34,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToPushover : SequenceItem, IValidatable {
-        private PushoverCommon pushover;
+        private PushoverClient.PushoverClient pushover;
         private string title = string.Empty;
         private string message = string.Empty;
         private Priority priority;
@@ -85,17 +84,17 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            pushover = new PushoverCommon();
+            pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Properties.Settings.Default.PushoverDefaultNotificationSound;
-            Priority = Properties.Settings.Default.PushoverDefaultNotificationPriority;
+            NotificationSound = (NotificationSound)Enum.Parse(typeof(NotificationSound), Properties.Settings.Default.PushoverDefaultNotificationSound);
+            Priority = (Priority)Enum.Parse(typeof(Priority), Properties.Settings.Default.PushoverDefaultNotificationPriority);
         }
 
         public SendToPushover() {
-            pushover = new PushoverCommon();
+            pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Properties.Settings.Default.PushoverDefaultNotificationSound;
-            Priority = Properties.Settings.Default.PushoverDefaultNotificationPriority;
+            NotificationSound = (NotificationSound)Enum.Parse(typeof(NotificationSound), Properties.Settings.Default.PushoverDefaultNotificationSound);
+            Priority = (Priority)Enum.Parse(typeof(Priority), Properties.Settings.Default.PushoverDefaultNotificationPriority);
         }
 
         public SendToPushover(SendToPushover copyMe) : this(cameraMediator: copyMe.cameraMediator,

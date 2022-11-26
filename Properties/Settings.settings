@@ -38,16 +38,16 @@
     <Setting Name="TelegramChatId" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PushoverDefaultNotificationSound" Type="PushoverClient.NotificationSound" Scope="User">
+    <Setting Name="PushoverDefaultNotificationSound" Type="System.String" Scope="User">
       <Value Profile="(Default)">Pushover</Value>
     </Setting>
-    <Setting Name="PushoverDefaultFailureSound" Type="PushoverClient.NotificationSound" Scope="User">
+    <Setting Name="PushoverDefaultFailureSound" Type="System.String" Scope="User">
       <Value Profile="(Default)">Siren</Value>
     </Setting>
-    <Setting Name="PushoverDefaultNotificationPriority" Type="PushoverClient.Priority" Scope="User">
+    <Setting Name="PushoverDefaultNotificationPriority" Type="System.String" Scope="User">
       <Value Profile="(Default)">Normal</Value>
     </Setting>
-    <Setting Name="PushoverDefaultFailurePriority" Type="PushoverClient.Priority" Scope="User">
+    <Setting Name="PushoverDefaultFailurePriority" Type="System.String" Scope="User">
       <Value Profile="(Default)">High</Value>
     </Setting>
     <Setting Name="MqttBrokerHost" Type="System.String" Scope="User">
