@@ -17,6 +17,7 @@ using NINA.Core.Utility.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
         public PushoverClient() {
             PushoverAppKey = Security.Decrypt(Properties.Settings.Default.PushoverAppKey);
             PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
+            PushoverEmergRetryInterval = Properties.Settings.Default.PushoverEmergRetryInterval;
+            PushoverEmergExpireAfter = Properties.Settings.Default.PushoverEmergExpireAfter;
 
             Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
@@ -43,7 +46,7 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
                     return;
                 }
 
-                var body = PushoverRequestArguments.CreateJSON(PushoverAppKey, PushoverUserKey, title, message, device: string.Empty, priority, DateTime.Now, notificationSound);
+                var body = PushoverRequestArguments.CreateJSON(PushoverAppKey, PushoverUserKey, title, message, device: string.Empty, priority, DateTime.Now, notificationSound, PushoverEmergRetryInterval, PushoverEmergExpireAfter);
                 var request = new HttpPostRequest(API_URL, body, "application/json");
                 await request.Request(ct);
             } catch (Exception ex) {
@@ -68,6 +71,8 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
 
         private string PushoverAppKey { get; set; }
         private string PushoverUserKey { get; set; }
+        private int PushoverEmergRetryInterval { get; set; }
+        private int PushoverEmergExpireAfter { get; set; }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
@@ -78,6 +83,14 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
                 case "PushoverUserKey":
                     PushoverUserKey = Security.Decrypt(Properties.Settings.Default.PushoverUserKey);
                     break;
+
+                case "PushoverEmergRetryInterval":
+                    PushoverEmergRetryInterval = Properties.Settings.Default.PushoverEmergRetryInterval;
+                    break;
+
+                case "PushoverEmergExpireAfter":
+                    PushoverEmergExpireAfter = Properties.Settings.Default.PushoverEmergExpireAfter;
+                    break;
             }
         }
     }
@@ -85,11 +98,11 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
     [JsonObject]
     public class PushoverRequestArguments {
 
-        public static string CreateJSON(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound) {
-            return JsonConvert.SerializeObject(PushoverRequestArguments.Create(appKey, userKey, title, message, device, priority, timestamp, notificationSound), Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        public static string CreateJSON(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound, int retry, int expire) {
+            return JsonConvert.SerializeObject(PushoverRequestArguments.Create(appKey, userKey, title, message, device, priority, timestamp, notificationSound, retry, expire), Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        public static PushoverRequestArguments Create(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound) {
+        public static PushoverRequestArguments Create(string appKey, string userKey, string title, string message, string device, Priority priority, DateTime timestamp, NotificationSound notificationSound, int retry, int expire) {
             if (string.IsNullOrEmpty(userKey)) {
                 throw new ArgumentException("User key must be supplied", nameof(userKey));
             }
@@ -97,12 +110,12 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
             var time = new DateTimeOffset(timestamp).ToUnixTimeSeconds();
             var sound = notificationSound == NotificationSound.NotSet ? null : notificationSound.ToString().ToLower();
 
-            var arguments = new PushoverRequestArguments(token: appKey, user: userKey, device: device, title: title, message: message, priority: (int)priority, timestamp: time, sound: sound);
+            var arguments = new PushoverRequestArguments(token: appKey, user: userKey, device: device, title: title, message: message, priority: (int)priority, timestamp: time, sound: sound, retry: retry, expire: expire);
 
             return arguments;
         }
 
-        private PushoverRequestArguments(string token, string user, string device, string title, string message, int priority, long timestamp, string sound) {
+        private PushoverRequestArguments(string token, string user, string device, string title, string message, int priority, long timestamp, string sound, int retry, int expire) {
             Token = token;
             User = user;
             Device = device;
@@ -111,6 +124,12 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
             Priority = priority;
             Timestamp = timestamp;
             Sound = sound;
+
+            // Emergency priority requires retry and expire values
+            if (priority == 2) {
+                Retry = retry;
+                Expire = expire;
+            }
         }
 
         [JsonProperty(PropertyName = "token")]
@@ -136,5 +155,11 @@ namespace DaleGhent.NINA.GroundStation.PushoverClient {
 
         [JsonProperty(PropertyName = "sound")]
         public string Sound { get; }
+
+        [JsonProperty(PropertyName = "retry")]
+        public int Retry { get; }
+
+        [JsonProperty(PropertyName = "expire")]
+        public int Expire { get; }
     }
 }

@@ -223,7 +223,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             }
         }
 
-        public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().Where(p => p != Priority.Emergency).ToArray();
+        public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
         public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {

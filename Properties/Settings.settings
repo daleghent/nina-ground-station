@@ -48,7 +48,7 @@
       <Value Profile="(Default)">Normal</Value>
     </Setting>
     <Setting Name="PushoverDefaultFailurePriority" Type="System.String" Scope="User">
-      <Value Profile="(Default)">High</Value>
+      <Value Profile="(Default)">Emergency</Value>
     </Setting>
     <Setting Name="MqttBrokerHost" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -130,6 +130,12 @@ Reasons: $$ERROR_LIST$$
     </Setting>
     <Setting Name="TTSFailureMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts! Reasons: $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="PushoverEmergRetryInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="PushoverEmergExpireAfter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">600</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -130,6 +130,54 @@
                             SelectedItem="{Binding PushoverDefaultFailurePriority}" />
                     </StackPanel>
 
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Emergency retry interval</TextBlock.Text>
+                            <TextBlock.ToolTip>The interval in which a message with an Emergency prioity will alert in the Pushover client until it is acknowledged</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="s">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PushoverEmergRetryInterval">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Emergency retry limit</TextBlock.Text>
+                            <TextBlock.ToolTip>The time limit for which Emergency priority messages will alert for after being received</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="s">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PushoverEmergExpireAfter">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+
                     <ninactrl:AsyncProcessButton
                         Width="515"
                         Height="25"

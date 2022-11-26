@@ -205,7 +205,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("High")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Emergency")]
         public string PushoverDefaultFailurePriority {
             get {
                 return ((string)(this["PushoverDefaultFailurePriority"]));
@@ -504,6 +504,30 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["TTSFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int PushoverEmergRetryInterval {
+            get {
+                return ((int)(this["PushoverEmergRetryInterval"]));
+            }
+            set {
+                this["PushoverEmergRetryInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public int PushoverEmergExpireAfter {
+            get {
+                return ((int)(this["PushoverEmergExpireAfter"]));
+            }
+            set {
+                this["PushoverEmergExpireAfter"] = value;
             }
         }
     }
