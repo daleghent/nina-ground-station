@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 2.2.0.0 - UNRELEASED
+* Small code refactors and cleanups
+
 ## 2.1.0.0 - 2022-11-26
 * Pushover client library replaced with internal one (Credit: Stefan Berg)
 * Replacing the internal Pushover client allows the implementation of Emergency priority messages for Pushover:

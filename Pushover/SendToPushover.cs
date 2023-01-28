@@ -34,7 +34,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToPushover : SequenceItem, IValidatable {
-        private PushoverClient.PushoverClient pushover;
+        private readonly PushoverClient.PushoverClient pushover;
         private string title = string.Empty;
         private string message = string.Empty;
         private Priority priority;
@@ -172,7 +172,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

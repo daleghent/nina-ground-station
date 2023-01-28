@@ -120,6 +120,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
         public void Dispose() {
             queueWorker.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public override void AfterParentChanged() {
@@ -214,7 +215,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

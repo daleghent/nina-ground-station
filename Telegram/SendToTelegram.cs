@@ -33,7 +33,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToTelegram : SequenceItem, IValidatable {
-        private TelegramCommon telegram;
+        private readonly TelegramCommon telegram;
         private string message = string.Empty;
         private bool doNotNotify = false;
 
@@ -137,7 +137,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

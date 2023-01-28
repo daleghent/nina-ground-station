@@ -126,6 +126,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         public void Dispose() {
             queueWorker.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public override void AfterParentChanged() {
@@ -223,8 +224,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             }
         }
 
-        public Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
-        public NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
+        public static Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
+        public static NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             return Task.CompletedTask;
@@ -245,7 +246,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

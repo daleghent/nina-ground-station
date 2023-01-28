@@ -23,11 +23,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
-    internal class Utilities {
+    internal partial class Utilities {
         internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
         internal const int cancelTimeout = 10; // in seconds
 
@@ -115,7 +114,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, camera.Temperature.ToString("F", culture)));
             } else {
-                var pattern = new Regex(@"\$\$CAMERA_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = CameraRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -131,7 +130,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$DOME_AZ_DECIMAL$$", DoUrlEncode(urlEncode, dome.Azimuth.ToString("F3", culture)));
             } else {
-                var pattern = new Regex(@"\$\$DOME_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = DomeRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -147,7 +146,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, fwheel.SelectedFilter.Position.ToString(culture)));
             } else {
-                var pattern = new Regex(@"\$\$FWHEEL_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = FWheelRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -159,7 +158,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$FLAT_LAMP_STATUS$$", DoUrlEncode(urlEncode, flat.LocalizedLightOnState));
             } else {
-                var pattern = new Regex(@"\$\$FLAT_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = FlatDeviceRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -173,7 +172,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, focuser.Temperature.ToString("F", culture)));
             } else {
-                var pattern = new Regex(@"\$\$FOCUSER_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = FocuserRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -183,7 +182,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$ROTATOR_ANGLE$$", DoUrlEncode(urlEncode, rotator.MechanicalPosition.ToString("F", culture)));
             } else {
-                var pattern = new Regex(@"\$\$ROTATOR_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = RotatorRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -193,7 +192,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$SAFETY_IS_SAFE$$", DoUrlEncode(urlEncode, safety.IsSafe.ToString()));
             } else {
-                var pattern = new Regex(@"\$\$SAFETY_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = SafetyRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -225,7 +224,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$MOUNT_TTF$$", DoUrlEncode(urlEncode, mount.TimeToMeridianFlipString));
             } else {
-                var pattern = new Regex(@"\$\$MOUNT_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = MountRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -285,7 +284,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                     DoUrlEncode(urlEncode, "--") :
                     DoUrlEncode(urlEncode, weather.WindSpeed.ToString("F", culture)));
             } else {
-                var pattern = new Regex(@"\$\$WX_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
+                var pattern = WeatherRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
             }
 
@@ -342,7 +341,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         private static string ParseFormattedDateTime(string text, bool urlEncode) {
             string pattern = @"\$\$FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\$\$";
 
-            foreach (Match dateTimeMatch in Regex.Matches(text, pattern)) {
+            foreach (Match dateTimeMatch in Regex.Matches(text, pattern).Cast<Match>()) {
                 var dateRegex = new Regex(Regex.Escape(dateTimeMatch.Value));
 
                 try {
@@ -358,7 +357,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         private static string DoUrlEncode(bool doUrlEncode, string text) {
-            return doUrlEncode ? HttpUtility.UrlEncode(text) : text;
+            return doUrlEncode ? System.Web.HttpUtility.UrlEncode(text) : text;
         }
 
         private static FailedItem GetFailedItem(ISequenceItem sequenceItem) {
@@ -393,32 +392,31 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return failedItem;
         }
 
-        public static List<FailedItem> GetFailedItems(ISequenceItem sequenceItem) {
-            var failedItems = new List<FailedItem>();
+        [GeneratedRegex("\\$\\$CAMERA_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex CameraRegex();
 
-            if (sequenceItem is ISequenceContainer sequenceContainer && sequenceContainer is ParallelContainer) {
-                var sequenceItems = sequenceContainer.GetItemsSnapshot();
+        [GeneratedRegex("\\$\\$DOME_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex DomeRegex();
 
-                Logger.Debug($"Found a ParallelContainer with {sequenceItems.Count} items in it");
+        [GeneratedRegex("\\$\\$FWHEEL_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex FWheelRegex();
 
-                foreach (SequenceItem item in sequenceItems) {
-                    if (item.Status == SequenceEntityStatus.FAILED) {
-                        var failedItem = GetFailedItem(item);
+        [GeneratedRegex("\\$\\$FLAT_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex FlatDeviceRegex();
 
-                        if (!string.IsNullOrEmpty(failedItem.Name)) {
-                            failedItems.Add(failedItem);
-                        }
-                    }
-                }
-            } else if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
-                var failedItem = GetFailedItem(sequenceItem);
+        [GeneratedRegex("\\$\\$FOCUSER_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex FocuserRegex();
 
-                if (!string.IsNullOrEmpty(failedItem.Name)) {
-                    failedItems.Add(failedItem);
-                }
-            }
+        [GeneratedRegex("\\$\\$MOUNT_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex MountRegex();
 
-            return failedItems;
-        }
+        [GeneratedRegex("\\$\\$ROTATOR_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex RotatorRegex();
+
+        [GeneratedRegex("\\$\\$SAFETY_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex SafetyRegex();
+
+        [GeneratedRegex("\\$\\$WX_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        private static partial Regex WeatherRegex();
     }
 }

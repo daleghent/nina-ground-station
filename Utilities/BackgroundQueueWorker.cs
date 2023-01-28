@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
     internal class BackgroundQueueWorker<T> : IDisposable {
-        private int queueSize;
+        private readonly int queueSize;
         private CancellationTokenSource workerCts;
         private AsyncProducerConsumerQueue<T> messageQueue;
         private Func<T, CancellationToken, Task> workerFn;
@@ -73,6 +73,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
         public void Dispose() {
             semaphore?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

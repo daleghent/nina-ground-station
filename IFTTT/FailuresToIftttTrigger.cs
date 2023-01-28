@@ -119,7 +119,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public string EventName {
             get => eventName;
             set {
-                if (value.Contains("/") || value.Contains(" ")) {
+                if (value.Contains('/') || value.Contains(' ')) {
                     RaisePropertyChanged();
                     return;
                 }
@@ -139,6 +139,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
         public void Dispose() {
             queueWorker.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public override void AfterParentChanged() {
@@ -240,7 +241,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

@@ -182,7 +182,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

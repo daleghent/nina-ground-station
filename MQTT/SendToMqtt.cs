@@ -34,7 +34,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToMqtt : SequenceItem, IValidatable {
-        private MqttCommon mqtt;
+        private readonly MqttCommon mqtt;
         private string topic;
         private string payload = string.Empty;
         private int qos = 0;
@@ -136,7 +136,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             }
         }
 
-        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+        public static IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var payload = Utilities.Utilities.ResolveTokens(Payload, this, metadata);
@@ -160,7 +160,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

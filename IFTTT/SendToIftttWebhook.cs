@@ -33,7 +33,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToIftttWebhook : SequenceItem, IValidatable {
-        private IftttCommon ifttt;
+        private readonly IftttCommon ifttt;
         private string eventName = "nina";
         private string value1 = string.Empty;
         private string value2 = string.Empty;
@@ -109,7 +109,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         public string EventName {
             get => eventName;
             set {
-                if (!value.Contains("/")) {
+                if (!value.Contains('/')) {
                     eventName = value;
                 }
 
@@ -165,7 +165,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

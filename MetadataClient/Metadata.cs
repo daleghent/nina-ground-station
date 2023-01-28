@@ -22,15 +22,10 @@ using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Equipment.MyWeatherData;
 using NINA.Equipment.Interfaces.Mediator;
-using NINA.WPF.Base.Mediator;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.MetadataClient {
+
     public class Metadata : IMetadata {
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;

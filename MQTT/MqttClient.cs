@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace DaleGhent.NINA.GroundStation.Mqtt {
 
     internal class MqttClient {
-        private IMqttClient mqttClient;
+        private readonly IMqttClient mqttClient;
 
         public MqttClient() {
             var mqttFactory = new MqttFactory();

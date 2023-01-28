@@ -84,6 +84,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
         public void Dispose() {
             queueWorker.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public override void AfterParentChanged() {
@@ -179,7 +180,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             }
         }
 
-        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+        public static IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             return Task.CompletedTask;
@@ -204,7 +205,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;

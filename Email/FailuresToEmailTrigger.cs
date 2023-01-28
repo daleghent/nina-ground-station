@@ -136,6 +136,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         public void Dispose() {
             queueWorker.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public override void AfterParentChanged() {
@@ -248,7 +249,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
             if (i != Issues) {
                 Issues = i;
-                RaisePropertyChanged("Issues");
+                RaisePropertyChanged(nameof(Issues));
             }
 
             return i.Count == 0;
