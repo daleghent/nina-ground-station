@@ -1,6 +1,7 @@
 ﻿# Ground Station
 
 ## 2.2.0.0 - UNRELEASED
+* Fixed *Send To TTS* not cloning the message during template creation
 * Small code refactors and cleanups
 
 ## 2.1.0.0 - 2022-11-26
