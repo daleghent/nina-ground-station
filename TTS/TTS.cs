@@ -28,7 +28,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             synthesizer = new SpeechSynthesizer();
         }
 
-        private string GetVoice() {
+        private static string GetVoice() {
             lock (synthesizer) {
                 List<VoiceInfo> voices = new List<VoiceInfo>();
 
@@ -37,25 +37,23 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                         voices.Add(voice.VoiceInfo);
                     }
                 }
+
                 if (voices.Count == 0) {
                     return null;
                 }
 
                 // Find voice matching the selected UI culture - fallback to first found voice if no match
                 var localeVoice = voices.FirstOrDefault(x => x.Culture.Name == Dispatcher.CurrentDispatcher.Thread.CurrentUICulture.Name);
-                if (localeVoice == null) {
-                    return voices.First().Name;
-                } else {
-                    return localeVoice.Name;
-                }
+
+                return localeVoice == null ? voices.First().Name : localeVoice.Name;
             }
         }
 
-        public bool HasVoice() {
+        public static bool HasVoice() {
             return GetVoice() != null;
         }
 
-        public async Task Speak(string text, CancellationToken token) {
+        public static async Task Speak(string text, CancellationToken token) {
             var voice = GetVoice();
             if (voice != null) {
                 while (synthesizer.State == SynthesizerState.Speaking) {
