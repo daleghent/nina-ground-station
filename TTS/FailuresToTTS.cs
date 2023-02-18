@@ -192,7 +192,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
             Logger.Info($"{this.Name}: Speaking \"{text}\"");
-            await tts.Speak(text, token);
+            await TTS.Speak(text, token);
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
@@ -212,7 +212,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         public bool Validate() {
             var i = new List<string>();
 
-            if (!tts.HasVoice()) {
+            if (!TTS.HasVoice()) {
                 i.Add("No Text-To-Speech voices found");
             }
 

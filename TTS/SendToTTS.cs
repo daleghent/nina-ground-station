@@ -33,7 +33,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToTTS : SequenceItem, IValidatable {
-        private readonly TTS tts;
         private string message;
 
         private readonly ICameraMediator cameraMediator;
@@ -79,12 +78,9 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
-
-            tts = new TTS();
         }
 
         public SendToTTS() {
-            tts = new TTS();
         }
 
         public SendToTTS(SendToTTS copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -103,6 +99,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         public override object Clone() {
             return new SendToTTS(this) {
+                Message = Message,
             };
         }
 
@@ -118,7 +115,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var text = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
-            await tts.Speak(text, ct);
+            await TTS.Speak(text, ct);
         }
 
         public IList<string> Issues { get; set; } = new List<string>();
@@ -130,7 +127,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 i.Add("TTS message is missing");
             }
 
-            if (!tts.HasVoice()) {
+            if (!TTS.HasVoice()) {
                 i.Add("No Text-To-Speech voices found");
             }
 
