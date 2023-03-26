@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation {
 
@@ -51,6 +52,9 @@ namespace DaleGhent.NINA.GroundStation {
             MQTTTestCommand = new AsyncCommand<bool>(MQTTTest);
             IFTTTTestCommand = new AsyncCommand<bool>(IFTTTTest);
             TtsTestCommand = new AsyncCommand<bool>(TtsTest);
+
+            SelectDefaultSoundFileCommand = new RelayCommand(OpenSelectDefaultSoundFileDialog);
+            SelectDefaultFailureSoundFileCommand = new RelayCommand(OpenSelectDefaultFailureSoundFileDialog);
         }
 
         public override Task Initialize() {
@@ -618,6 +622,24 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        public string PlaySoundDefaultFile {
+            get => Properties.Settings.Default.PlaySoundDefaultFile;
+            set {
+                Properties.Settings.Default.PlaySoundDefaultFile = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PlaySoundDefaultFailureFile {
+            get => Properties.Settings.Default.PlaySoundDefaultFailureFile;
+            set {
+                Properties.Settings.Default.PlaySoundDefaultFailureFile = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
         public IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public string TokenDate => DateTime.Now.ToString("d");
@@ -657,5 +679,30 @@ namespace DaleGhent.NINA.GroundStation {
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        internal void OpenSelectDefaultSoundFileDialog(object obj) {
+            Microsoft.Win32.OpenFileDialog dialog = new() {
+                FileName = string.Empty,
+                Filter = PlaySound.PlaySoundCommon.FileTypeFilter,
+            };
+
+            if (dialog.ShowDialog() == true) {
+                PlaySoundDefaultFile = dialog.FileName;
+            }
+        }
+
+        internal void OpenSelectDefaultFailureSoundFileDialog(object obj) {
+            Microsoft.Win32.OpenFileDialog dialog = new() {
+                FileName = string.Empty,
+                Filter = PlaySound.PlaySoundCommon.FileTypeFilter,
+            };
+
+            if (dialog.ShowDialog() == true) {
+                PlaySoundDefaultFailureFile = dialog.FileName;
+            }
+        }
+
+        public ICommand SelectDefaultSoundFileCommand { get; private set; }
+        public ICommand SelectDefaultFailureSoundFileCommand { get; private set; }
     }
 }

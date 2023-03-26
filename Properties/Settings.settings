@@ -137,5 +137,11 @@ Reasons: $$ERROR_LIST$$
     <Setting Name="PushoverEmergExpireAfter" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">600</Value>
     </Setting>
+    <Setting Name="PlaySoundDefaultFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PlaySoundDefaultFailureFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
