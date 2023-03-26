@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
@@ -356,8 +357,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return text;
         }
 
-        private static string DoUrlEncode(bool doUrlEncode, string text) {
-            return doUrlEncode ? System.Web.HttpUtility.UrlEncode(text) : text;
+        internal static string DoUrlEncode(bool doUrlEncode, string text) {
+            return doUrlEncode ? HttpUtils.UrlTokenEncode(Encoding.Unicode.GetBytes(text)) : text;
         }
 
         private static FailedItem GetFailedItem(ISequenceItem sequenceItem) {

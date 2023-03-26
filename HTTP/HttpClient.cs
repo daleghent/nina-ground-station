@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
+using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
@@ -23,9 +24,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
 
@@ -116,6 +117,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             get => httpUri;
             set {
                 httpUri = value;
+                Validate();
                 RaisePropertyChanged();
             }
         }
@@ -133,26 +135,25 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             var client = new System.Net.Http.HttpClient();
             var response = new HttpResponseMessage();
             var resolvedUri = Utilities.Utilities.ResolveTokens(httpUri, this, metadata, true);
+            client.DefaultRequestHeaders.ExpectContinue = false;
 
             try {
                 if (HttpMethod == HttpMethodEnum.GET) {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
-                    var body = HttpUtility.UrlEncode(Utilities.Utilities.ResolveTokens(httpPostBody, this));
+                    var body = Utilities.Utilities.ResolveTokens(httpPostBody, this);
                     HttpContent httpContent = new StringContent(body);
 
+                    Logger.Debug($"Sending {HttpMethod} {HttpUri}, Reqest body:{Environment.NewLine}{body}");
                     response = await client.PostAsync(resolvedUri, httpContent, ct);
                 } else {
                     throw new SequenceEntityFailedException($"Unsupported HTTP method {HttpMethod}");
                 }
 
-                var error = $"HTTP {HttpMethod} {HttpUri} returned status code {response.StatusCode}";
+                response.EnsureSuccessStatusCode();
 
-                if (((int)response.StatusCode) >= 400) {
-                    throw new SequenceEntityFailedException(error);
-                } else {
-                    Logger.Info(error);
-                }
+                var content = await response.Content.ReadAsStringAsync(ct);
+                Logger.Info($"HTTP {HttpMethod} {HttpUri} returned status code {(int)response.StatusCode} ({response.StatusCode}). Response body:{Environment.NewLine}{content}");
             } catch (Exception ex) {
                 if (ex is InvalidOperationException || ex is HttpRequestException || ex is TaskCanceledException) {
                     throw new SequenceEntityFailedException($"HTTP {HttpMethod} {HttpUri} failed: {ex.Message}");
@@ -178,8 +179,14 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
             if (string.IsNullOrEmpty(HttpUri) || string.IsNullOrWhiteSpace(HttpUri)) {
                 i.Add("URL is missing");
+                goto end;
             }
 
+            if (!Uri.IsWellFormedUriString(HttpUri, UriKind.RelativeOrAbsolute)) {
+                i.Add("URL format is invalid");
+            }
+
+        end:
             if (i != Issues) {
                 Issues = i;
                 RaisePropertyChanged(nameof(Issues));
@@ -197,7 +204,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(HttpClient)}";
+            return $"Category: {Category}, Item: {nameof(HttpClient)}, URL: {HttpMethod} {HttpUri}";
         }
     }
 }
