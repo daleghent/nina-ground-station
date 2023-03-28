@@ -35,9 +35,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 messageQueue?.CompleteAdding();
             } catch (Exception) {
             } finally {
-                workerCts?.Cancel();
-                workerCts?.Dispose();
-                semaphore?.Release();
+                try {
+                    workerCts?.Cancel();
+                    workerCts?.Dispose();
+                } catch {
+                } finally {
+                    semaphore?.Release();
+                }
             }
         }
 
