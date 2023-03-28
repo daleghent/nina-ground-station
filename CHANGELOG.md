@@ -1,5 +1,10 @@
 ﻿# Ground Station
 
+## 1.15.0.0 - 2023-03-28
+* Maintenance update:
+    - Fixed an occasional hard crash caused by attempting to reuse a disposed background worker cancellation token source
+    - Fixed *Send To TTS* not cloning the message during template creation
+
 ## 1.14.0.0 - 2022-11-26
 * Pushover client library replaced with internal one (Credit: Stefan Berg)
 * Replacing the internal Pushover client allows the implementation of Emergency priority messages for Pushover:
