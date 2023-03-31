@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("2.1.0.0")]
-[assembly: AssemblyFileVersion("2.1.0.0")]
+[assembly: AssemblyVersion("2.2.0.0")]
+[assembly: AssemblyFileVersion("2.2.0.0")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("Ground Station")]
-[assembly: AssemblyCopyright("Copyright © 2022 Dale Ghent and contributors")]
+[assembly: AssemblyCopyright("Copyright © 2023 Dale Ghent and contributors")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
 [assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1001")]
@@ -57,7 +57,7 @@ The provided instructions and triggers can be broken down in to two general cate
 * Instructions for sending free form messages to a variety of services
 * Triggers for sending messages to services when something in the sequence experiences a failure
 
-# Supported services #
+# Supported networked services #
 
 * Pushover — Simple and reliable desktop and iOS/Android push messaging. Pushover charges a one-time $5 per-device fee to support its service
 * Telegram — Utilize the [Telegram bot API](https://core.telegram.org/bots/api) to send messages a Telegram channel
@@ -66,6 +66,12 @@ The provided instructions and triggers can be broken down in to two general cate
 * IFTTT Webhooks — If This Then That. An easy to use configurable webhooks-based gateway to control a wide variety of messaging platforms and IoT devices. Taking full advantage requires an IFTTT Pro account
 * MQTT — Publish free-form payloads to a topic on a MQTT broker. Failures are published to a specified topic with information packaged in a JSON object
 * TTS - Reads out a Ground Station message through Windows' Text-to-Speech facility
+* UDP - Send a UDP packet that contains an ASCII or binary payload to a specified hostname and port
+
+# Audio service #
+
+* TTS - Annunciate a message using text-to-speech
+* Play Sound - Plays a sound file (WAV, MP3, AIFF)
 
 Information about your session or any failures may be inserted into the messages by the use of tokens. These tokens are described on the **Message Token Help** tab.
 

@@ -1,8 +1,30 @@
 ﻿# Ground Station
 
-## 2.2.0.0 - UNRELEASED
+## 2.2.0.0 - 2023-03-31
+* New instruction: *Send UDP* - Send a single UDP packet to a specified address and port containing an ASCII or binary payload
+    - Packet contents are truncated to 65507 bytes
+    - ASCII text may contain valid message tokens
+    - Line terminations in ASCII text may be one of the following:
+        - Carriage-return (CR) `\r`
+        - Newline/Linefeed (LF) `\n`
+        - Carriage-return+Linefeed (CRLF) `\r\n`
+        - None, where line terminations are stripped from the text
+    - Binary text is expected as space-separated bytes in hexadecimal representation, case-insensitive. Example: `a1 ff E3 0c`
+<!-- -->
+* New instruction and failure trigger: *Play Sound* - Plays a specified WAV, AIFF, or MP3 file
+    - Sounds may be played such that the sequence moves on to the next instruction while the sound is playing, or the sequence waits until the soud finishes playing before proceeding to the next instruction
+<!-- -->
+* *Send HTTP Request* improvements:
+    - Disabled sending of the `Expect: 100-continue` header in `POST` requests
+    - The user-provided URL is now validated for format errors
+    - The HTTP method and URL are now logged when the instruction runs
+    - The raw HTTP response body is now logged
+    - Removed use of `System.Web` for better .NET Core compatibility
+<!-- -->
 * Fixed *Send To TTS* not cloning the message during template creation
+* Fixed an occasional hard crash caused by attempting to reuse a disposed background worker cancellation token source
 * Small code refactors and cleanups
+* Updated MailKit to 3.6.0
 
 ## 2.1.0.0 - 2022-11-26
 * Pushover client library replaced with internal one (Credit: Stefan Berg)
