@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 2.2.1.0 - 2023-04-01
+* Fixed handing of IPv6 addresses in *Send UDP*
+
 ## 2.2.0.0 - 2023-03-31
 * New instruction: *Send UDP* - Send a single UDP packet to a specified address and port containing an ASCII or binary payload
     - Packet contents are truncated to 65507 bytes
