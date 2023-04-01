@@ -12,7 +12,7 @@
     - Binary text is expected as space-separated bytes in hexadecimal representation, case-insensitive. Example: `a1 ff E3 0c`
 <!-- -->
 * New instruction and failure trigger: *Play Sound* - Plays a specified WAV, AIFF, or MP3 file
-    - Sounds may be played such that the sequence moves on to the next instruction while the sound is playing, or the sequence waits until the soud finishes playing before proceeding to the next instruction
+    - Sounds may be played such that the sequence moves on to the next instruction while the sound is playing, or the sequence waits until the sound finishes playing before proceeding to the next instruction
 <!-- -->
 * *Send HTTP Request* improvements:
     - Disabled sending of the `Expect: 100-continue` header in `POST` requests

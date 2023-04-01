@@ -11,12 +11,14 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
+using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -182,15 +184,8 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
         }
 
         private byte[] PayloadBytes { get; set; } = Array.Empty<byte>();
-        private IPAddress IPAddressInfo { get; set; }
-
-        private bool AddressIsOK {
-            get => addressIsOk;
-            set {
-                addressIsOk = value;
-                Validate();
-            }
-        }
+        private bool AddressIsOK { get; set; } = true;
+        private IPAddress ResolvedIP { get; set; }
 
         public static PayloadType[] PayloadTypes => Enum.GetValues(typeof(PayloadType)).Cast<PayloadType>().ToArray();
         public static LineTermination[] LineTerminations => Enum.GetValues(typeof(LineTermination)).Cast<LineTermination>().ToArray();
@@ -239,11 +234,11 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                     throw new SequenceEntityFailedException($"Unknown payload type {payloadType}");
                 }
 
-                using var udp = new UdpClient((AddressFamily)(IPAddressInfo?.AddressFamily)) {
+                using var udp = new UdpClient(ResolvedIP.AddressFamily) {
                     DontFragment = true,
                 };
 
-                udp.Connect(IPAddressInfo.ToString(), port);
+                udp.Connect(ResolvedIP, port);
                 var response = await udp.SendAsync(sendbuf, ct);
 
                 Logger.Debug($"{response} bytes sent to {Address}:{Port}");
@@ -305,15 +300,15 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                 if (!string.IsNullOrEmpty(Address) && !string.IsNullOrWhiteSpace(Address)) {
                     Logger.Trace($"Checking IP format and DNS for {Address}");
 
-                    if (!IPAddress.TryParse(Address, out IPAddress addrinfo)) {
+                    if (!IPAddress.TryParse(Address, out IPAddress ipaddress)) {
                         try {
-                            var iphostentry = await Dns.GetHostEntryAsync(Address);
-                            IPAddressInfo = iphostentry.AddressList.FirstOrDefault();
+                            var iphostentry = await Dns.GetHostAddressesAsync(Address);
 
                             // We have a good DNS lookup
-                            Logger.Trace($"DNS lookup succeeded for {iphostentry.HostName}");
-
+                            Logger.Trace($"DNS lookup succeeded for {Address}");
+                            ResolvedIP = iphostentry.FirstOrDefault();
                             AddressIsOK = true;
+
                             return;
                         } catch (SocketException) {
                             // It failed IP address parsing and DNS lookup. No good.
@@ -323,9 +318,10 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                     } else {
                         // We have a valid IP address
                         Logger.Trace($"IP address parse succeeded for {Address}");
-
-                        IPAddressInfo = addrinfo;
+                        ResolvedIP = ipaddress;
                         AddressIsOK = true;
+
+                        return;
                     }
                 } else {
                     // We have an empty Address
