@@ -139,13 +139,18 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (fwheel.Connected) {
                 text = text.Replace(@"$$FWHEEL_NAME$$", DoUrlEncode(urlEncode, fwheel.Name));
 
-                text = text.Replace(@"$$FWHEEL_FILTER_NAME$$", string.IsNullOrEmpty(fwheel.SelectedFilter.Name) ?
-                        DoUrlEncode(urlEncode, "----") :
-                        DoUrlEncode(urlEncode, fwheel.SelectedFilter.Name));
-
-                text = text.Replace(@"$$FWHEEL_FILTER_POS$$", fwheel.SelectedFilter.Position < 0 ?
-                        DoUrlEncode(urlEncode, "--") :
-                        DoUrlEncode(urlEncode, fwheel.SelectedFilter.Position.ToString(culture)));
+                if (fwheel.SelectedFilter != null) {
+                    text = text.Replace(@"$$FWHEEL_FILTER_NAME$$", string.IsNullOrEmpty(fwheel.SelectedFilter.Name) ?
+                            DoUrlEncode(urlEncode, "----") :
+                            DoUrlEncode(urlEncode, fwheel.SelectedFilter.Name));
+    
+                    text = text.Replace(@"$$FWHEEL_FILTER_POS$$", fwheel.SelectedFilter.Position < 0 ?
+                            DoUrlEncode(urlEncode, "--") :
+                            DoUrlEncode(urlEncode, fwheel.SelectedFilter.Position.ToString(culture)));
+                } else {
+                    text = text.Replace(@"$$FWHEEL_FILTER_NAME$$", DoUrlEncode(urlEncode, "----"));
+                    text = text.Replace(@"$$FWHEEL_FILTER_POS$$", DoUrlEncode(urlEncode, "--"));
+                }
             } else {
                 var pattern = new Regex(@"\$\$FWHEEL_[A-Z0-9_]+\$\$", RegexOptions.Compiled);
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
