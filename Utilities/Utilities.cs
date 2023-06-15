@@ -139,11 +139,11 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (fwheel.Connected) {
                 text = text.Replace(@"$$FWHEEL_NAME$$", DoUrlEncode(urlEncode, fwheel.Name));
 
-                text = text.Replace(@"$$FWHEEL_FILTER_NAME$$", string.IsNullOrEmpty(fwheel?.SelectedFilter?.Name ?? string.Empty) ?
+                text = text.Replace(@"$$FWHEEL_FILTER_NAME$$", string.IsNullOrEmpty(fwheel.SelectedFilter?.Name ?? string.Empty) ?
                         DoUrlEncode(urlEncode, "----") :
                         DoUrlEncode(urlEncode, fwheel.SelectedFilter.Name));
 
-                text = text.Replace(@"$$FWHEEL_FILTER_POS$$", (fwheel?.SelectedFilter?.Position ?? -1) < 0 ?
+                text = text.Replace(@"$$FWHEEL_FILTER_POS$$", (fwheel.SelectedFilter?.Position ?? -1) < 0 ?
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, fwheel.SelectedFilter.Position.ToString(culture)));
             } else {
