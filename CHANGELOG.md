@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 1.15.1.0 - 2023-07-13
+* Fixed possible null reference when resolving the selected filter name and position. Thanks to @linuxkidd for the fix
+
 ## 1.15.0.0 - 2023-03-28
 * Maintenance update:
     - Fixed an occasional hard crash caused by attempting to reuse a disposed background worker cancellation token source
