@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 2.2.2.0 - 2023-07-13
+* Fixed possible null reference when resolving the selected filter name and position. Thanks to @linuxkidd for the fix
+
 ## 2.2.1.0 - 2023-04-01
 * Fixed handing of IPv6 addresses in *Send UDP*
 
