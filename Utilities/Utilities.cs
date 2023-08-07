@@ -336,7 +336,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         internal static long UnixEpoch() {
-            return (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            return (long)DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
         private static string ParseFormattedDateTime(string text, bool urlEncode) {
