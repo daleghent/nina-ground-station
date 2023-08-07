@@ -62,11 +62,11 @@ namespace DaleGhent.NINA.GroundStation.Telegram {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "TelegramAccessToken":
+                case nameof(TelegramAccessToken):
                     TelegramAccessToken = Security.Decrypt(Properties.Settings.Default.TelegramAccessToken);
                     break;
 
-                case "TelegramChatId":
+                case nameof(TelegramChatId):
                     TelegramChatId = Security.Decrypt(Properties.Settings.Default.TelegramChatId);
                     break;
             }

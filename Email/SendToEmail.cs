@@ -200,11 +200,11 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "SmtpFromAddress":
+                case nameof(SmtpFromAddress):
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
                     break;
 
-                case "SmtpDefaultRecipients":
+                case nameof(SmtpDefaultRecipients):
                     SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
                     Recipient = SmtpDefaultRecipients;
                     break;

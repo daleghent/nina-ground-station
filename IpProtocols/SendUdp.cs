@@ -11,14 +11,12 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
-using NmeaParser.Gnss.Ntrip;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,7 +43,6 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
         private string address = string.Empty;
         private ushort port = 0;
         private string payload = string.Empty;
-        private bool addressIsOk = true;
         private short payloadType;
         private short lineTermination;
 

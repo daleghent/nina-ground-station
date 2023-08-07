@@ -74,19 +74,19 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "MqttBrokerHost":
+                case nameof(MqttBrokerHost):
                     MqttBrokerHost = Properties.Settings.Default.MqttBrokerHost;
                     break;
 
-                case "MqttBrokerPort":
+                case nameof(MqttBrokerPort):
                     MqttBrokerPort = Properties.Settings.Default.MqttBrokerPort;
                     break;
 
-                case "MqttBrokerUseTls":
+                case nameof(MqttBrokerUseTls):
                     MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
                     break;
 
-                case "MqttClientId":
+                case nameof(MqttClientId):
                     MqttClientId = Properties.Settings.Default.MqttClientId;
                     break;
             }

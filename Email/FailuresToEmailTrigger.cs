@@ -266,24 +266,26 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         private string SmtpFromAddress { get; set; }
+        private string SmtpDefaultRecipients { get; set; }
         private string EmailFailureSubjectText { get; set; }
         private string EmailFailureBodyText { get; set; }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "SmtpFromAddress":
+                case nameof(SmtpFromAddress):
                     SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
                     break;
 
-                case "SmtpDefaultRecipients":
-                    Recipient = Properties.Settings.Default.SmtpDefaultRecipients;
+                case nameof(SmtpDefaultRecipients):
+                    SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
+                    Recipient = SmtpDefaultRecipients;
                     break;
 
-                case "EmailFailureSubjectText":
+                case nameof(EmailFailureSubjectText):
                     EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
                     break;
 
-                case "EmailFailureBodyText":
+                case nameof(EmailFailureBodyText):
                     EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
                     break;
             }

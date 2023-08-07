@@ -234,7 +234,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "TelegramFailureBodyText":
+                case nameof(TelegramFailureBodyText):
                     TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
                     break;
             }

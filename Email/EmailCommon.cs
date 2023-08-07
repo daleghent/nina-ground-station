@@ -79,19 +79,19 @@ namespace DaleGhent.NINA.GroundStation.Email {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "SmtpHostName":
+                case nameof(SmtpHostName):
                     SmtpHostName = Properties.Settings.Default.SmtpHostName;
                     break;
 
-                case "SmtpHostPort":
+                case nameof(SmtpHostPort):
                     SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
                     break;
 
-                case "SmtpUsername":
+                case nameof(SmtpUsername):
                     SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
                     break;
 
-                case "SmtpPassword":
+                case nameof(SmtpPassword):
                     SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
                     break;
             }

@@ -52,7 +52,7 @@ namespace DaleGhent.NINA.GroundStation.Ifttt {
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case "IFTTTWebhookKey":
+                case nameof(IFTTTWebhookKey):
                     IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
                     break;
             }
