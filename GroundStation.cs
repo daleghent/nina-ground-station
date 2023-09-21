@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright 2021-2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,46 +11,68 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
+using DaleGhent.NINA.GroundStation.Images;
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.PushoverClient;
 using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
-using DaleGhent.NINA.GroundStation.PushoverClient;
+using Discord;
 using NINA.Core.Enum;
-using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
-using NINA.Plugin;
+using NINA.Core.Utility;
+using NINA.Image.ImageData;
+using NINA.Image.Interfaces;
 using NINA.Plugin.Interfaces;
+using NINA.Plugin;
 using NINA.Profile.Interfaces;
-using System;
+using NINA.WPF.Base.Interfaces.Mediator;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
+using System;
+using DaleGhent.NINA.GroundStation.DiscordWebhook;
 
 namespace DaleGhent.NINA.GroundStation {
 
     [Export(typeof(IPluginManifest))]
     public partial class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
         private MqttClient mqttClient;
+        private ImageEventHandler imageEventHandler;
+
+        private readonly IProfileService profileService;
+        private readonly IImageSaveMediator imageSaveMediator;
+        private readonly IImageDataFactory imageDataFactory;
 
         [ImportingConstructor]
-        public GroundStation() {
+        public GroundStation(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory) {
             if (Properties.Settings.Default.UpgradeSettings) {
                 Properties.Settings.Default.Upgrade();
                 Properties.Settings.Default.UpgradeSettings = false;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
             }
+
+            this.profileService = profileService;
+            this.imageSaveMediator = imageSaveMediator;
+            this.imageDataFactory = imageDataFactory;
         }
 
         public override Task Initialize() {
             if (MqttLwtEnable) {
                 LwtStartWorker();
             }
+
+            ImageService.Instance.Image = new ImageData();
+
+            imageEventHandler = new ImageEventHandler(profileService, imageSaveMediator, imageDataFactory);
+            imageEventHandler.Start();
+
+            DiscordWebhookEvents.Start();
 
             Logger.Debug("Init completed");
 
@@ -61,6 +83,9 @@ namespace DaleGhent.NINA.GroundStation {
             if (MqttLwtEnable) {
                 await LwtStopWorker();
             }
+
+            imageEventHandler.Stop();
+            DiscordWebhookEvents.Stop();
 
             return;
         }
@@ -176,6 +201,24 @@ namespace DaleGhent.NINA.GroundStation {
 
             if (send.Status == SequenceEntityStatus.FAILED) {
                 Notification.ShowExternalError($"Failed to send message to TTS:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "TTS Error");
+                return false;
+            }
+
+            return true;
+        }
+
+        [RelayCommand]
+        private static async Task<bool> DiscordWebhookTest(object arg) {
+            var embed = new EmbedBuilder() {
+                Title = "Test message title",
+                Description = "This is a test message description",
+            };
+
+            try {
+                var send = new DiscordWebhook.DiscordWebhookCommon();
+                await send.SendDiscordWebook(embed);
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"Failed to send message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
                 return false;
             }
 
@@ -624,6 +667,42 @@ namespace DaleGhent.NINA.GroundStation {
             get => Properties.Settings.Default.PlaySoundDefaultFailureFile;
             set {
                 Properties.Settings.Default.PlaySoundDefaultFailureFile = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string DiscordWebhookDefaultUrl {
+            get => Properties.Settings.Default.DiscordWebhookDefaultUrl;
+            set {
+                Properties.Settings.Default.DiscordWebhookDefaultUrl = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string DiscordImageWebhookDefaultUrl {
+            get => Properties.Settings.Default.DiscordImageWebhookDefaultUrl;
+            set {
+                Properties.Settings.Default.DiscordImageWebhookDefaultUrl = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string DiscordWebhookDefaultBotName {
+            get => Properties.Settings.Default.DiscordWebhookDefaultBotName;
+            set {
+                Properties.Settings.Default.DiscordWebhookDefaultBotName = value;
+                CoreUtil.SaveSettings(Properties.Settings.Default);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string DiscordWebhookFailureMessage {
+            get => Properties.Settings.Default.DiscordWebhookFailureMessage;
+            set {
+                Properties.Settings.Default.DiscordWebhookFailureMessage = value;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
                 RaisePropertyChanged();
             }

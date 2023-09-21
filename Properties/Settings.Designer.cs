@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -552,6 +552,55 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["PlaySoundDefaultFailureFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DiscordWebhookDefaultUrl {
+            get {
+                return ((string)(this["DiscordWebhookDefaultUrl"]));
+            }
+            set {
+                this["DiscordWebhookDefaultUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("N.I.N.A.")]
+        public string DiscordWebhookDefaultBotName {
+            get {
+                return ((string)(this["DiscordWebhookDefaultBotName"]));
+            }
+            set {
+                this["DiscordWebhookDefaultBotName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$")]
+        public string DiscordWebhookFailureMessage {
+            get {
+                return ((string)(this["DiscordWebhookFailureMessage"]));
+            }
+            set {
+                this["DiscordWebhookFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DiscordImageWebhookDefaultUrl {
+            get {
+                return ((string)(this["DiscordImageWebhookDefaultUrl"]));
+            }
+            set {
+                this["DiscordImageWebhookDefaultUrl"] = value;
             }
         }
     }

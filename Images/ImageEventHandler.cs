@@ -1,5 +1,7 @@
-﻿using NINA.Core.Enum;
+﻿using Accord.Imaging.Filters;
+using NINA.Core.Enum;
 using NINA.Core.Utility;
+using NINA.Equipment.Equipment.MyCamera;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
@@ -26,18 +28,25 @@ namespace DaleGhent.NINA.GroundStation.Images {
         private async void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
             var isBayered = false;
             var bitDepth = (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            var rawConverter = profileService.ActiveProfile.CameraSettings.RawConverter;
 
             var stretchFactor = profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
             var blackClipping = profileService.ActiveProfile.ImageSettings.BlackClipping;
             var unlinkedStretch = profileService.ActiveProfile.ImageSettings.UnlinkedStretch;
+            var bayerPattern = msg.MetaData.Camera.SensorType;
 
-            if (msg.MetaData.Camera.SensorType != SensorType.Monochrome) {
+            if (bayerPattern > SensorType.Monochrome) {
                 isBayered = true;
             }
 
             try {
-                var imageData = await imageDataFactory.CreateFromFile(msg.PathToImage.LocalPath, bitDepth, isBayered, RawConverterEnum.FREEIMAGE);
+                var imageData = await imageDataFactory.CreateFromFile(msg.PathToImage.LocalPath, bitDepth, isBayered, rawConverter);
                 var renderedImage = imageData.RenderImage();
+
+                if (isBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                    renderedImage = renderedImage.Debayer(saveColorChannels: unlinkedStretch, bayerPattern: bayerPattern);
+                }
+
                 renderedImage = await renderedImage.Stretch(stretchFactor, blackClipping, unlinkedStretch);
 
                 var metaData = new BitmapMetadata("jpg") {
