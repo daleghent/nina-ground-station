@@ -11,6 +11,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.HTTP"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
 
     <GeometryGroup x:Key="HTTP_SVG">
@@ -24,43 +25,10 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Text="Method" />
-                    <ComboBox
-                        MinWidth="100"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        ItemsSource="{Binding HttpMethods}"
-                        SelectedItem="{Binding HttpMethod}" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="URL" />
-                    <TextBox
-                        MinWidth="300"
-                        MaxWidth="300"
-                        Margin="5,3,0,3"
-                        TextWrapping="NoWrap"
-                        HorizontalScrollBarVisibility="Auto"
-                        Text="{Binding HttpUri}"
-                        TextAlignment="Left" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="POST Body" />
-                    <TextBox
-                        MinWidth="500"
-                        MaxWidth="500"
-                        MaxHeight="150"
-                        Margin="5,3,0,3"
-                        TextWrapping="Wrap"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        AcceptsReturn="True"
-                        AcceptsTab="True"
-                        TextAlignment="Left"
-                        Text="{Binding HttpPostBody}" />
+                    <Button
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock Text="Configure" />
+                    </Button>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

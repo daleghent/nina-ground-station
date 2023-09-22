@@ -11,10 +11,10 @@
 #endregion "copyright"
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
-using DaleGhent.NINA.GroundStation.Utilities;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -24,9 +24,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
 
@@ -40,6 +40,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         private HttpMethodEnum httpMethod = HttpMethodEnum.GET;
         private string httpUri = string.Empty;
         private string httpPostBody = string.Empty;
+        private string httpPostContentType = "text/plain";
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -52,7 +53,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         private readonly ISwitchMediator switchMediator;
         private readonly ITelescopeMediator telescopeMediator;
         private readonly IWeatherDataMediator weatherDataMediator;
-
+        
+        private IWindowService windowService;
         private readonly IMetadata metadata;
 
         [ImportingConstructor]
@@ -80,6 +82,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+
+            OpenConfigurationWindowCommand = new RelayCommand(OpenConfigurationWindow);
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -116,8 +120,17 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         public string HttpUri {
             get => httpUri;
             set {
-                httpUri = value;
+                httpUri = value.Trim();
                 Validate();
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public string HttpPostContentType {
+            get => httpPostContentType;
+            set {
+                httpPostContentType = string.IsNullOrEmpty(value) ? "text/plain" : value.Trim();
                 RaisePropertyChanged();
             }
         }
@@ -144,7 +157,11 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                     var body = Utilities.Utilities.ResolveTokens(httpPostBody, this);
                     HttpContent httpContent = new StringContent(body);
 
-                    Logger.Debug($"Sending {HttpMethod} {HttpUri}, Reqest body:{Environment.NewLine}{body}");
+                    if (!string.IsNullOrEmpty(httpPostContentType)) {
+                        httpContent.Headers.Add("Content-Type", httpPostContentType);
+                    }
+
+                    Logger.Debug($"Sending {HttpMethod} {HttpUri} ({HttpPostContentType}), Reqest body:{Environment.NewLine}{body}");
                     response = await client.PostAsync(resolvedUri, httpContent, ct);
                 } else {
                     throw new SequenceEntityFailedException($"Unsupported HTTP method {HttpMethod}");
@@ -153,10 +170,10 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 response.EnsureSuccessStatusCode();
 
                 var content = await response.Content.ReadAsStringAsync(ct);
-                Logger.Info($"HTTP {HttpMethod} {HttpUri} returned status code {(int)response.StatusCode} ({response.StatusCode}). Response body:{Environment.NewLine}{content}");
+                Logger.Info($"HTTP {HttpMethod} {HttpUri} ({HttpPostContentType}) returned status code {(int)response.StatusCode} ({response.StatusCode}). Response body:{Environment.NewLine}{content}");
             } catch (Exception ex) {
                 if (ex is InvalidOperationException || ex is HttpRequestException || ex is TaskCanceledException) {
-                    throw new SequenceEntityFailedException($"HTTP {HttpMethod} {HttpUri} failed: {ex.Message}");
+                    throw new SequenceEntityFailedException($"HTTP {HttpMethod} {HttpUri} ({HttpPostContentType}) failed: {ex.Message}");
                 }
 
                 throw;
@@ -165,7 +182,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             }
         }
 
-        public HttpMethodEnum[] HttpMethods => Enum.GetValues(typeof(HttpMethodEnum)).Cast<HttpMethodEnum>().ToArray();
+        public static HttpMethodEnum[] HttpMethods => Enum.GetValues(typeof(HttpMethodEnum)).Cast<HttpMethodEnum>().ToArray();
 
         public enum HttpMethodEnum {
             GET,
@@ -200,11 +217,39 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpMethod = HttpMethod,
                 HttpUri = HttpUri,
                 HttpPostBody = HttpPostBody,
+                HttpPostContentType = HttpPostContentType,
             };
         }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {nameof(HttpClient)}, URL: {HttpMethod} {HttpUri}";
+        }
+
+        public ICommand OpenConfigurationWindowCommand { get; private set; }
+        
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        private void OpenConfigurationWindow(object o) {
+            var conf = new HttpClientSetup() {
+                HttpMethod = httpMethod,
+                HttpUri = httpUri,
+                HttpPostContentType = httpPostContentType,
+                HttpPostBody = httpPostBody,
+            };
+
+            WindowService.Show(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+
+            HttpMethod = conf.HttpMethod;
+            HttpUri = conf.HttpUri;
+            HttpPostContentType = conf.HttpPostContentType;
+            HttpPostBody = conf.HttpPostBody;
         }
     }
 }
