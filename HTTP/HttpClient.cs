@@ -26,7 +26,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using static DaleGhent.NINA.GroundStation.HTTP.HttpClient;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
 
@@ -36,7 +38,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class HttpClient : SequenceItem, IValidatable {
+    public partial class HttpClient : SequenceItem, IValidatable {
         private HttpMethodEnum httpMethod = HttpMethodEnum.GET;
         private string httpUri = string.Empty;
         private string httpPostBody = string.Empty;
@@ -82,8 +84,6 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
-
-            OpenConfigurationWindowCommand = new RelayCommand(OpenConfigurationWindow);
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -225,8 +225,6 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             return $"Category: {Category}, Item: {nameof(HttpClient)}, URL: {HttpMethod} {HttpUri}";
         }
 
-        public ICommand OpenConfigurationWindowCommand { get; private set; }
-        
         public IWindowService WindowService {
             get {
                 windowService ??= new WindowService();
@@ -236,7 +234,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             set => windowService = value;
         }
 
-        private void OpenConfigurationWindow(object o) {
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
             var conf = new HttpClientSetup() {
                 HttpMethod = httpMethod,
                 HttpUri = httpUri,
@@ -244,12 +243,22 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpPostBody = httpPostBody,
             };
 
-            WindowService.Show(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+            await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
 
             HttpMethod = conf.HttpMethod;
             HttpUri = conf.HttpUri;
             HttpPostContentType = conf.HttpPostContentType;
             HttpPostBody = conf.HttpPostBody;
         }
+    }
+    public partial class HttpClientSetup : BaseINPC {
+        [ObservableProperty]
+        private HttpMethodEnum httpMethod;
+        [ObservableProperty]
+        private string httpUri;
+        [ObservableProperty]
+        private string httpPostContentType;
+        [ObservableProperty]
+        private string httpPostBody;
     }
 }

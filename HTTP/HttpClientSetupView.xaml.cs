@@ -18,15 +18,10 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
     /// <summary>
     /// Interaction logic for HttpClientSetup.xaml
     /// </summary>
-    public partial class HttpClientSetup : UserControl {
+    public partial class HttpClientSetupView : UserControl {
 
-        public HttpClientSetup() {
+        public HttpClientSetupView() {
             InitializeComponent();
         }
-
-        public HttpMethodEnum HttpMethod { get; set; }
-        public string HttpUri { get; set; }
-        public string HttpPostContentType { get; set; }
-        public string HttpPostBody { get; set; }
     }
 }
