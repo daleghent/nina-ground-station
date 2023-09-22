@@ -44,7 +44,7 @@
             Margin="10,10,0,0"
             ItemsSource="{Binding Source={x:Static local:HttpClient.HttpMethods}}"
             SelectedItem="{Binding HttpMethod, Mode=TwoWay}" />
-
+        <!--  to use a static enum you need to use the above syntax to get them  -->
 
         <TextBlock
             Grid.Row="1"

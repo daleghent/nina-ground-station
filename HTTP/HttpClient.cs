@@ -234,6 +234,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             set => windowService = value;
         }
 
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
         [RelayCommand]
         private async Task OpenConfigurationWindow(object o) {
             var conf = new HttpClientSetup() {
@@ -252,6 +253,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
     }
     public partial class HttpClientSetup : BaseINPC {
+        //This will create a public property for the class with the same name but a starting capital letter 
+        //The generated property will have a getter and setter and the setter will automatically raise INotifyPropertyChanged so the UI can update automatically the value
         [ObservableProperty]
         private HttpMethodEnum httpMethod;
         [ObservableProperty]
