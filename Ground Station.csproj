@@ -21,7 +21,7 @@
       <Version>3.1.2</Version>
     </PackageReference>
     <PackageReference Include="NetCoreAudio" Version="1.7.0" />
-    <PackageReference Include="NINA.Plugin" Version="3.0.0.1001-nightly" />
+    <PackageReference Include="NINA.Plugin" Version="3.0.0.1032-nightly" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Speech" Version="7.0.0" />
     <PackageReference Include="Telegram.Bot">
