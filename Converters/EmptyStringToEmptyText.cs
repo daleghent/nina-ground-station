@@ -12,16 +12,14 @@
 
 using System;
 using System.Globalization;
-using System.Net.Http;
 using System.Windows.Data;
 
-namespace DaleGhent.NINA.GroundStation.HTTP.Converters {
+namespace DaleGhent.NINA.GroundStation.Converters {
 
-    public class HttpMethodPostToVisibilityCollapsed : IValueConverter {
+    public class EmptyStringToEmptyText : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            System.Windows.Visibility result = (HttpMethod)value == HttpMethod.Post ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-            return result;
+            return string.IsNullOrEmpty((string)value) ? "< No description >" : value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

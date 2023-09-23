@@ -1,5 +1,11 @@
 ﻿# Ground Station
 
+## 2.3.0.0 - 2023-09-25
+* Expanded the *Send HTTP Request* instruction:
+  * Moved its various fields to a new window that is opened when a button on the instruction is pressed
+  * Included the ability specify a `Content-Type` header for HTTP POSTs.
+  * Added a new Description field that allows a more meaninful description of the HTTP request to be displayed
+
 ## 2.2.2.0 - 2023-07-13
 * Fixed possible null reference when resolving the selected filter name and position. Thanks to @linuxkidd for the fix
 

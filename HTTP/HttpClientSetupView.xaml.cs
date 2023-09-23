@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using System.Windows.Controls;
-using static DaleGhent.NINA.GroundStation.HTTP.HttpClient;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
 

@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © Dale Ghent <daleg@elemental.org>
+    Copyright © 2023 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,47 +15,83 @@
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     Name="UC"
-    d:DesignHeight="800"
+    d:DesignHeight="400"
     d:DesignWidth="500"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary Source="../Resources/Resources.xaml" />
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <TextBlock
             Grid.Row="0"
             Grid.Column="0"
-            Margin="5,10,0,0"
-            Text="Method" />
-        <ComboBox
+            Margin="10,8,10,20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Description" />
+        <TextBox
             Grid.Row="0"
             Grid.Column="1"
-            MinWidth="100"
-            Margin="10,10,0,0"
+            MinWidth="200"
+            MaxWidth="200"
+            Margin="10,8,10,20"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            HorizontalScrollBarVisibility="Auto"
+            MaxLines="1"
+            Text="{Binding HttpClientDescription}"
+            TextWrapping="NoWrap" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="10,2,10,2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="Method" />
+        <ComboBox
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="100"
+            Margin="10,2,10,2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
             ItemsSource="{Binding Source={x:Static local:HttpClient.HttpMethods}}"
             SelectedItem="{Binding HttpMethod, Mode=TwoWay}" />
         <!--  to use a static enum you need to use the above syntax to get them  -->
 
         <TextBlock
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="0"
-            Margin="5,10,0,0"
+            Margin="10,2,10,2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
             Text="URL" />
         <TextBox
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="1"
-            Margin="10,10,0,0"
+            MinWidth="500"
+            MaxWidth="500"
+            Margin="10,2,10,2"
             HorizontalAlignment="Left"
+            VerticalAlignment="Center"
             HorizontalScrollBarVisibility="Auto"
             MaxLines="1"
             Text="{Binding HttpUri}"
@@ -63,35 +99,69 @@
             TextWrapping="NoWrap" />
 
         <TextBlock
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.Column="0"
-            Margin="5,10,0,0"
+            Margin="10,2,10,2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
             Text="Type" />
         <TextBox
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.Column="1"
-            Margin="10,10,0,0"
+            MinWidth="200"
+            MaxWidth="200"
+            Margin="10,2,10,2"
             HorizontalAlignment="Left"
+            VerticalAlignment="Center"
             HorizontalScrollBarVisibility="Auto"
             MaxLines="1"
+            Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
             Text="{Binding HttpPostContentType}"
             TextWrapping="NoWrap" />
 
         <TextBlock
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="0"
-            Margin="5,10,0,0"
-            Text="POST Body" />
+            Margin="10,2,10,2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
+            Text="Body" />
         <TextBox
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="1"
-            Margin="10,10,0,0"
+            MinWidth="500"
+            MaxWidth="500"
+            MinHeight="400"
+            MaxHeight="400"
+            Margin="10,2,10,2"
             HorizontalAlignment="Left"
+            VerticalAlignment="Center"
             AcceptsReturn="True"
             AcceptsTab="True"
-            HorizontalScrollBarVisibility="Auto"
+            Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
             Text="{Binding HttpPostBody}"
-            TextWrapping="Wrap"
+            TextWrapping="NoWrap"
+            HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto" />
+
+        <Button
+            Grid.Row="5"
+            Grid.ColumnSpan="2"
+            Width="150"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            util:ButtonHelper.DialogResult="True"
+            IsDefault="True">
+            <Button.Content>
+                <TextBlock
+                    Margin="5,2,5,2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="Close" />
+            </Button.Content>
+        </Button>
     </Grid>
 </UserControl>

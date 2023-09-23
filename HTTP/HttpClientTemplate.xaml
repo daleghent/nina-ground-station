@@ -11,7 +11,10 @@
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.HTTP"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
-    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary">
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToEmptyText x:Key="EmptyStringToEmptyText" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
     <GeometryGroup x:Key="HTTP_SVG">
         <PathGeometry Figures="m 48.800097 70.908333 h -1.674311 v -3.017894 h -3.06957 v 3.017894 h -1.669144 v -7.410377 h 1.669144 v 2.955883 h 3.06957 v -2.955883 h 1.674311 z" FillRule="NonZero" />
@@ -29,9 +32,22 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding OpenConfigurationWindowCommand}">
-                        <TextBlock Text="Configure" />
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Parameters" />
                     </Button>
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -41,6 +57,13 @@
         <mini:MiniSequenceItem>
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Send HTTP Request" />
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Margin="5,0,0,0"
+                    TextWrapping="NoWrap"
+                    FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                    Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}" />
             </StackPanel>
         </mini:MiniSequenceItem>
     </DataTemplate>

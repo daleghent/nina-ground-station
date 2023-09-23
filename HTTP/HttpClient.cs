@@ -42,6 +42,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         private HttpMethodEnum httpMethod = HttpMethodEnum.GET;
         private string httpUri = string.Empty;
         private string httpPostBody = string.Empty;
+        private string httpClientDescription = string.Empty;
         private string httpPostContentType = "text/plain";
 
         private readonly ICameraMediator cameraMediator;
@@ -144,6 +145,15 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             }
         }
 
+        [JsonProperty]
+        public string HttpClientDescription {
+            get => httpClientDescription;
+            set {
+                httpClientDescription = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var client = new System.Net.Http.HttpClient();
             var response = new HttpResponseMessage();
@@ -158,6 +168,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                     HttpContent httpContent = new StringContent(body);
 
                     if (!string.IsNullOrEmpty(httpPostContentType)) {
+                        httpContent.Headers.Remove("Content-Type");
                         httpContent.Headers.Add("Content-Type", httpPostContentType);
                     }
 
@@ -218,11 +229,12 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpUri = HttpUri,
                 HttpPostBody = HttpPostBody,
                 HttpPostContentType = HttpPostContentType,
+                HttpClientDescription = HttpClientDescription,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(HttpClient)}, URL: {HttpMethod} {HttpUri}";
+            return $"Category: {Category}, Item: {nameof(HttpClient)}, {HttpClientDescription}. URL: {HttpMethod} {HttpUri}";
         }
 
         public IWindowService WindowService {
@@ -242,6 +254,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpUri = httpUri,
                 HttpPostContentType = httpPostContentType,
                 HttpPostBody = httpPostBody,
+                HttpClientDescription = httpClientDescription,
             };
 
             await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
@@ -250,18 +263,26 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             HttpUri = conf.HttpUri;
             HttpPostContentType = conf.HttpPostContentType;
             HttpPostBody = conf.HttpPostBody;
+            HttpClientDescription = conf.HttpClientDescription;
         }
     }
+
     public partial class HttpClientSetup : BaseINPC {
         //This will create a public property for the class with the same name but a starting capital letter 
         //The generated property will have a getter and setter and the setter will automatically raise INotifyPropertyChanged so the UI can update automatically the value
         [ObservableProperty]
         private HttpMethodEnum httpMethod;
+
         [ObservableProperty]
         private string httpUri;
+
         [ObservableProperty]
         private string httpPostContentType;
+
         [ObservableProperty]
         private string httpPostBody;
+
+        [ObservableProperty]
+        private string httpClientDescription;
     }
 }
