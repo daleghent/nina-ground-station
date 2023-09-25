@@ -47,7 +47,8 @@
                         Margin="10,0,0,0"
                         TextWrapping="Wrap"
                         FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                        Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}" />
+                        Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}"
+                        ToolTip="{Binding HttpClientInstructionToolTip}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

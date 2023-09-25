@@ -114,6 +114,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             set {
                 httpMethod = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HttpClientInstructionToolTip));
             }
         }
 
@@ -124,6 +125,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 httpUri = value.Trim();
                 Validate();
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HttpClientInstructionToolTip));
             }
         }
 
@@ -133,6 +135,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             set {
                 httpPostContentType = string.IsNullOrEmpty(value) ? "text/plain" : value.Trim();
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HttpClientInstructionToolTip));
             }
         }
 
@@ -151,6 +154,22 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             set {
                 httpClientDescription = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public string HttpClientInstructionToolTip {
+            get {
+                string text = "Not configured";
+
+                if (!string.IsNullOrEmpty(HttpUri)) {
+                    text = $"Method: {HttpMethod}{Environment.NewLine}URL: {HttpUri[..42]} ...";
+
+                    if (HttpMethod == HttpMethodEnum.POST) {
+                        text += $"{Environment.NewLine}Type: {HttpPostContentType}";
+                    }
+                }
+
+                return text;
             }
         }
 
