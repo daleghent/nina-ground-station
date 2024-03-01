@@ -340,7 +340,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         private static string ParseFormattedDateTime(string text, bool urlEncode) {
-            string pattern = @"\$\$FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\$\$";
+            string pattern = @"\${2}FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\${2}";
 
             foreach (Match dateTimeMatch in Regex.Matches(text, pattern).Cast<Match>()) {
                 var dateRegex = new Regex(Regex.Escape(dateTimeMatch.Value));
@@ -393,31 +393,31 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return failedItem;
         }
 
-        [GeneratedRegex("\\$\\$CAMERA_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}CAMERA_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex CameraRegex();
 
-        [GeneratedRegex("\\$\\$DOME_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}DOME_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex DomeRegex();
 
-        [GeneratedRegex("\\$\\$FWHEEL_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}FWHEEL_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex FWheelRegex();
 
-        [GeneratedRegex("\\$\\$FLAT_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}FLAT_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex FlatDeviceRegex();
 
-        [GeneratedRegex("\\$\\$FOCUSER_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}FOCUSER_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex FocuserRegex();
 
-        [GeneratedRegex("\\$\\$MOUNT_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}MOUNT_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex MountRegex();
 
-        [GeneratedRegex("\\$\\$ROTATOR_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}ROTATOR_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex RotatorRegex();
 
-        [GeneratedRegex("\\$\\$SAFETY_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}SAFETY_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex SafetyRegex();
 
-        [GeneratedRegex("\\$\\$WX_[A-Z0-9_]+\\$\\$", RegexOptions.Compiled)]
+        [GeneratedRegex(@"\${2}WX_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
         private static partial Regex WeatherRegex();
     }
 }
