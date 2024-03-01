@@ -29,26 +29,7 @@
                             Width="110"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock.Text>Pushover app key</TextBlock.Text>
-                            <TextBlock.ToolTip>The application key assigned for NINA</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="400"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="PushoverAppKey" />
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>Pushover user key</TextBlock.Text>
+                            <TextBlock.Text>User key</TextBlock.Text>
                             <TextBlock.ToolTip>The user key for your Pushover account</TextBlock.ToolTip>
                         </TextBlock>
                         <TextBox
@@ -58,6 +39,25 @@
                             VerticalContentAlignment="Center">
                             <TextBox.Text>
                                 <Binding Path="PushoverUserKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>App API token/key</TextBlock.Text>
+                            <TextBlock.ToolTip>The application API token or key assigned for NINA</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="PushoverAppKey" />
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
