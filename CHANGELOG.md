@@ -1,7 +1,7 @@
 ﻿# Ground Station
 
 ## 2.4.0.0 - 2024-03-01
-* Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
+* Fixed parsing of `FORMAT_DATETIME` tokens when used on the same line as another token
 * Small optimizations for all token regular expressions
 * Changed instruction/trigger logging to use actual name instead of class name
 * Migrated plugin to use `CommunityToolkit.Mvvm.Input` for button controls
