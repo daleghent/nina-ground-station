@@ -340,7 +340,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         private static string ParseFormattedDateTime(string text, bool urlEncode) {
-            string pattern = @"\${2}FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*)\${2}";
+            string pattern = @"\${2}FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*?)\${2}";
 
             foreach (Match dateTimeMatch in Regex.Matches(text, pattern).Cast<Match>()) {
                 var dateRegex = new Regex(Regex.Escape(dateTimeMatch.Value));
