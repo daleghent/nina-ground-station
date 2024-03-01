@@ -20,10 +20,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("Ground Station")]
-[assembly: AssemblyCopyright("Copyright © 2023 Dale Ghent and contributors")]
+[assembly: AssemblyCopyright("Copyright © 2021-2024 Dale Ghent and contributors")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.1032")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.3001")]
 
 // The license your plugin code is using
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
