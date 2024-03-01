@@ -1,5 +1,15 @@
 ﻿# Ground Station
 
+## 2.4.0.0 - 2024-03-01
+* Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
+* Small optimizations for all token regular expressions
+* Changed instruction/trigger logging to use actual name instead of class name
+* Migrated plugin to use `CommunityToolkit.Mvvm.Input` for button controls
+* Converted plugin to .NET 8
+* Removed unused package references
+* Updated `System.Speech` to 8.0.0
+* Oldest supported NINA version is now 3.0 RC1
+
 ## 2.3.0.0 - 2023-09-25
 * Expanded the *Send HTTP Request* instruction:
   * Moved its various fields to a new window that is opened when a button on the instruction is pressed
