@@ -82,7 +82,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             text = text.Replace(@"$$DATETIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("G")));
             text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch().ToString());
 
-            text = ParseFormattedDateTime(text, urlEncode);
+            text = ParseFormattedDateTime(text, datetime, urlEncode);
 
             text = text.Replace(@"$$SYSTEM_NAME$$", DoUrlEncode(urlEncode, Environment.MachineName));
             text = text.Replace(@"$$USER_NAME$$", DoUrlEncode(urlEncode, Environment.UserName));
@@ -339,7 +339,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return (long)DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
-        private static string ParseFormattedDateTime(string text, bool urlEncode) {
+        private static string ParseFormattedDateTime(string text, DateTime datetime, bool urlEncode) {
             string pattern = @"\${2}FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*?)\${2}";
 
             foreach (Match dateTimeMatch in Regex.Matches(text, pattern).Cast<Match>()) {
@@ -347,8 +347,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 try {
                     text = dateTimeMatch.Groups["isUTC"].Success
-                        ? dateRegex.Replace(text, DoUrlEncode(urlEncode, DateTime.UtcNow.ToString(dateTimeMatch.Groups["specifier"].Value)))
-                        : dateRegex.Replace(text, DoUrlEncode(urlEncode, DateTime.Now.ToString(dateTimeMatch.Groups["specifier"].Value)));
+                        ? dateRegex.Replace(text, DoUrlEncode(urlEncode, datetime.ToUniversalTime().ToString(dateTimeMatch.Groups["specifier"].Value)))
+                        : dateRegex.Replace(text, DoUrlEncode(urlEncode, datetime.ToString(dateTimeMatch.Groups["specifier"].Value)));
                 } catch {
                     text = dateRegex.Replace(text, DoUrlEncode(urlEncode, "[Invalid DateTime format]"));
                 }
