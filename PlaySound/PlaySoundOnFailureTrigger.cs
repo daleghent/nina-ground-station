@@ -28,7 +28,6 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
 
@@ -154,7 +153,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(PlaySoundOnFailureTrigger)}, SoundFile: {soundFile}";
+            return $"Category: {Category}, Item: {Name}, SoundFile: {soundFile}";
         }
 
         [RelayCommand]

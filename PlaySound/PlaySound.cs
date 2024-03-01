@@ -114,7 +114,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(PlaySound)}, SoundFile: {soundFile}, WaitUntilFinished: {WaitUntilFinished}";
+            return $"Category: {Category}, Item: {Name}, SoundFile: {soundFile}, WaitUntilFinished: {WaitUntilFinished}";
         }
 
         [RelayCommand]

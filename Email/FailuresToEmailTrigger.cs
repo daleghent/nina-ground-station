@@ -262,7 +262,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToEmailTrigger)}";
+            return $"Category: {Category}, Item: {Name}, Recipient: {recipient}";
         }
 
         private string SmtpFromAddress { get; set; }

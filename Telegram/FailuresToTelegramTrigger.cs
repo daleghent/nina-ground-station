@@ -227,7 +227,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToTelegramTrigger)}";
+            return $"Category: {Category}, Item: {Name}";
         }
 
         private string TelegramFailureBodyText { get; set; }

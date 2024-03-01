@@ -219,7 +219,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToMqttTrigger)}, Topic: {Topic}, QoS: {QoS}";
+            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}";
         }
 
         private class PreviousItem {

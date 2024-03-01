@@ -260,7 +260,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToPushoverTrigger)}";
+            return $"Category: {Category}, Item: {Name}";
         }
 
         private string PushoverFailureTitleText { get; set; }

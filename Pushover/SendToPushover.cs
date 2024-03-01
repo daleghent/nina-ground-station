@@ -188,7 +188,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToPushover)}";
+            return $"Category: {Category}, Item: {Name}, Title: {title}";
         }
     }
 }

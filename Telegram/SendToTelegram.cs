@@ -151,7 +151,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToTelegram)}";
+            return $"Category: {Category}, Item: {Name}";
         }
     }
 }

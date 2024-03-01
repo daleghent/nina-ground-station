@@ -332,7 +332,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendUdp)}, Endpoint: {Address}:{Port}, Payload Type: {(PayloadType)payloadType}";
+            return $"Category: {Category}, Item: {Name}, Endpoint: {Address}:{Port}, Payload Type: {(PayloadType)payloadType}";
         }
 
         [GeneratedRegex("^[0-9a-f]{2}$", RegexOptions.IgnoreCase, "en-US")]

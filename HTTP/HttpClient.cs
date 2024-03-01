@@ -253,7 +253,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(HttpClient)}, {HttpClientDescription}. URL: {HttpMethod} {HttpUri}";
+            return $"Category: {Category}, Item: {Name}, {HttpClientDescription}. URL: {HttpMethod} {HttpUri}";
         }
 
         public IWindowService WindowService {

@@ -181,7 +181,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToIftttWebhook)}";
+            return $"Category: {Category}, Item: {Name}";
         }
     }
 }

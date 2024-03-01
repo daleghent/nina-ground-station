@@ -192,7 +192,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToEmail)}";
+            return $"Category: {Category}, Item: {Name}, Recipient: {recipient}, Subject: {subject}";
         }
 
         private string SmtpFromAddress { get; set; }

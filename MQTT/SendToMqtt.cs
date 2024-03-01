@@ -175,7 +175,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToMqtt)}, Topic: {Topic}, QoS: {QoS}, PayloadLength={Payload.Length}";
+            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}, PayloadLength={Payload.Length}";
         }
     }
 }

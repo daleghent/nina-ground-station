@@ -254,7 +254,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(FailuresToIftttTrigger)}";
+            return $"Category: {Category}, Item: {Name}";
         }
 
         private string IftttFailureValue1 { get; set; }

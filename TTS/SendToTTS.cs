@@ -140,7 +140,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {nameof(SendToTTS)}";
+            return $"Category: {Category}, Item: {Name}";
         }
     }
 }
