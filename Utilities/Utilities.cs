@@ -12,12 +12,9 @@
 
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using NINA.Astrometry.Interfaces;
-using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Sequencer;
 using NINA.Sequencer.Container;
-using NINA.Sequencer.SequenceItem;
-using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -359,38 +356,6 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
         internal static string DoUrlEncode(bool doUrlEncode, string text) {
             return doUrlEncode ? HttpUtils.UrlTokenEncode(Encoding.Unicode.GetBytes(text)) : text;
-        }
-
-        private static FailedItem GetFailedItem(ISequenceItem sequenceItem) {
-            var failedItem = new FailedItem();
-
-            if (sequenceItem.Status == SequenceEntityStatus.FAILED) {
-                failedItem.Name = sequenceItem.Name;
-                failedItem.ParentName = sequenceItem.Parent.Name;
-                failedItem.Attempts = sequenceItem.Attempts;
-                failedItem.Description = sequenceItem.Description;
-                failedItem.Category = sequenceItem.Category;
-
-                if (sequenceItem is IValidatable validatableItem && validatableItem.Issues.Count > 0) {
-                    foreach (var issue in validatableItem.Issues) {
-                        var failureReason = new FailureReason {
-                            Reason = string.IsNullOrEmpty(issue) ? RuntimeErrorMessage : issue,
-                        };
-
-                        failedItem.Reasons.Add(failureReason);
-                    }
-                } else {
-                    var failureReason = new FailureReason {
-                        Reason = RuntimeErrorMessage,
-                    };
-
-                    failedItem.Reasons.Add(failureReason);
-                }
-
-                Logger.Debug($"Failed item: {failedItem.Name}, Reason count: {failedItem.Reasons.Count}");
-            }
-
-            return failedItem;
         }
 
         [GeneratedRegex(@"\${2}CAMERA_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
