@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using NetCoreAudio;
 using Newtonsoft.Json;
 using NINA.Core.Model;
@@ -22,7 +23,6 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation.PlaySound {
 
@@ -32,14 +32,13 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class PlaySound : SequenceItem, IValidatable {
+    public partial class PlaySound : SequenceItem, IValidatable {
         private string soundFile = string.Empty;
         private bool waitUntilFinished = true;
 
         [ImportingConstructor]
         public PlaySound() {
             SoundFile = Properties.Settings.Default.PlaySoundDefaultFile;
-            SelectSoundFileCommand = new RelayCommand(OpenSelectSoundFileDialog);
 
             Validate();
         }
@@ -118,6 +117,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
             return $"Category: {Category}, Item: {nameof(PlaySound)}, SoundFile: {soundFile}, WaitUntilFinished: {WaitUntilFinished}";
         }
 
+        [RelayCommand]
         internal void OpenSelectSoundFileDialog(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new() {
                 FileName = string.Empty,
@@ -128,7 +128,5 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
                 SoundFile = dialog.FileName;
             }
         }
-
-        public ICommand SelectSoundFileCommand { get; private set; }
     }
 }

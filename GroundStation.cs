@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
@@ -30,12 +31,11 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace DaleGhent.NINA.GroundStation {
 
     [Export(typeof(IPluginManifest))]
-    public class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
+    public partial class GroundStation : PluginBase, ISettings, INotifyPropertyChanged {
         private MqttClient mqttClient;
 
         [ImportingConstructor]
@@ -45,16 +45,6 @@ namespace DaleGhent.NINA.GroundStation {
                 Properties.Settings.Default.UpgradeSettings = false;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
             }
-
-            PushoverTestCommand = new AsyncCommand<bool>(PushoverTest);
-            EmailTestCommand = new AsyncCommand<bool>(EmailTest);
-            TelegramTestCommand = new AsyncCommand<bool>(TelegramTest);
-            MQTTTestCommand = new AsyncCommand<bool>(MQTTTest);
-            IFTTTTestCommand = new AsyncCommand<bool>(IFTTTTest);
-            TtsTestCommand = new AsyncCommand<bool>(TtsTest);
-
-            SelectDefaultSoundFileCommand = new RelayCommand(OpenSelectDefaultSoundFileDialog);
-            SelectDefaultFailureSoundFileCommand = new RelayCommand(OpenSelectDefaultFailureSoundFileDialog);
         }
 
         public override Task Initialize() {
@@ -75,6 +65,7 @@ namespace DaleGhent.NINA.GroundStation {
             return;
         }
 
+        [RelayCommand]
         private async Task<bool> PushoverTest(object arg) {
             var send = new SendToPushover.SendToPushover() {
                 Message = "Test Message",
@@ -93,6 +84,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         private async Task<bool> EmailTest(object arg) {
             var send = new SendToEmail.SendToEmail() {
                 Subject = "Test Subject",
@@ -116,6 +108,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         private async Task<bool> TelegramTest(object arg) {
             var send = new SendToTelegram.SendToTelegram() {
                 Message = "Test Message",
@@ -133,6 +126,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         private async Task<bool> MQTTTest(object arg) {
             var send = new SendToMqtt.SendToMqtt() {
                 Topic = "Test Topic",
@@ -151,6 +145,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         private async Task<bool> IFTTTTest(object arg) {
             var send = new SendToIftttWebhook.SendToIftttWebhook() {
                 Value1 = "Test Value1",
@@ -170,6 +165,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         private async Task<bool> TtsTest(object arg) {
             var send = new SendToTTS() {
                 Message = TtsTestMessage,
@@ -216,13 +212,6 @@ namespace DaleGhent.NINA.GroundStation {
 
             return;
         }
-
-        public IAsyncCommand PushoverTestCommand { get; }
-        public IAsyncCommand EmailTestCommand { get; }
-        public IAsyncCommand IFTTTTestCommand { get; }
-        public IAsyncCommand TelegramTestCommand { get; }
-        public IAsyncCommand MQTTTestCommand { get; }
-        public IAsyncCommand TtsTestCommand { get; }
 
         public string IFTTTWebhookKey {
             get => Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
@@ -680,6 +669,7 @@ namespace DaleGhent.NINA.GroundStation {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        [RelayCommand]
         internal void OpenSelectDefaultSoundFileDialog(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new() {
                 FileName = string.Empty,
@@ -691,6 +681,7 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
+        [RelayCommand]
         internal void OpenSelectDefaultFailureSoundFileDialog(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new() {
                 FileName = string.Empty,
@@ -701,8 +692,5 @@ namespace DaleGhent.NINA.GroundStation {
                 PlaySoundDefaultFailureFile = dialog.FileName;
             }
         }
-
-        public ICommand SelectDefaultSoundFileCommand { get; private set; }
-        public ICommand SelectDefaultFailureSoundFileCommand { get; private set; }
     }
 }

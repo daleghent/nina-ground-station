@@ -10,6 +10,7 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.Input;
 using NetCoreAudio;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
@@ -37,14 +38,13 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class PlaySoundOnFailureTrigger : SequenceTrigger, IValidatable {
+    public partial class PlaySoundOnFailureTrigger : SequenceTrigger, IValidatable {
         private string soundFile = string.Empty;
         private ISequenceRootContainer failureHook;
 
         [ImportingConstructor]
         public PlaySoundOnFailureTrigger() {
             SoundFile = Properties.Settings.Default.PlaySoundDefaultFailureFile;
-            SelectSoundFileCommand = new RelayCommand(OpenSelectSoundFileDialog);
 
             Validate();
         }
@@ -157,6 +157,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
             return $"Category: {Category}, Item: {nameof(PlaySoundOnFailureTrigger)}, SoundFile: {soundFile}";
         }
 
+        [RelayCommand]
         internal void OpenSelectSoundFileDialog(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new() {
                 FileName = string.Empty,
@@ -167,7 +168,5 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
                 SoundFile = dialog.FileName;
             }
         }
-
-        public ICommand SelectSoundFileCommand { get; private set; }
     }
 }
