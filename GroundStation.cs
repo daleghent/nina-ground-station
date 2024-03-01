@@ -66,7 +66,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         [RelayCommand]
-        private async Task<bool> PushoverTest(object arg) {
+        private static async Task<bool> PushoverTest(object arg) {
             var send = new SendToPushover.SendToPushover() {
                 Message = "Test Message",
                 Title = "Test Title",
@@ -85,7 +85,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         [RelayCommand]
-        private async Task<bool> EmailTest(object arg) {
+        private static async Task<bool> EmailTest(object arg) {
             var send = new SendToEmail.SendToEmail() {
                 Subject = "Test Subject",
                 Body = "Test Body",
@@ -109,7 +109,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         [RelayCommand]
-        private async Task<bool> TelegramTest(object arg) {
+        private static async Task<bool> TelegramTest(object arg) {
             var send = new SendToTelegram.SendToTelegram() {
                 Message = "Test Message",
                 Attempts = 1
@@ -127,7 +127,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         [RelayCommand]
-        private async Task<bool> MQTTTest(object arg) {
+        private static async Task<bool> MQTTTest(object arg) {
             var send = new SendToMqtt.SendToMqtt() {
                 Topic = "Test Topic",
                 Payload = "Test Payload",
@@ -146,7 +146,7 @@ namespace DaleGhent.NINA.GroundStation {
         }
 
         [RelayCommand]
-        private async Task<bool> IFTTTTest(object arg) {
+        private static async Task<bool> IFTTTTest(object arg) {
             var send = new SendToIftttWebhook.SendToIftttWebhook() {
                 Value1 = "Test Value1",
                 Value2 = "Test Value2",
@@ -267,9 +267,9 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
-        public Priority[] PushoverPriorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
+        public static Priority[] PushoverPriorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
 
-        public NotificationSound[] PushoverNotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
+        public static NotificationSound[] PushoverNotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public NotificationSound PushoverDefaultNotificationSound {
             get => Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
@@ -629,15 +629,15 @@ namespace DaleGhent.NINA.GroundStation {
             }
         }
 
-        public IList<string> QoSLevels => MqttCommon.QoSLevels;
+        public static IList<string> QoSLevels => MqttCommon.QoSLevels;
 
-        public string TokenDate => DateTime.Now.ToString("d");
-        public string TokenTime => DateTime.Now.ToString("T");
-        public string TokenDateTime => DateTime.Now.ToString("G");
-        public string TokenDateUtc => DateTime.UtcNow.ToString("d");
-        public string TokenTimeUtc => DateTime.UtcNow.ToString("T");
-        public string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
-        public string TokenUnixEpoch => Utilities.Utilities.UnixEpoch().ToString();
+        public static string TokenDate => DateTime.Now.ToString("d");
+        public static string TokenTime => DateTime.Now.ToString("T");
+        public static string TokenDateTime => DateTime.Now.ToString("G");
+        public static string TokenDateUtc => DateTime.UtcNow.ToString("d");
+        public static string TokenTimeUtc => DateTime.UtcNow.ToString("T");
+        public static string TokenDateTimeUtc => DateTime.UtcNow.ToString("G");
+        public static string TokenUnixEpoch => Utilities.Utilities.UnixEpoch().ToString();
 
         public void SetSmtpPassword(SecureString s) {
             SmtpPassword = SecureStringToString(s);
@@ -647,7 +647,7 @@ namespace DaleGhent.NINA.GroundStation {
             MqttPassword = SecureStringToString(s);
         }
 
-        private string SecureStringToString(SecureString value) {
+        private static string SecureStringToString(SecureString value) {
             IntPtr valuePtr = IntPtr.Zero;
             try {
                 valuePtr = Marshal.SecureStringToGlobalAllocUnicode(value);
