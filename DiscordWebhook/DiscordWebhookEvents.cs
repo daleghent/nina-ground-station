@@ -86,13 +86,13 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                         $"**{Loc.Instance["LblStarCount"]}:** {imageData.StarDetectionAnalysis.DetectedStars}, **{Loc.Instance["LblHFR"]}:** {imageData.StarDetectionAnalysis.HFR:F2}\n" +
                         $"**{Loc.Instance["LblBitDepth"]}:** {imageData.ImageStatistics.BitDepth}, **{Loc.Instance["LblHFRStDev"]}:** {imageData.StarDetectionAnalysis.HFRStDev:F2}");
 
-            var jpegFileName = Path.GetFileName(imageData.ImagePath);
-            jpegFileName = Path.ChangeExtension(jpegFileName, "jpg");
+            var imageFileName = Path.GetFileName(imageData.ImagePath);
+            imageFileName = Path.ChangeExtension(imageFileName, "png");
 
-            embed.WithImageUrl($"attachment://{jpegFileName}");
+            embed.WithImageUrl($"attachment://{imageFileName}");
 
             var discordWebhookCommon = new DiscordWebhookCommon();
-            discordWebhookCommon.SendDiscordImage(ImageService.Instance.Image, jpegFileName, embed).Wait();
+            discordWebhookCommon.SendDiscordImage(ImageService.Instance.Image, imageFileName, embed).Wait();
         }
     }
 }

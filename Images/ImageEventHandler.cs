@@ -1,7 +1,5 @@
-﻿using Accord.Imaging.Filters;
-using NINA.Core.Enum;
+﻿using NINA.Core.Enum;
 using NINA.Core.Utility;
-using NINA.Equipment.Equipment.MyCamera;
 using NINA.Image.Interfaces;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
@@ -22,7 +20,7 @@ namespace DaleGhent.NINA.GroundStation.Images {
 
         public void Stop() {
             imageSaveMediator.ImageSaved -= ImageSaveMeditator_ImageSaved;
-            ImageService.Instance.Image.JpegBitMap.Dispose();
+            ImageService.Instance.Image.PngBitMap.Dispose();
         }
 
         private async void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
@@ -48,27 +46,16 @@ namespace DaleGhent.NINA.GroundStation.Images {
                 }
 
                 renderedImage = await renderedImage.Stretch(stretchFactor, blackClipping, unlinkedStretch);
+                var bitmapFrame = BitmapFrame.Create(renderedImage.Image);
 
-                var metaData = new BitmapMetadata("jpg") {
-                    ApplicationName = $"N.I.N.A. {CoreUtil.Version} / Ground Station {GroundStation.GetVersion()}",
-                    Title = Path.GetFileName(msg.PathToImage.LocalPath),
-                    Subject = msg.MetaData.Target?.Name,
-                    DateTaken = msg.MetaData.Image.ExposureStart.ToString("o"),
-                    CameraModel = msg.MetaData.Camera.Name,
-                    Comment = msg.MetaData.Telescope.Name,
-                };
-
-                var jpegBitmap = new JpegBitmapEncoder {
-                    QualityLevel = 90,
-                };
-
-                jpegBitmap.Frames.Add(BitmapFrame.Create(renderedImage.Image, null, metaData, null));
+                var pngBitmap = new PngBitmapEncoder();
+                pngBitmap.Frames.Add(bitmapFrame);
 
                 using var memoryStream = new MemoryStream();
-                jpegBitmap.Save(memoryStream);
+                pngBitmap.Save(memoryStream);
 
                 var ImageData = new ImageData() {
-                    JpegBitMap = memoryStream,
+                    PngBitMap = memoryStream,
                     ImageMetaData = msg.MetaData,
                     ImageStatistics = msg.Statistics,
                     StarDetectionAnalysis = msg.StarDetectionAnalysis,
