@@ -88,10 +88,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
             tts = new TTS();
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-
-            TTSFailureMessage = Properties.Settings.Default.TTSFailureMessage;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToTTS(FailuresToTTS copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -112,16 +108,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             return new FailuresToTTS(this) {
             };
         }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "TTSFailureMessage":
-                    TTSFailureMessage = Properties.Settings.Default.TTSFailureMessage;
-                    break;
-            }
-        }
-
-        private string TTSFailureMessage { get; set; }
 
         public override void Initialize() {
             _ = queueWorker.Start();
@@ -188,7 +174,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
-            var text = Utilities.Utilities.ResolveTokens(TTSFailureMessage, item.Entity, metadata);
+            var text = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TTSFailureMessage, item.Entity, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
             Logger.Info($"{this.Name}: Speaking \"{text}\"");

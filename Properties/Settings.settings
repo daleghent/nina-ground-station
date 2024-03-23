@@ -66,7 +66,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MqttDefaultTopic" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">/nina</Value>
     </Setting>
     <Setting Name="MqttClientId" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -114,7 +114,7 @@ Reasons: $$ERROR_LIST$$
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MqttLwtTopic" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">/nina/lastwill</Value>
     </Setting>
     <Setting Name="MqttLwtBirthPayload" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -154,8 +154,25 @@ Reasons: $$ERROR_LIST$$
 
 Reasons: $$ERROR_LIST$$</Value>
     </Setting>
-    <Setting Name="DiscordImageWebhookDefaultUrl" Type="System.String" Scope="User">
+    <Setting Name="DiscordImageWebhookUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DiscordFailureWebhookUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DiscordImageTypesSelected" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;LIGHT&lt;/string&gt;
+  &lt;string&gt;SNAPSHOT&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="TtsTestMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">It's full of stars!</Value>
+    </Setting>
+    <Setting Name="GroundStationMigratedProfiles" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

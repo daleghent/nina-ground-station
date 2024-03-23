@@ -26,7 +26,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading;
@@ -94,12 +93,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             pushover = new PushoverClient.PushoverClient();
 
-            PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
-            PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
-            NotificationSound = Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultFailureSound);
-            Priority = Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultFailurePriority);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultFailureSound;
+            Priority = GroundStation.GroundStationConfig.PushoverDefaultFailurePriority;
         }
 
         public FailuresToPushoverTrigger(FailuresToPushoverTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -182,8 +177,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var title = Utilities.Utilities.ResolveTokens(PushoverFailureTitleText, item.Entity, metadata);
-            var message = Utilities.Utilities.ResolveTokens(PushoverFailureBodyText, item.Entity, metadata);
+            var title = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.PushoverFailureTitleText, item.Entity, metadata);
+            var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.PushoverFailureBodyText, item.Entity, metadata);
 
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
@@ -197,7 +192,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                     var newCts = CancellationTokenSource.CreateLinkedTokenSource(token);
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
                         token.ThrowIfCancellationRequested();
-                        await pushover.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
+                        await PushoverClient.PushoverClient.PushMessage(title, message, Priority, NotificationSound, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -242,7 +237,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(pushover.ValidateSettings());
+            var i = new List<string>(PushoverClient.PushoverClient.ValidateSettings());
 
             if (i != Issues) {
                 Issues = i;
@@ -261,21 +256,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}";
-        }
-
-        private string PushoverFailureTitleText { get; set; }
-        private string PushoverFailureBodyText { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(PushoverFailureTitleText):
-                    PushoverFailureTitleText = Properties.Settings.Default.PushoverFailureTitleText;
-                    break;
-
-                case nameof(PushoverFailureBodyText):
-                    PushoverFailureBodyText = Properties.Settings.Default.PushoverFailureBodyText;
-                    break;
-            }
         }
     }
 }

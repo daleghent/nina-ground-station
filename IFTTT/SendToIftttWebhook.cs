@@ -151,15 +151,15 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                 { "value3", Utilities.Utilities.ResolveTokens(Value3, this, metadata) }
             };
 
-            await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
+            await IftttCommon.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(ifttt.ValidateSettings());
+            var i = new List<string>(IftttCommon.ValidateSettings());
 
-            if (string.IsNullOrEmpty(EventName) || string.IsNullOrWhiteSpace(EventName)) {
+            if (string.IsNullOrEmpty(EventName)) {
                 i.Add("IFTTT Webhook event name is missing");
             }
 

@@ -92,12 +92,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
 
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             ifttt = new IftttCommon();
-
-            IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
-            IftttFailureValue2 = Properties.Settings.Default.IftttFailureValue2;
-            IftttFailureValue3 = Properties.Settings.Default.IftttFailureValue3;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToIftttTrigger(FailuresToIftttTrigger copyMe) : this(
@@ -196,9 +190,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
             var dict = new Dictionary<string, string> {
-                { "value1", ResolveAllTokens(IftttFailureValue1, failedItem, metadata) },
-                { "value2", ResolveAllTokens(IftttFailureValue2, failedItem, metadata) },
-                { "value3", ResolveAllTokens(IftttFailureValue3, failedItem, metadata) }
+                { "value1", ResolveAllTokens(GroundStation.GroundStationConfig.IftttFailureValue1, failedItem, metadata) },
+                { "value2", ResolveAllTokens(GroundStation.GroundStationConfig.IftttFailureValue2, failedItem, metadata) },
+                { "value3", ResolveAllTokens(GroundStation.GroundStationConfig.IftttFailureValue3, failedItem, metadata) }
             };
 
             Logger.Info($"{this.Name}: Pushing message: {string.Join(" || ", dict.Values)}");
@@ -209,7 +203,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await ifttt.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
+                        await IftttCommon.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -233,9 +227,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(ifttt.ValidateSettings());
+            var i = new List<string>(IftttCommon.ValidateSettings());
 
-            if (string.IsNullOrEmpty(EventName) || string.IsNullOrWhiteSpace(EventName)) {
+            if (string.IsNullOrEmpty(EventName)) {
                 i.Add("IFTTT Webhooks event name is missing");
             }
 
@@ -257,31 +251,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
             return $"Category: {Category}, Item: {Name}";
         }
 
-        private string IftttFailureValue1 { get; set; }
-        private string IftttFailureValue2 { get; set; }
-        private string IftttFailureValue3 { get; set; }
-
         private string ResolveAllTokens(string text, FailedItem failedItem, IMetadata metadata) {
             text = Utilities.Utilities.ResolveTokens(text, this.Parent, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
             return text;
-        }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(IftttFailureValue1):
-                    IftttFailureValue1 = Properties.Settings.Default.IftttFailureValue1;
-                    break;
-
-                case nameof(IftttFailureValue2):
-                    IftttFailureValue2 = Properties.Settings.Default.IftttFailureValue2;
-                    break;
-
-                case nameof(IftttFailureValue3):
-                    IftttFailureValue3 = Properties.Settings.Default.IftttFailureValue3;
-                    break;
-            }
         }
     }
 }

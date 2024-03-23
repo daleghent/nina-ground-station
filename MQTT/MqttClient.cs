@@ -10,7 +10,6 @@
 
 #endregion "copyright"
 
-using DaleGhent.NINA.GroundStation.Utilities;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Connecting;
@@ -27,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.Mqtt {
 
-    internal class MqttClient {
+    public class MqttClient {
         private readonly IMqttClient mqttClient;
 
         public MqttClient() {
@@ -35,18 +34,20 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             mqttClient = mqttFactory.CreateMqttClient();
         }
 
-        public string ClientId { get; set; } = Properties.Settings.Default.MqttClientId;
-        public string Topic { get; set; } = Properties.Settings.Default.MqttDefaultTopic;
+        public string ClientId { get; set; } = GroundStation.GroundStationConfig.MqttClientId;
+        public string Topic { get; set; } = GroundStation.GroundStationConfig.MqttDefaultTopic;
         public string Payload { get; set; } = string.Empty;
-        public string LastWillTopic { get; set; } = string.Empty;
-        public string LastWillPayload { get; set; } = string.Empty;
-        public int Qos { get; set; } = Properties.Settings.Default.MqttDefaultQoSLevel;
-        public string MqttBrokerHost { get; } = Properties.Settings.Default.MqttBrokerHost;
-        public ushort MqttBrokerPort { get; } = Properties.Settings.Default.MqttBrokerPort;
-        public bool UseTls { get; } = Properties.Settings.Default.MqttBrokerUseTls;
-        public int MaxReconnectAttempts { get; } = Properties.Settings.Default.MqttMaxReconnectAttempts;
-        public string MqttUsername { get; } = Security.Decrypt(Properties.Settings.Default.MqttUsername);
-        public string MqttPassword { get; } = Security.Decrypt(Properties.Settings.Default.MqttPassword);
+        public string ContentType { get; set; } = "text/plain";
+        public byte[] BytePayload { get; set; } = [];
+        public string LastWillTopic { get; set; } = GroundStation.GroundStationConfig.MqttLwtTopic;
+        public string LastWillPayload { get; set; } = GroundStation.GroundStationConfig.MqttLwtLastWillPayload;
+        public int Qos { get; set; } = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
+        public string MqttBrokerHost { get; } = GroundStation.GroundStationConfig.MqttBrokerHost;
+        public ushort MqttBrokerPort { get; } = GroundStation.GroundStationConfig.MqttBrokerPort;
+        public bool UseTls { get; } = GroundStation.GroundStationConfig.MqttBrokerUseTls;
+        public int MaxReconnectAttempts { get; } = GroundStation.GroundStationConfig.MqttMaxReconnectAttempts;
+        public string MqttUsername { get; } = GroundStation.GroundStationConfig.MqttUsername;
+        public string MqttPassword { get; } = GroundStation.GroundStationConfig.MqttPassword;
         public bool IsConnected { get; set; } = false;
         public bool Shutdown { get; set; } = false;
         public MqttClientConnectResult MqttClientConnectResult { get; set; }
@@ -58,7 +59,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 .WithTcpServer(MqttBrokerHost, MqttBrokerPort)
                 .WithCleanSession();
 
-            if (!string.IsNullOrEmpty(ClientId) && !string.IsNullOrWhiteSpace(ClientId)) {
+            if (!string.IsNullOrEmpty(ClientId)) {
                 var guid = Guid.NewGuid();
                 var cidb = Encoding.UTF8.GetBytes(ClientId + "." + guid.ToString().Replace("-", ""));
                 var clientIdBytes = new byte[23];
@@ -70,7 +71,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 clientOptions.WithClientId(ClientId);
             }
 
-            if (!string.IsNullOrEmpty(LastWillTopic) && !string.IsNullOrWhiteSpace(LastWillTopic) && !string.IsNullOrEmpty(LastWillPayload) && !string.IsNullOrWhiteSpace(LastWillPayload)) {
+            if (!string.IsNullOrEmpty(LastWillTopic) && !string.IsNullOrEmpty(LastWillPayload)) {
                 var lwtPayload = new MqttApplicationMessageBuilder()
                     .WithTopic(LastWillTopic)
                     .WithPayload(LastWillPayload)
@@ -82,7 +83,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                 clientOptions.WithKeepAlivePeriod(TimeSpan.FromSeconds(2));
             }
 
-            if (!string.IsNullOrEmpty(MqttUsername) && !string.IsNullOrWhiteSpace(MqttUsername)) {
+            if (!string.IsNullOrEmpty(MqttUsername)) {
                 clientOptions.WithCredentials(MqttUsername, MqttPassword);
             }
 
@@ -142,8 +143,9 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
                     var payload = new MqttApplicationMessageBuilder()
                         .WithTopic(Topic)
+                        .WithContentType(ContentType)
                         .WithPayload(Payload)
-                        .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)Qos)
+                        .WithQualityOfServiceLevel(Qos)
                         .WithRetainFlag()
                         .Build();
 
@@ -156,6 +158,32 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
             return result;
         }
+
+        public async Task<MqttClientPublishResult> PublishBytes(CancellationToken ct) {
+            MqttClientPublishResult result = null;
+
+            try {
+                if (mqttClient.IsConnected) {
+                    Logger.Debug("Sending payload to broker");
+
+                    var payload = new MqttApplicationMessageBuilder()
+                        .WithTopic(Topic)
+                        .WithPayload(BytePayload)
+                        .WithContentType(ContentType)
+                        .WithQualityOfServiceLevel(Qos)
+                        .WithRetainFlag()
+                        .Build();
+
+                    result = await mqttClient.PublishAsync(payload, ct);
+                }
+            } catch (Exception ex) {
+                Logger.Error($"Error publishing to broker: {ex.Message}");
+                throw;
+            }
+
+            return result;
+        }
+
 
         public async Task Ping(CancellationToken ct) {
             try {

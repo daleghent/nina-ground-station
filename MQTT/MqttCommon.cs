@@ -13,7 +13,6 @@
 using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,22 +21,17 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
     public class MqttCommon {
 
         public MqttCommon() {
-            MqttBrokerHost = Properties.Settings.Default.MqttBrokerHost;
-            MqttBrokerPort = Properties.Settings.Default.MqttBrokerPort;
-            MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
-            MqttClientId = Properties.Settings.Default.MqttClientId;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public async Task PublishMessage(string topic, string message, int qos, CancellationToken ct) {
+        public static async Task PublishMessage(string topic, string message, int qos, CancellationToken ct, string contentType = "text/plain") {
             var mqttClient = new MqttClient() {
                 Topic = topic,
                 Payload = message,
                 Qos = qos,
+                ContentType = contentType,
             };
 
-            Logger.Debug($"Publishing message to {MqttBrokerHost}:{MqttBrokerPort}, UseTLS={MqttBrokerUseTls}, Topic={topic}");
+            Logger.Debug($"Publishing message to {GroundStation.GroundStationConfig.MqttBrokerHost}:{GroundStation.GroundStationConfig.MqttBrokerPort}, UseTLS={GroundStation.GroundStationConfig.MqttBrokerUseTls}, Topic={topic}");
 
             try {
                 var options = mqttClient.Prepare();
@@ -51,10 +45,32 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             }
         }
 
-        public IList<string> ValidateSettings() {
+        public static async Task PublishByteMessage(string topic, byte[] payload, int qos, string contentType, CancellationToken ct) {
+            var mqttClient = new MqttClient() {
+                Topic = topic,
+                BytePayload = payload,
+                Qos = qos,
+                ContentType = contentType,
+            };
+
+            Logger.Debug($"Publishing message to {GroundStation.GroundStationConfig.MqttBrokerHost}:{GroundStation.GroundStationConfig.MqttBrokerPort}, UseTLS={GroundStation.GroundStationConfig.MqttBrokerUseTls}, Topic={topic}");
+
+            try {
+                var options = mqttClient.Prepare();
+
+                await mqttClient.Connect(options, ct);
+                await mqttClient.PublishBytes(ct);
+                await mqttClient.Disconnect(ct);
+            } catch (Exception ex) {
+                Logger.Error($"Error sending to MQTT broker: {ex.Message}");
+                throw;
+            }
+        }
+
+        public static IList<string> ValidateSettings() {
             var issues = new List<string>();
 
-            if (string.IsNullOrEmpty(MqttBrokerHost) || string.IsNullOrWhiteSpace(MqttBrokerHost)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.MqttBrokerHost)) {
                 issues.Add("MQTT broker hostname or IP not configured");
             }
 
@@ -66,30 +82,5 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             "1 - At Least Once",
             "2 - Exactly Once",
         };
-
-        private string MqttBrokerHost { get; set; }
-        private ushort MqttBrokerPort { get; set; }
-        private string MqttClientId { get; set; }
-        private bool MqttBrokerUseTls { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(MqttBrokerHost):
-                    MqttBrokerHost = Properties.Settings.Default.MqttBrokerHost;
-                    break;
-
-                case nameof(MqttBrokerPort):
-                    MqttBrokerPort = Properties.Settings.Default.MqttBrokerPort;
-                    break;
-
-                case nameof(MqttBrokerUseTls):
-                    MqttBrokerUseTls = Properties.Settings.Default.MqttBrokerUseTls;
-                    break;
-
-                case nameof(MqttClientId):
-                    MqttClientId = Properties.Settings.Default.MqttClientId;
-                    break;
-            }
-        }
     }
 }

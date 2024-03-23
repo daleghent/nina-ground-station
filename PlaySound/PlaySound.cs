@@ -28,7 +28,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
 
     [ExportMetadata("Name", "Play Sound")]
     [ExportMetadata("Description", "Plays the specified audio file")]
-    [ExportMetadata("Icon", "PlaySoundSVG")]
+    [ExportMetadata("Icon", "PlaySound_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -38,7 +38,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
 
         [ImportingConstructor]
         public PlaySound() {
-            SoundFile = Properties.Settings.Default.PlaySoundDefaultFile;
+            SoundFile = GroundStation.GroundStationConfig.PlaySoundDefaultFile;
 
             Validate();
         }
@@ -92,12 +92,12 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
             return;
         }
 
-        public IList<string> Issues { get; set; } = new List<string>();
+        public IList<string> Issues { get; set; } = [];
 
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(soundFile) || string.IsNullOrWhiteSpace(soundFile)) {
+            if (string.IsNullOrEmpty(soundFile)) {
                 i.Add("Sound file has not been specified");
             } else {
                 if (!File.Exists(soundFile)) {

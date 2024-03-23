@@ -27,7 +27,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -94,13 +93,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             email = new EmailCommon();
 
-            SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-            Recipient = Properties.Settings.Default.SmtpDefaultRecipients;
-
-            EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
-            EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            Recipient = GroundStation.GroundStationConfig.SmtpDefaultRecipients;
         }
 
         public FailuresToEmailTrigger(FailuresToEmailTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -195,8 +188,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
             Logger.Info($"{this.Name}: Sending message to [{Recipient}] because {failedItem.Name} failed");
 
-            var subject = Utilities.Utilities.ResolveTokens(EmailFailureSubjectText, item.Entity, metadata);
-            var body = Utilities.Utilities.ResolveTokens(EmailFailureBodyText, item.Entity);
+            var subject = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureSubjectText, item.Entity, metadata);
+            var body = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureBodyText, item.Entity);
 
             subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);
             body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
@@ -206,14 +199,14 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             for (int i = 0; i < attempts; i++) {
                 try {
                     var message = new MimeMessage();
-                    message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
+                    message.From.Add(MailboxAddress.Parse(GroundStation.GroundStationConfig.SmtpFromAddress));
                     message.To.AddRange(InternetAddressList.Parse(Recipient));
                     message.Subject = subject;
                     message.Body = new TextPart("plain") { Text = body };
 
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await email.SendEmail(message, newCts.Token);
+                        await EmailCommon.SendEmail(message, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -237,13 +230,13 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(email.ValidateSettings());
+            var i = new List<string>(EmailCommon.ValidateSettings());
 
-            if (string.IsNullOrEmpty(Recipient) || string.IsNullOrWhiteSpace(Recipient)) {
+            if (string.IsNullOrEmpty(Recipient)) {
                 i.Add("Email recipient is missing");
             }
 
-            if (string.IsNullOrEmpty(SmtpFromAddress) || string.IsNullOrWhiteSpace(SmtpFromAddress)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.SmtpFromAddress)) {
                 i.Add("Email from address is missing");
             }
 
@@ -263,32 +256,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Recipient: {recipient}";
-        }
-
-        private string SmtpFromAddress { get; set; }
-        private string SmtpDefaultRecipients { get; set; }
-        private string EmailFailureSubjectText { get; set; }
-        private string EmailFailureBodyText { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(SmtpFromAddress):
-                    SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-                    break;
-
-                case nameof(SmtpDefaultRecipients):
-                    SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-                    Recipient = SmtpDefaultRecipients;
-                    break;
-
-                case nameof(EmailFailureSubjectText):
-                    EmailFailureSubjectText = Properties.Settings.Default.EmailFailureSubjectText;
-                    break;
-
-                case nameof(EmailFailureBodyText):
-                    EmailFailureBodyText = Properties.Settings.Default.EmailFailureBodyText;
-                    break;
-            }
         }
     }
 }

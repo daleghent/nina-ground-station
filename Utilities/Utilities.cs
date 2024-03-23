@@ -77,7 +77,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             text = text.Replace(@"$$DATE_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("d")));
             text = text.Replace(@"$$TIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("T")));
             text = text.Replace(@"$$DATETIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("G")));
-            text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch().ToString());
+            text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch(datetime).ToString());
 
             text = ParseFormattedDateTime(text, datetime, urlEncode);
 
@@ -332,8 +332,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return target;
         }
 
-        internal static long UnixEpoch() {
-            return (long)DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
+        internal static long UnixEpoch(DateTime dateTime) {
+            return (long)dateTime.ToUniversalTime().Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
         private static string ParseFormattedDateTime(string text, DateTime datetime, bool urlEncode) {

@@ -16,13 +16,6 @@
     <localconverters:EmptyStringToEmptyText x:Key="EmptyStringToEmptyText" />
     <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
-    <GeometryGroup x:Key="HTTP_SVG">
-        <PathGeometry Figures="m 48.800097 70.908333 h -1.674311 v -3.017894 h -3.06957 v 3.017894 h -1.669144 v -7.410377 h 1.669144 v 2.955883 h 3.06957 v -2.955883 h 1.674311 z" FillRule="NonZero" />
-        <PathGeometry Figures="m 55.698879 64.857042 h -2.11356 v 6.051291 h -1.674311 v -6.051291 h -2.103224 v -1.359086 h 5.891095 z" FillRule="NonZero" />
-        <PathGeometry Figures="m 62.111904 64.857042 h -2.11356 v 6.051291 h -1.674311 v -6.051291 h -2.103224 v -1.359086 h 5.891095 z" FillRule="NonZero" />
-        <PathGeometry Figures="m 64.778399 68.355525 v 2.552808 h -1.669144 v -7.410377 h 2.614819 q 2.800854 0 2.800854 2.361605 0 1.116208 -0.80615 1.80867 -0.800982 0.687294 -2.144565 0.687294 z m 0 -3.575998 v 2.30993 h 0.656288 q 1.333248 0 1.333248 -1.167884 0 -1.142046 -1.333248 -1.142046 z" FillRule="NonZero" />
-    </GeometryGroup>
-
     <!--  We need to register a DataTemplate for the Object of Type "HttpClientSetup" - this template will be used by the windowservice when opening the new window  -->
     <DataTemplate DataType="{x:Type local:HttpClientSetup}">
         <local:HttpClientSetupView />

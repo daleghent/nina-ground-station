@@ -85,14 +85,14 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 telescopeMediator, weatherDataMediator);
 
             mqtt = new MqttCommon();
-            Topic = Properties.Settings.Default.MqttDefaultTopic;
-            QoS = Properties.Settings.Default.MqttDefaultQoSLevel;
+            Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
+            QoS = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
         }
 
         public SendToMqtt() {
             mqtt = new MqttCommon();
-            Topic = Properties.Settings.Default.MqttDefaultTopic;
-            QoS = Properties.Settings.Default.MqttDefaultQoSLevel;
+            Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
+            QoS = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
         }
 
         public SendToMqtt(SendToMqtt copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -142,13 +142,13 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             var payload = Utilities.Utilities.ResolveTokens(Payload, this, metadata);
 
             Logger.Trace($"{this}: {payload}");
-            await mqtt.PublishMessage(Topic, payload, QoS, ct);
+            await MqttCommon.PublishMessage(Topic, payload, QoS, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(mqtt.ValidateSettings());
+            var i = new List<string>(MqttCommon.ValidateSettings());
 
             if (string.IsNullOrEmpty(Topic)) {
                 i.Add("A topic is not defined");

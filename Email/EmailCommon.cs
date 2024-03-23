@@ -10,13 +10,11 @@
 
 #endregion "copyright"
 
-using DaleGhent.NINA.GroundStation.Utilities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using NINA.Core.Utility;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,75 +24,49 @@ namespace DaleGhent.NINA.GroundStation.Email {
     public class EmailCommon {
 
         public EmailCommon() {
-            SmtpHostName = Properties.Settings.Default.SmtpHostName;
-            SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-            SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
-            SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public async Task SendEmail(MimeMessage message, CancellationToken ct) {
+        public static async Task SendEmail(MimeMessage message, CancellationToken ct) {
+            var smtpHostName = GroundStation.GroundStationConfig.SmtpHostName;
+            var smtpHostPort = GroundStation.GroundStationConfig.SmtpHostPort;
+            var smtpUsername = GroundStation.GroundStationConfig.SmtpUsername;
+            var smtpPassword = GroundStation.GroundStationConfig.SmtpPassword;
+
             var xMailerHeader = new Header("X-Mailer", $"Ground Station/{GroundStation.GetVersion()}, NINA/{CoreUtil.Version}");
             message.Headers.Add(xMailerHeader);
 
             var smtp = new SmtpClient();
 
             try {
-                await smtp.ConnectAsync(SmtpHostName, SmtpHostPort, SecureSocketOptions.Auto, ct);
+                await smtp.ConnectAsync(smtpHostName, smtpHostPort, SecureSocketOptions.Auto, ct);
 
-                if (!string.IsNullOrEmpty(SmtpUsername) && !string.IsNullOrEmpty(SmtpPassword)) {
-                    await smtp.AuthenticateAsync(SmtpUsername, SmtpPassword, ct);
+                if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword)) {
+                    await smtp.AuthenticateAsync(smtpUsername, smtpPassword, ct);
                 }
 
                 await smtp.SendAsync(message, ct);
                 await smtp.DisconnectAsync(true, ct);
             } catch (SocketException ex) {
-                Logger.Error($"SmtpEmail: Connection to {SmtpHostName}:{SmtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
+                Logger.Error($"SmtpEmail: Connection to {smtpHostName}:{smtpHostPort} failed: {ex.SocketErrorCode}: {ex.Message}");
                 throw;
             } catch (AuthenticationException ex) {
-                Logger.Error($"SendEmail: User {SmtpUsername} failed to authenticate with {SmtpHostName}:{SmtpHostPort}: {ex.Message}");
+                Logger.Error($"SendEmail: User {smtpUsername} failed to authenticate with {smtpHostName}:{smtpHostPort}: {ex.Message}");
                 throw;
             }
         }
 
-        public IList<string> ValidateSettings() {
+        public static IList<string> ValidateSettings() {
             var issues = new List<string>();
 
-            if (string.IsNullOrEmpty(SmtpHostName) || string.IsNullOrWhiteSpace(SmtpHostName)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.SmtpHostName)) {
                 issues.Add("SMTP server is not configured");
             }
 
-            if (SmtpHostPort < 1) {
+            if (GroundStation.GroundStationConfig.SmtpHostPort < 1) {
                 issues.Add("SMTP port is invalid");
             }
 
             return issues;
-        }
-
-        private string SmtpHostName { get; set; }
-        private ushort SmtpHostPort { get; set; }
-        private string SmtpUsername { get; set; }
-        private string SmtpPassword { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(SmtpHostName):
-                    SmtpHostName = Properties.Settings.Default.SmtpHostName;
-                    break;
-
-                case nameof(SmtpHostPort):
-                    SmtpHostPort = Properties.Settings.Default.SmtpHostPort;
-                    break;
-
-                case nameof(SmtpUsername):
-                    SmtpUsername = Security.Decrypt(Properties.Settings.Default.SmtpUsername);
-                    break;
-
-                case nameof(SmtpPassword):
-                    SmtpPassword = Security.Decrypt(Properties.Settings.Default.SmtpPassword);
-                    break;
-            }
         }
     }
 }

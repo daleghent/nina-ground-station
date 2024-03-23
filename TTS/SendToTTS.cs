@@ -123,7 +123,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+            if (string.IsNullOrEmpty(Message)) {
                 i.Add("TTS message is missing");
             }
 

@@ -26,7 +26,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -91,9 +90,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             telegram = new TelegramCommon();
-
-            TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToTelegramTrigger(FailuresToTelegramTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -176,7 +172,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, item.Entity, metadata);
+            var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TelegramFailureBodyText, item.Entity, metadata);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
             Logger.Info($"{this.Name}: Sending {message}");
@@ -187,7 +183,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await telegram.SendTelegram(message, true, newCts.Token);
+                        await TelegramCommon.SendTelegram(message, true, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -211,7 +207,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(telegram.ValidateSettings());
+            var i = new List<string>(TelegramCommon.ValidateSettings());
 
             if (i != Issues) {
                 Issues = i;
@@ -228,16 +224,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}";
-        }
-
-        private string TelegramFailureBodyText { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(TelegramFailureBodyText):
-                    TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
-                    break;
-            }
         }
     }
 }

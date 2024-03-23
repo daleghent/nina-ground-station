@@ -123,15 +123,15 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
-            await telegram.SendTelegram(message, DoNotNotify, ct);
+            await TelegramCommon.SendTelegram(message, DoNotNotify, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(telegram.ValidateSettings());
+            var i = new List<string>(TelegramCommon.ValidateSettings());
 
-            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+            if (string.IsNullOrEmpty(Message)) {
                 i.Add("Telegram message is empty!");
             }
 

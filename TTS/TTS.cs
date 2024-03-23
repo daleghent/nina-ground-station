@@ -31,7 +31,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         private static string GetVoice() {
             lock (synthesizer) {
-                List<VoiceInfo> voices = new();
+                List<VoiceInfo> voices = [];
 
                 foreach (var voice in synthesizer.GetInstalledVoices()) {
                     if (voice.Enabled) {

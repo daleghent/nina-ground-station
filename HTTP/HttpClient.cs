@@ -224,7 +224,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(HttpUri) || string.IsNullOrWhiteSpace(HttpUri)) {
+            if (string.IsNullOrEmpty(HttpUri)) {
                 i.Add("URL is missing");
                 goto end;
             }

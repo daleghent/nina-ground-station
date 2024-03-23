@@ -10,11 +10,9 @@
 
 #endregion "copyright"
 
-using DaleGhent.NINA.GroundStation.Utilities;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Http;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,39 +21,26 @@ namespace DaleGhent.NINA.GroundStation.Ifttt {
     public class IftttCommon {
 
         public IftttCommon() {
-            IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
-        public async Task SendIftttWebhook(string body, string eventName, CancellationToken ct) {
+        public static async Task SendIftttWebhook(string body, string eventName, CancellationToken ct) {
             string iftttWebhookHost = "https://maker.ifttt.com";
 
-            string webhookUrl = iftttWebhookHost + "/trigger/" + eventName + "/with/key/" + IFTTTWebhookKey;
+            string webhookUrl = iftttWebhookHost + "/trigger/" + eventName + "/with/key/" + GroundStation.GroundStationConfig.IftttWebhookKey;
             var request = new HttpPostRequest(webhookUrl, body, "application/json");
 
             Logger.Debug($"Sending request to {webhookUrl}");
             await request.Request(ct);
         }
 
-        public IList<string> ValidateSettings() {
+        public static IList<string> ValidateSettings() {
             var issues = new List<string>();
 
-            if (string.IsNullOrEmpty(IFTTTWebhookKey) || string.IsNullOrWhiteSpace(IFTTTWebhookKey)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.IftttWebhookKey)) {
                 issues.Add("IFTTT Webhooks key is missing");
             }
 
             return issues;
-        }
-
-        private string IFTTTWebhookKey { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(IFTTTWebhookKey):
-                    IFTTTWebhookKey = Security.Decrypt(Properties.Settings.Default.IFTTTWebhookKey);
-                    break;
-            }
         }
     }
 }

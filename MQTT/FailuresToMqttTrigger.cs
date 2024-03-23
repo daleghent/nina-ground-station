@@ -48,8 +48,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public FailuresToMqttTrigger() {
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
             mqtt = new MqttCommon();
-            Topic = Properties.Settings.Default.MqttDefaultTopic;
-            QoS = Properties.Settings.Default.MqttDefaultFailureQoSLevel;
+            Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
+            QoS = GroundStation.GroundStationConfig.MqttDefaultFailureQoSLevel;
         }
 
         public FailuresToMqttTrigger(FailuresToMqttTrigger copyMe) : this() {
@@ -149,8 +149,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 attempts = failedItem.Attempts,
                 date_local = now.ToString("o"),
                 date_utc = now.ToUniversalTime().ToString("o"),
-                date_unix = Utilities.Utilities.UnixEpoch(),
-                target_info = new List<TargetInfo>(),
+                date_unix = Utilities.Utilities.UnixEpoch(now),
+                target_info = [],
                 error_list = failedItem.Reasons,
             };
 
@@ -171,7 +171,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
+                        await MqttCommon.PublishMessage(Topic, payload, QoS, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -197,7 +197,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(mqtt.ValidateSettings());
+            var i = new List<string>(MqttCommon.ValidateSettings());
 
             if (string.IsNullOrEmpty(Topic)) {
                 i.Add("A topic is not defined");

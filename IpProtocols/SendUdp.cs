@@ -35,7 +35,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
 
     [ExportMetadata("Name", "Send UDP")]
     [ExportMetadata("Description", "Emits a UDP packet to the specified endpoint containing the provided payload")]
-    [ExportMetadata("Icon", "PlaySoundSVG")]
+    [ExportMetadata("Icon", "PlaySound_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -252,7 +252,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
         public bool Validate() {
             var issues = new List<string>();
 
-            if (string.IsNullOrEmpty(Address) || string.IsNullOrWhiteSpace(Address)) {
+            if (string.IsNullOrEmpty(Address)) {
                 issues.Add("No hostname or IP address specified");
             } else if (!AddressIsOK) {
                 issues.Add("IP or hostname is invalid");
@@ -294,7 +294,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
 
         private async void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName.Equals(nameof(Address))) {
-                if (!string.IsNullOrEmpty(Address) && !string.IsNullOrWhiteSpace(Address)) {
+                if (!string.IsNullOrEmpty(Address)) {
                     Logger.Trace($"Checking IP format and DNS for {Address}");
 
                     if (!IPAddress.TryParse(Address, out IPAddress ipaddress)) {

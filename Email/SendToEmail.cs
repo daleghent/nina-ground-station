@@ -21,7 +21,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,20 +85,11 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 telescopeMediator, weatherDataMediator);
 
             email = new EmailCommon();
-
-            SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-            SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-            Recipient = SmtpDefaultRecipients;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public SendToEmail() {
             email = new EmailCommon();
-
-            SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-            SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-            Recipient = SmtpDefaultRecipients;
+            Recipient = GroundStation.GroundStationConfig.SmtpDefaultRecipients;
         }
 
         public SendToEmail(SendToEmail copyMe) : this(
@@ -146,32 +136,32 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var message = new MimeMessage();
-            message.From.Add(MailboxAddress.Parse(SmtpFromAddress));
+            message.From.Add(MailboxAddress.Parse(GroundStation.GroundStationConfig.SmtpFromAddress));
             message.To.AddRange(InternetAddressList.Parse(Recipient));
             message.Subject = Utilities.Utilities.ResolveTokens(Subject, this, metadata);
             message.Body = new TextPart("plain") { Text = Utilities.Utilities.ResolveTokens(Body, this, metadata) };
 
-            await email.SendEmail(message, ct);
+            await EmailCommon.SendEmail(message, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(email.ValidateSettings());
+            var i = new List<string>(EmailCommon.ValidateSettings());
 
-            if (string.IsNullOrEmpty(Recipient) || string.IsNullOrWhiteSpace(Recipient)) {
+            if (string.IsNullOrEmpty(Recipient)) {
                 i.Add("Email recipient is missing");
             }
 
-            if (string.IsNullOrEmpty(SmtpFromAddress) || string.IsNullOrWhiteSpace(SmtpFromAddress)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.SmtpFromAddress)) {
                 i.Add("Email from address is missing");
             }
 
-            if (string.IsNullOrEmpty(Subject) || string.IsNullOrWhiteSpace(Subject)) {
+            if (string.IsNullOrEmpty(Subject)) {
                 i.Add("Email subject is missing");
             }
 
-            if (string.IsNullOrEmpty(Body) || string.IsNullOrWhiteSpace(Body)) {
+            if (string.IsNullOrEmpty(Body)) {
                 i.Add("Email body is missing");
             }
 
@@ -193,22 +183,6 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Recipient: {recipient}, Subject: {subject}";
-        }
-
-        private string SmtpFromAddress { get; set; }
-        private string SmtpDefaultRecipients { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(SmtpFromAddress):
-                    SmtpFromAddress = Properties.Settings.Default.SmtpFromAddress;
-                    break;
-
-                case nameof(SmtpDefaultRecipients):
-                    SmtpDefaultRecipients = Properties.Settings.Default.SmtpDefaultRecipients;
-                    Recipient = SmtpDefaultRecipients;
-                    break;
-            }
         }
     }
 }

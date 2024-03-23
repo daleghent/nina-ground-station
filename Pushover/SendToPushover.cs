@@ -86,15 +86,15 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
             pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
-            Priority = Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultNotificationPriority);
+            NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultNotificationSound;
+            Priority = GroundStation.GroundStationConfig.PushoverDefaultNotificationPriority;
         }
 
         public SendToPushover() {
             pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
-            Priority = Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultNotificationPriority);
+            NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultNotificationSound;
+            Priority = GroundStation.GroundStationConfig.PushoverDefaultNotificationPriority;
         }
 
         public SendToPushover(SendToPushover copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -154,19 +154,19 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             var title = Utilities.Utilities.ResolveTokens(Title, this, metadata);
             var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
-            await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
+            await PushoverClient.PushoverClient.PushMessage(title, message, Priority, NotificationSound, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(pushover.ValidateSettings());
+            var i = new List<string>(PushoverClient.PushoverClient.ValidateSettings());
 
-            if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title)) {
+            if (string.IsNullOrEmpty(Title)) {
                 i.Add("Pushover message title is missing");
             }
 
-            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+            if (string.IsNullOrEmpty(Message)) {
                 i.Add("Pushover message body is missing");
             }
 
