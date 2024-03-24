@@ -1,9 +1,10 @@
 ﻿<!--
-    Copyright 2021-2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/-->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
 <ResourceDictionary
     x:Class="DaleGhent.NINA.GroundStation.Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
