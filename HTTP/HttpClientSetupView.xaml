@@ -20,10 +20,6 @@
     d:DesignWidth="500"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="../Resources/Resources.xaml" />
-    </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

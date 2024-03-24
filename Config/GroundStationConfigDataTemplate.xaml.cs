@@ -19,9 +19,9 @@ using System.Collections.Generic;
 
 namespace DaleGhent.NINA.GroundStation.Config {
 
-    public partial class ConfigDataTemplates : ResourceDictionary {
+    public partial class GroundStationConfigDataTemplate : ResourceDictionary {
 
-        public ConfigDataTemplates() {
+        public GroundStationConfigDataTemplate() {
             InitializeComponent();
         }
 
