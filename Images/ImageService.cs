@@ -33,7 +33,7 @@ namespace DaleGhent.NINA.GroundStation.Images {
                 lock (imageLock) {
                     image = value;
                     ImageUpdatedEvent?.Invoke();
-                    Logger.Debug($"ImageService: Image set. PNG size = {image.PngBitMap.Length} bytes, Camera = {image.ImageMetaData.Camera.Name}");
+                    Logger.Debug($"ImageService: Image set. {image.ImageFormat} size = {image.Bitmap.Length} bytes, Camera = {image.ImageMetaData.Camera.Name}");
 
                 }
             }

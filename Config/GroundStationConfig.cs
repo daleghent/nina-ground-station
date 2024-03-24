@@ -611,6 +611,35 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        //
+        // Image Service options
+        //
+
+        public byte ImageServiceFormat {
+            get => pluginOptionsAccessor.GetValueByte(nameof(ImageServiceFormat), (byte)ImageFormatEnum.PNG);
+            set {
+                pluginOptionsAccessor.SetValueByte(nameof(ImageServiceFormat), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public byte ImageServiceImageScaling {
+            get => pluginOptionsAccessor.GetValueByte(nameof(ImageServiceImageScaling), 100);
+            set {
+                if (value < 10) { value = 10; }
+                if (value > 100) { value = 100; }
+
+                pluginOptionsAccessor.SetValueByte(nameof(ImageServiceImageScaling), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public ImageFormatEnum[] ImageServiceFormats => Enum.GetValues(typeof(ImageFormatEnum)).Cast<ImageFormatEnum>().ToArray();
+
+        //
+        // Utility methods
+        //
+
         public void SetSmtpPassword(SecureString s) {
             SmtpPassword = SecureStringToString(s);
         }

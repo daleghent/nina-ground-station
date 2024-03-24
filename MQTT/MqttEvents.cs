@@ -61,9 +61,8 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
             if (!GroundStation.GroundStationConfig.MqttImagePubliserMetadataOnly) {
                 topic = GroundStation.GroundStationConfig.MqttImagePublisherImageTopic;
-                contentType = "image/png";
 
-                await MqttCommon.PublishByteMessage(topic, ImageService.Instance.Image.PngBitMap.ToArray(), qos, contentType, CancellationToken.None);
+                await MqttCommon.PublishByteMessage(topic, ImageService.Instance.Image.Bitmap.ToArray(), qos, ImageService.Instance.Image.ImageMimeType, CancellationToken.None);
             }
         }
 

@@ -87,12 +87,11 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                         $"**{Loc.Instance["LblBitDepth"]}:** {imageData.ImageStatistics.BitDepth}, **{Loc.Instance["LblHFRStDev"]}:** {imageData.StarDetectionAnalysis.HFRStDev:F2}");
 
             var imageFileName = Path.GetFileName(imageData.ImagePath);
-            imageFileName = Path.ChangeExtension(imageFileName, "png");
-
+            imageFileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
             embed.WithImageUrl($"attachment://{imageFileName}");
 
             var discordWebhookCommon = new DiscordWebhookCommon();
-            discordWebhookCommon.SendDiscordImage(ImageService.Instance.Image, imageFileName, embed).Wait();
+            discordWebhookCommon.SendDiscordImage(imageData, imageFileName, embed).Wait();
         }
     }
 }

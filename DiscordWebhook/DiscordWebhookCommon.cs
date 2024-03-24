@@ -46,7 +46,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 }
 
                 using var client = new DiscordWebhookClient(string.IsNullOrEmpty(DiscordImageWebhookUrl) ? DiscordWebhookUrl : DiscordImageWebhookUrl);
-                await client.SendFileAsync(imageData.PngBitMap, fileName, string.Empty, username: DiscordWebhookBotName, embeds: new[] { embed.Build() });
+                await client.SendFileAsync(imageData.Bitmap, fileName, string.Empty, username: DiscordWebhookBotName, embeds: new[] { embed.Build() });
                 client.Dispose();
             } catch (Exception ex) {
                 throw new Exception($"Failed to send Discord webhook: {ex.Message}");

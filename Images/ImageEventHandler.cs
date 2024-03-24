@@ -6,6 +6,7 @@ using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace DaleGhent.NINA.GroundStation.Images {
     public class ImageEventHandler(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory) {
@@ -20,7 +21,7 @@ namespace DaleGhent.NINA.GroundStation.Images {
 
         public void Stop() {
             imageSaveMediator.ImageSaved -= ImageSaveMeditator_ImageSaved;
-            ImageService.Instance.Image.PngBitMap.Dispose();
+            ImageService.Instance.Image.Bitmap.Dispose();
         }
 
         private async void ImageSaveMeditator_ImageSaved(object sender, ImageSavedEventArgs msg) {
@@ -37,6 +38,8 @@ namespace DaleGhent.NINA.GroundStation.Images {
                 isBayered = true;
             }
 
+            var memoryStream = new MemoryStream();
+
             try {
                 var imageData = await imageDataFactory.CreateFromFile(msg.PathToImage.LocalPath, bitDepth, isBayered, rawConverter);
                 var renderedImage = imageData.RenderImage();
@@ -46,17 +49,44 @@ namespace DaleGhent.NINA.GroundStation.Images {
                 }
 
                 renderedImage = await renderedImage.Stretch(stretchFactor, blackClipping, unlinkedStretch);
-                var bitmapFrame = BitmapFrame.Create(renderedImage.Image);
+                BitmapFrame bitmapFrame;
 
-                var pngBitmap = new PngBitmapEncoder();
-                pngBitmap.Frames.Add(bitmapFrame);
+                if (GroundStation.GroundStationConfig.ImageServiceImageScaling < 100) {
+                    var scaling = GroundStation.GroundStationConfig.ImageServiceImageScaling / 100d;
 
-                using var memoryStream = new MemoryStream();
-                pngBitmap.Save(memoryStream);
+                    var transform = new ScaleTransform(scaling, scaling);
+                    var scaledBitmap = new TransformedBitmap(renderedImage.Image, transform);
+                    bitmapFrame = BitmapFrame.Create(scaledBitmap);
+                } else {
+                    bitmapFrame = BitmapFrame.Create(renderedImage.Image);
+                }
+
+                string contentType = string.Empty;
+                string fileExtension = string.Empty;
+
+                switch ((ImageFormatEnum)GroundStation.GroundStationConfig.ImageServiceFormat) {
+                    case ImageFormatEnum.JPEG:
+                        var jpegBitmap = new JpegBitmapEncoder();
+                        jpegBitmap.Frames.Add(BitmapFrame.Create(bitmapFrame));
+                        jpegBitmap.Save(memoryStream);
+                        contentType = "image/jpeg";
+                        fileExtension = "jpg";
+                        break;
+
+                    case ImageFormatEnum.PNG:
+                        var pngBitmap = new PngBitmapEncoder();
+                        pngBitmap.Frames.Add(bitmapFrame);
+                        pngBitmap.Save(memoryStream);
+                        contentType = "image/png";
+                        fileExtension = "png";
+                        break;
+                }
 
                 var ImageData = new ImageData() {
-                    PngBitMap = memoryStream,
+                    Bitmap = memoryStream,
                     ImageMetaData = msg.MetaData,
+                    ImageMimeType = contentType,
+                    ImageFileExtension = fileExtension,
                     ImageStatistics = msg.Statistics,
                     StarDetectionAnalysis = msg.StarDetectionAnalysis,
                     ImagePath = msg.PathToImage.LocalPath,
@@ -65,6 +95,8 @@ namespace DaleGhent.NINA.GroundStation.Images {
                 ImageService.Instance.Image = ImageData;
             } catch (Exception ex) {
                 Logger.Error($"Exception: {ex.Message} {ex.StackTrace}");
+            } finally {
+                memoryStream.Dispose();
             }
         }
     }
