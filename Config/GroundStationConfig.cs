@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Settings = DaleGhent.NINA.GroundStation.Properties.Settings;
