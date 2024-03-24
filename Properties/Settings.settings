@@ -143,22 +143,10 @@ Reasons: $$ERROR_LIST$$
     <Setting Name="PlaySoundDefaultFailureFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DiscordWebhookDefaultUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DiscordWebhookDefaultBotName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">N.I.N.A.</Value>
-    </Setting>
     <Setting Name="DiscordWebhookFailureMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
 
-Reasons: $$ERROR_LIST$$</Value>
-    </Setting>
-    <Setting Name="DiscordImageWebhookUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="DiscordFailureWebhookUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+**Reasons:** $$ERROR_LIST$$</Value>
     </Setting>
     <Setting Name="DiscordImageTypesSelected" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

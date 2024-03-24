@@ -554,7 +554,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         public string DiscordWebhookFailureMessage {
-            get => pluginOptionsAccessor.GetValueString(nameof(DiscordWebhookFailureMessage), string.Empty);
+            get => pluginOptionsAccessor.GetValueString(nameof(DiscordWebhookFailureMessage), Settings.Default.DiscordWebhookFailureMessage);
             set {
                 pluginOptionsAccessor.SetValueString(nameof(DiscordWebhookFailureMessage), value);
                 RaisePropertyChanged();
