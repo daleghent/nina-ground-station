@@ -645,7 +645,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
-        public ImageFormatEnum[] ImageServiceFormats => Enum.GetValues(typeof(ImageFormatEnum)).Cast<ImageFormatEnum>().ToArray();
+        public static ImageFormatEnum[] ImageServiceFormats => Enum.GetValues(typeof(ImageFormatEnum)).Cast<ImageFormatEnum>().ToArray();
 
         //
         // Utility methods
