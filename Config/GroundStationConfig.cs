@@ -826,13 +826,13 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         private void MigrateSettingsToProfile() {
-            IftttWebhookKey = Settings.Default.IFTTTWebhookKey;
+            IftttWebhookKey = Security.Decrypt(Settings.Default.IFTTTWebhookKey);
             IftttFailureValue1 = Settings.Default.IftttFailureValue1;
             IftttFailureValue2 = Settings.Default.IftttFailureValue2;
             IftttFailureValue3 = Settings.Default.IftttFailureValue3;
 
-            PushoverUserKey = Settings.Default.PushoverUserKey;
-            PushoverAppKey = Settings.Default.PushoverAppKey;
+            PushoverUserKey = Security.Decrypt(Settings.Default.PushoverUserKey);
+            PushoverAppKey = Security.Decrypt(Settings.Default.PushoverAppKey);
             PushoverDefaultNotificationSound = Enum.Parse<NotificationSound>(Settings.Default.PushoverDefaultNotificationSound);
             PushoverDefaultNotificationPriority = Enum.Parse<Priority>(Settings.Default.PushoverDefaultNotificationPriority);
             PushoverDefaultFailureSound = Enum.Parse<NotificationSound>(Settings.Default.PushoverDefaultFailureSound);
@@ -846,13 +846,13 @@ namespace DaleGhent.NINA.GroundStation.Config {
             SmtpDefaultRecipients = Settings.Default.SmtpDefaultRecipients;
             SmtpHostName = Settings.Default.SmtpHostName;
             SmtpHostPort = Settings.Default.SmtpHostPort;
-            SmtpUsername = Settings.Default.SmtpUsername;
-            SmtpPassword = Settings.Default.SmtpPassword;
+            SmtpUsername = Security.Decrypt(Settings.Default.SmtpUsername);
+            SmtpPassword = Security.Decrypt(Settings.Default.SmtpPassword);
             EmailFailureSubjectText = Settings.Default.EmailFailureSubjectText;
             EmailFailureBodyText = Settings.Default.EmailFailureBodyText;
 
-            TelegramAccessToken = Settings.Default.TelegramAccessToken;
-            TelegramChatId = Settings.Default.TelegramChatId;
+            TelegramAccessToken = Security.Decrypt(Settings.Default.TelegramAccessToken);
+            TelegramChatId = Security.Decrypt(Settings.Default.TelegramChatId);
             TelegramFailureBodyText = Settings.Default.TelegramFailureBodyText;
 
             MqttBrokerHost = Settings.Default.MqttBrokerHost;
@@ -862,8 +862,8 @@ namespace DaleGhent.NINA.GroundStation.Config {
             MqttDefaultTopic = Settings.Default.MqttDefaultTopic;
             MqttClientId = Settings.Default.MqttClientId;
             MqttBrokerUseTls = Settings.Default.MqttBrokerUseTls;
-            MqttUsername = Settings.Default.MqttUsername;
-            MqttPassword = Settings.Default.MqttPassword;
+            MqttUsername = Security.Decrypt(Settings.Default.MqttUsername);
+            MqttPassword = Security.Decrypt(Settings.Default.MqttPassword);
             MqttMaxReconnectAttempts = Settings.Default.MqttMaxReconnectAttempts;
             MqttLwtEnabled = Settings.Default.MqttLwtEnable;
             MqttLwtTopic = Settings.Default.MqttLwtTopic;
