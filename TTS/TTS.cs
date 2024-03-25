@@ -10,7 +10,6 @@
 
 #endregion "copyright"
 
-using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +21,7 @@ using System.Windows.Threading;
 namespace DaleGhent.NINA.GroundStation.TTS {
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "NINA is currently Windows-only")]
-    internal class TTS {
+    public class TTS {
         private static readonly SpeechSynthesizer synthesizer;
 
         static TTS() {
@@ -55,7 +54,8 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         }
 
         public static async Task Speak(string text, CancellationToken token) {
-            var voice = GetVoice();
+            var voice = GroundStation.GroundStationConfig.TtsVoice;
+
             if (voice != null) {
                 while (synthesizer.State == SynthesizerState.Speaking) {
                     await Task.Delay(TimeSpan.FromSeconds(1.5), token);
@@ -68,6 +68,20 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 while (synthesizer.State == SynthesizerState.Speaking) {
                     await Task.Delay(100, token);
                 }
+            }
+        }
+
+        public static List<string> GetVoiceNames() {
+            lock (synthesizer) {
+                List<string> voices = [];
+
+                foreach (var voice in synthesizer.GetInstalledVoices()) {
+                    if (voice.Enabled) {
+                        voices.Add(voice.VoiceInfo.Name);
+                    }
+                }
+
+                return voices;
             }
         }
     }

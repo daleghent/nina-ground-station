@@ -497,6 +497,16 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public string TtsVoice {
+            get => pluginOptionsAccessor.GetValueString(nameof(TtsVoice), TTS.TTS.GetVoiceNames()[0]);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(TtsVoice), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public IList<string> TtsVoices => TTS.TTS.GetVoiceNames();
+
         //
         // Sound Player options
         //
