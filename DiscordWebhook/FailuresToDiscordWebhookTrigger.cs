@@ -36,7 +36,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
 
     [ExportMetadata("Name", "Failures to Discord")]
     [ExportMetadata("Description", "Sends a post to Discord when a sequence instruction fails")]
-    [ExportMetadata("Icon", "Email_SVG")]
+    [ExportMetadata("Icon", "Discord_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]

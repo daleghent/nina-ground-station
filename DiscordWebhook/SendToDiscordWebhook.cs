@@ -29,7 +29,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
     [ExportMetadata("Name", "Send to Discord")]
     [ExportMetadata("Description", "Posts a message to a Discord channel")]
-    [ExportMetadata("Icon", "Email_SVG")]
+    [ExportMetadata("Icon", "Discord_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
