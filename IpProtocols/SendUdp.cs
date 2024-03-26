@@ -35,7 +35,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
 
     [ExportMetadata("Name", "Send UDP")]
     [ExportMetadata("Description", "Emits a UDP packet to the specified endpoint containing the provided payload")]
-    [ExportMetadata("Icon", "PlaySound_SVG")]
+    [ExportMetadata("Icon", "UDP_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
