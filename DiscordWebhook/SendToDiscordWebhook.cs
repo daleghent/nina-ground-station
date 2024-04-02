@@ -10,11 +10,14 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using Discord;
 using Newtonsoft.Json;
-using NINA.Core.Locale;
 using NINA.Core.Model;
+using NINA.Core.Utility.WindowService;
+using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -33,9 +36,10 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SendToDiscordWebhook : SequenceItem, IValidatable {
+    public partial class SendToDiscordWebhook : SequenceItem, IValidatable {
         private string message = string.Empty;
         private string title = string.Empty;
+        private System.Windows.Media.Color discordMessageEdgeColor;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -49,6 +53,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         private readonly ITelescopeMediator telescopeMediator;
         private readonly IWeatherDataMediator weatherDataMediator;
 
+        private IWindowService windowService;
         private readonly IMetadata metadata;
 
         [ImportingConstructor]
@@ -80,9 +85,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             metadata = new Metadata(cameraMediator, domeMediator, filterWheelMediator,
                 flatDeviceMediator, focuserMediator, guiderMediator, rotatorMediator,
                 safetyMonitorMediator, switchMediator, telescopeMediator, weatherDataMediator);
-        }
 
-        public SendToDiscordWebhook() {
+            discordMessageEdgeColor = GroundStation.GroundStationConfig.DiscordMessageEdgeColor;
         }
 
         public SendToDiscordWebhook(SendToDiscordWebhook copyMe) : this(
@@ -106,6 +110,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             set {
                 title = value;
                 RaisePropertyChanged();
+                Validate();
             }
         }
 
@@ -115,22 +120,40 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             set {
                 message = value;
                 RaisePropertyChanged();
+                Validate();
+            }
+        }
+
+        [JsonProperty]
+        public System.Windows.Media.Color DiscordMessageEdgeColor {
+            get => discordMessageEdgeColor;
+            set {
+                discordMessageEdgeColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TitleToolTip {
+            get {
+                string text = "No title configured";
+
+                if (!string.IsNullOrEmpty(title)) {
+                    text = title;
+                }
+
+                return text;
             }
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var edgeColor = GroundStation.GroundStationConfig.DiscordMessageEdgeColor;
+            var edgeColor = discordMessageEdgeColor;
 
             var embed = new EmbedBuilder {
-                Title = Utilities.Utilities.ResolveTokens(title, this, metadata),
-                Color = new Color(edgeColor.R, edgeColor.G, edgeColor.B),
-                Author = new EmbedAuthorBuilder {
-                    Name = GroundStation.GroundStationConfig.DiscordImagePostTitle,
-                },
+                Color = new Discord.Color(edgeColor.R, edgeColor.G, edgeColor.B),
                 Timestamp = DateTimeOffset.UtcNow,
             };
 
-            embed.AddField(Loc.Instance["LblMessage"], Utilities.Utilities.ResolveTokens(message, this, metadata));
+            embed.AddField(Utilities.Utilities.ResolveTokens(title, this, metadata), Utilities.Utilities.ResolveTokens(message, this, metadata));
 
             var discordWebhookCommon = new DiscordWebhookCommon();
             await discordWebhookCommon.SendDiscordWebook(embed);
@@ -145,6 +168,14 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 i.Add("Webhook URL is missing");
             }
 
+            if (string.IsNullOrEmpty(title)) {
+                i.Add("There is no title");
+            }
+
+            if (string.IsNullOrEmpty(message)) {
+                i.Add("There is no message content");
+            }
+
             if (i != Issues) {
                 Issues = i;
                 RaisePropertyChanged(nameof(Issues));
@@ -157,11 +188,48 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             return new SendToDiscordWebhook(this) {
                 Title = Title,
                 Message = Message,
+                DiscordMessageEdgeColor = DiscordMessageEdgeColor,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}";
+            return $"Category: {Category}, Item: {Name}, Title: {Title}";
         }
+
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendToDiscordWebhookSetup() {
+                Title = title,
+                Message = message,
+                DiscordMessageEdgeColor = discordMessageEdgeColor,
+            };
+
+            await WindowService.ShowDialog(conf, "Send to Discord", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            Title = conf.Title;
+            Message = conf.Message;
+            DiscordMessageEdgeColor = conf.DiscordMessageEdgeColor;
+        }
+    }
+
+    public partial class SendToDiscordWebhookSetup : BaseINPC {
+        [ObservableProperty]
+        private string title;
+
+        [ObservableProperty]
+        private string message;
+
+        [ObservableProperty]
+        private System.Windows.Media.Color discordMessageEdgeColor;
     }
 }

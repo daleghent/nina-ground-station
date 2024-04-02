@@ -13,7 +13,8 @@
     xmlns:nc="clr-namespace:NINA.Core.Utility.Converters;assembly=NINA.Core">
 
     <localconverters:HttpMethodEnumPostToVisibilityCollapsed x:Key="HttpMethodEnumPostToVisibilityCollapsed" />
-    <localconverters:EmptyStringToEmptyText x:Key="EmptyStringToEmptyText" />
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToNoDescription x:Key="EmptyStringToNoDescription" />
     <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
 </ResourceDictionary>

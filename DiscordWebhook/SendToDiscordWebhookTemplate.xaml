@@ -11,37 +11,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.DiscordWebhook"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
-    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:SendToDiscordWebhookSetup}">
+        <local:SendToDiscordWebhookSetupView />
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SendToDiscordWebhook}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Title" />
-                    <TextBox
-                        MinWidth="150"
-                        MaxWidth="150"
-                        Margin="5,3,0,3"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        TextWrapping="Wrap"
-                        Text="{Binding Title}" />
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configure" />
+                    </Button>
 
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Message" />
-                    <TextBox
-                        MinWidth="500"
-                        MaxWidth="500"
-                        MaxHeight="150"
-                        Margin="5,3,0,3"
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
                         TextWrapping="Wrap"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        AcceptsReturn="True"
-                        AcceptsTab="True"
-                        TextAlignment="Left"
-                        Text="{Binding Message}" />
+                        FontStyle="{Binding Title, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding Title, Converter={StaticResource EmptyStringToNoContent}}"
+                        ToolTip="{Binding TitleToolTip}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -51,6 +52,13 @@
         <mini:MiniSequenceItem>
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Send to Discord" />
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Margin="5,0,0,0"
+                    TextWrapping="NoWrap"
+                    FontStyle="{Binding PostDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                    Text="{Binding PostDescription, Converter={StaticResource EmptyStringToNoContent}}" />
             </StackPanel>
         </mini:MiniSequenceItem>
     </DataTemplate>
