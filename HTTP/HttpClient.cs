@@ -276,7 +276,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpClientDescription = httpClientDescription,
             };
 
-            await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+            await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             HttpMethod = conf.HttpMethod;
             HttpUri = conf.HttpUri;

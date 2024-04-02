@@ -14,10 +14,9 @@
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
-    <localconverters:EmptyStringToEmptyText x:Key="EmptyStringToEmptyText" />
+    <localconverters:EmptyStringToNoDescription x:Key="EmptyStringToNoDescription" />
     <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
-    <!--  We need to register a DataTemplate for the Object of Type "HttpClientSetup" - this template will be used by the windowservice when opening the new window  -->
     <DataTemplate DataType="{x:Type local:HttpClientSetup}">
         <local:HttpClientSetupView />
     </DataTemplate>
@@ -41,7 +40,7 @@
                         Margin="10,0,0,0"
                         TextWrapping="Wrap"
                         FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                        Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}"
+                        Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToNoDescription}}"
                         ToolTip="{Binding HttpClientInstructionToolTip}"/>
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
@@ -58,7 +57,7 @@
                     Margin="5,0,0,0"
                     TextWrapping="NoWrap"
                     FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                    Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToEmptyText}}" />
+                    Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToNoDescription}}" />
             </StackPanel>
         </mini:MiniSequenceItem>
     </DataTemplate>
