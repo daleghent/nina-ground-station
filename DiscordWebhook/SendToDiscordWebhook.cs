@@ -133,12 +133,14 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             }
         }
 
-        public string TitleToolTip {
+        public string MessagePreviewToolTip {
             get {
-                string text = "No title configured";
+                string text = "No message configured";
 
                 if (!string.IsNullOrEmpty(title)) {
                     text = title;
+                } else if (!string.IsNullOrEmpty(message)) {
+                    text = message[..50] + "...";
                 }
 
                 return text;
@@ -166,10 +168,6 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
             if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.DiscordWebhookDefaultUrl)) {
                 i.Add("Webhook URL is missing");
-            }
-
-            if (string.IsNullOrEmpty(title)) {
-                i.Add("There is no title");
             }
 
             if (string.IsNullOrEmpty(message)) {
