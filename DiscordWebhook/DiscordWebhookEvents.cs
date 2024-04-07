@@ -38,6 +38,12 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 return;
             }
 
+            var discordWebhookCommon = new DiscordWebhookCommon();
+
+            if (discordWebhookCommon.CommonValidation().Count > 1) {
+                return;
+            }
+
             var imageData = ImageService.Instance.Image;
 
             if (!GroundStation.GroundStationConfig.DiscordImageTypesSelected.Split(',').Contains(imageData.ImageMetaData.Image.ImageType)) {
@@ -90,7 +96,6 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             imageFileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
             embed.WithImageUrl($"attachment://{imageFileName}");
 
-            var discordWebhookCommon = new DiscordWebhookCommon();
             discordWebhookCommon.SendDiscordImage(imageData, imageFileName, embed).Wait();
         }
     }

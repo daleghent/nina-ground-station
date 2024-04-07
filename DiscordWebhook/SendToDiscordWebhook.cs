@@ -55,6 +55,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
         private IWindowService windowService;
         private readonly IMetadata metadata;
+        private readonly DiscordWebhookCommon discordWebhookCommon;
 
         [ImportingConstructor]
         public SendToDiscordWebhook(ICameraMediator cameraMediator,
@@ -87,6 +88,9 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 safetyMonitorMediator, switchMediator, telescopeMediator, weatherDataMediator);
 
             discordMessageEdgeColor = GroundStation.GroundStationConfig.DiscordMessageEdgeColor;
+            discordWebhookCommon = new DiscordWebhookCommon();
+
+            Validate();
         }
 
         public SendToDiscordWebhook(SendToDiscordWebhook copyMe) : this(
@@ -156,19 +160,13 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             };
 
             embed.AddField(Utilities.Utilities.ResolveTokens(title, this, metadata), Utilities.Utilities.ResolveTokens(message, this, metadata));
-
-            var discordWebhookCommon = new DiscordWebhookCommon();
             await discordWebhookCommon.SendDiscordWebook(embed);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.DiscordWebhookDefaultUrl)) {
-                i.Add("Webhook URL is missing");
-            }
+            var i = discordWebhookCommon.CommonValidation();
 
             if (string.IsNullOrEmpty(message)) {
                 i.Add("There is no message content");

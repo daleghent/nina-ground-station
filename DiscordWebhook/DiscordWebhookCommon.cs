@@ -14,6 +14,7 @@ using DaleGhent.NINA.GroundStation.Images;
 using Discord;
 using Discord.Webhook;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
@@ -56,6 +57,20 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             } catch (Exception ex) {
                 throw new Exception($"Failed to send Discord webhook: {ex.Message}");
             }
+        }
+
+        public List<string> CommonValidation() {
+            var errors = new List<string>();
+
+            if (string.IsNullOrEmpty(DiscordWebhookUrl)) {
+                errors.Add("Discord webhook URL is not set");
+            }
+
+            if (string.IsNullOrEmpty(DiscordWebhookBotName)) {
+                errors.Add("Discord webhook bot name is not set");
+            }
+
+            return errors;
         }
 
         private string DiscordWebhookUrl { get; set; }

@@ -29,6 +29,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Drawing.Text;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,6 +59,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private readonly DiscordWebhookCommon discordWebhookCommon;
 
         [ImportingConstructor]
         public FailuresToDiscordWebhookTrigger(ICameraMediator cameraMediator,
@@ -88,7 +91,10 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
+            discordWebhookCommon = new DiscordWebhookCommon();
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+
+            Validate();
         }
 
         public FailuresToDiscordWebhookTrigger(FailuresToDiscordWebhookTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -194,7 +200,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
             embed.AddField(Loc.Instance["LblDetails"], message);
 
             var attempts = 3; // Todo: Make it configurable?
-            var discordWebhookCommon = new DiscordWebhookCommon();
 
             for (int i = 0; i < attempts; i++) {
                 try {
@@ -224,11 +229,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>();
-
-            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.DiscordImageWebhookUrl)) {
-                i.Add("Webhook URL is missing");
-            }
+            var i = discordWebhookCommon.CommonValidation();
 
             if (i != Issues) {
                 Issues = i;
