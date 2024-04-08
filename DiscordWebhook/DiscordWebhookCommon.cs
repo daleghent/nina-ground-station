@@ -12,6 +12,7 @@
 
 using DaleGhent.NINA.GroundStation.Images;
 using Discord;
+using Discord.Rest;
 using Discord.Webhook;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,19 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
     public class DiscordWebhookCommon {
-        public readonly AllowedMentions allowedMentions;
+        private readonly AllowedMentions allowedMentions;
+        private readonly DiscordRestConfig discordRestConfig;
 
         public DiscordWebhookCommon() {
             DiscordWebhookUrl = GroundStation.GroundStationConfig.DiscordWebhookDefaultUrl;
             DiscordWebhookBotName = GroundStation.GroundStationConfig.DiscordWebhookDefaultBotName;
             DiscordImageWebhookUrl = GroundStation.GroundStationConfig.DiscordImageWebhookUrl;
 
-            allowedMentions = new AllowedMentions(AllowedMentionTypes.Everyone | AllowedMentionTypes.Users | AllowedMentionTypes.Roles);
+            discordRestConfig = new() {
+                DefaultRetryMode = RetryMode.AlwaysRetry,
+            };
+
+            allowedMentions = new(AllowedMentionTypes.Everyone | AllowedMentionTypes.Users | AllowedMentionTypes.Roles);
         }
 
         public async Task SendDiscordWebook(EmbedBuilder embed) {
@@ -35,7 +41,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                     throw new Exception("No webhook URL is set");
                 }
 
-                using var client = new DiscordWebhookClient(DiscordWebhookUrl);
+                using var client = new DiscordWebhookClient(DiscordWebhookUrl, discordRestConfig);
+
                 await client.SendMessageAsync(username: DiscordWebhookBotName, embeds: new[] { embed.Build() }, allowedMentions: allowedMentions);
                 client.Dispose();
             } catch (Exception ex) {
@@ -49,7 +56,9 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                     throw new Exception("No webhook URL is set");
                 }
 
-                using var client = new DiscordWebhookClient(string.IsNullOrEmpty(DiscordImageWebhookUrl) ? DiscordWebhookUrl : DiscordImageWebhookUrl);
+                string webhookUrl = string.IsNullOrEmpty(DiscordImageWebhookUrl) ? DiscordWebhookUrl : DiscordImageWebhookUrl;
+                using var client = new DiscordWebhookClient(webhookUrl, discordRestConfig);
+
                 await client.SendFileAsync(imageData.Bitmap, fileName, string.Empty, username: DiscordWebhookBotName, embeds: new[] { embed.Build() }, allowedMentions: allowedMentions);
                 client.Dispose();
             } catch (Exception ex) {
