@@ -40,9 +40,8 @@
                         VerticalAlignment="Center"
                         Margin="10,0,0,0"
                         TextWrapping="Wrap"
-                        FontStyle="{Binding MessagePreviewToolTip, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                        Text="{Binding MessagePreviewToolTip, Converter={StaticResource EmptyStringToNoContent}}"
-                        ToolTip="{Binding MessagePreviewToolTip}"/>
+                        FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

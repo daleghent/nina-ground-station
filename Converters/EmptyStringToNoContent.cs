@@ -19,7 +19,7 @@ namespace DaleGhent.NINA.GroundStation.Converters {
     public class EmptyStringToNoContent : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return string.IsNullOrEmpty((string)value) ? "No content" : value;
+            return string.IsNullOrEmpty((string)value) ? "No message content" : value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

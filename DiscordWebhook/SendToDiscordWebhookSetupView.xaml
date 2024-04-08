@@ -16,13 +16,12 @@
     xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     Name="UC"
     d:DataContext="{d:DesignInstance Type=local:SendToDiscordWebhook}"
-    d:DesignHeight="400"
-    d:DesignWidth="500"
     mc:Ignorable="d">
 
     <StackPanel Orientation="Vertical">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -30,7 +29,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"  />
             </Grid.ColumnDefinitions>
 
             <Label
@@ -39,53 +38,77 @@
                 Margin="10,10,10,2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Content="Title" />
-            <TextBox
+                Content="Format as Embed" />
+            <CheckBox
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="10,10,10,2"
-                HorizontalAlignment="Stretch"
+                HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                HorizontalScrollBarVisibility="Auto"
-                MaxLines="1"
-                Text="{Binding Title}"
-                TextWrapping="Wrap" />
+                IsChecked="{Binding IsEmbed}" />
 
             <Label
                 Grid.Row="1"
+                Grid.Column="0"
+                Margin="10,10,10,2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Content="Title" />
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10,10,10,2"
+                Width="600"
+                MaxWidth="600"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                HorizontalScrollBarVisibility="Auto"
+                MaxLines="1"
+                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Text="{Binding Title, UpdateSourceTrigger=LostFocus}"
+                TextWrapping="NoWrap" />
+
+            <Label
+                Grid.Row="2"
                 Grid.Column="0"
                 Margin="10,2,10,2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
             <TextBox
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
-                Height="300"
+                Width="600"
+                Height="400"
+                MaxWidth="600"
+                MaxHeight="400"
                 Margin="10,2,10,2"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
                 AcceptsReturn="True"
                 AcceptsTab="True"
+                Text="{Binding Message, UpdateSourceTrigger=LostFocus}"
+                TextWrapping="Wrap"
                 HorizontalScrollBarVisibility="Auto"
-                Text="{Binding Message}"
-                TextWrapping="NoWrap"
                 VerticalScrollBarVisibility="Auto" />
 
             <Label
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="0"
                 Margin="10,2,10,2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
+                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                 Content="Edge color" />
             <xceed:ColorPicker
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="1"
                 Width="88"
                 Margin="10,2,10,2"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                 SelectedColor="{Binding DiscordMessageEdgeColor}"
                 UsingAlphaChannel="False" />
         </Grid>
@@ -96,8 +119,6 @@
             VerticalAlignment="Bottom"
             Orientation="Horizontal">
             <Button
-                Grid.Row="3"
-                Grid.Column="1"
                 Width="150"
                 Margin="0,0,10,0"
                 VerticalAlignment="Center"
@@ -109,22 +130,6 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblOK}" />
-                </Button.Content>
-            </Button>
-            <Button
-                Grid.Row="3"
-                Grid.Column="2"
-                Width="150"
-                Margin="10,0,0,0"
-                VerticalAlignment="Center"
-                util:ButtonHelper.DialogResult="False"
-                IsCancel="True">
-                <Button.Content>
-                    <TextBlock
-                        Margin="5,2,5,2"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblCancel}" />
                 </Button.Content>
             </Button>
         </StackPanel>
