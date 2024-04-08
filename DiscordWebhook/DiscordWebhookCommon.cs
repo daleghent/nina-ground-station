@@ -49,8 +49,6 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                     throw new Exception("No webhook URL is set");
                 }
 
-                var allowedMentions = new AllowedMentions((AllowedMentionTypes.Everyone | AllowedMentionTypes.Users | AllowedMentionTypes.Roles));
-
                 using var client = new DiscordWebhookClient(string.IsNullOrEmpty(DiscordImageWebhookUrl) ? DiscordWebhookUrl : DiscordImageWebhookUrl);
                 await client.SendFileAsync(imageData.Bitmap, fileName, string.Empty, username: DiscordWebhookBotName, embeds: new[] { embed.Build() }, allowedMentions: allowedMentions);
                 client.Dispose();
