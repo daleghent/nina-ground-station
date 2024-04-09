@@ -22,7 +22,7 @@
       <Version>3.1.2</Version>
     </PackageReference>
     <PackageReference Include="NetCoreAudio" Version="1.7.0" />
-    <PackageReference Include="NINA.Plugin" Version="3.0.0.3001-rc" />
+    <PackageReference Include="NINA.Plugin" Version="3.0.0.9001" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="System.Speech" Version="8.0.0" />
     <PackageReference Include="Telegram.Bot">
