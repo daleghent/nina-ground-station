@@ -2,7 +2,7 @@
 
 ## 3.0.0 - 2024-X-X
 * **Major change**: Plugin configuration is now per-profile instead of being single global settings that apply to all profiles. This permits you to have profile-specific settings. Your former global settings will now act as the _default_ settings for Ground Station when a new profile is created. Your pre-3.0 settings will be migrated into each profile whenever that profile is loaded.
-* **New:** Discord webhook support. Send messages and failure notifications to a channel on a Discord server via its webhook URL. The messages are formatted within an embed with some level of customization possible.
+* **New:** Discord webhook support. Send messages and failure notifications to a channel on a Discord server via its webhook URL. The messages are formatted within an embed or as a regular message with some level of customization possible.
 * **New:** Ground Station now features an Image Service that stores the latest image taken by NINA and makes it available to seleted messaging systems which, within reason, support the trasmission of images. Initially, this includes Discord and MQTT and the feasibility of adding this to existing or additional services will be investigated. The type of images that will be sent (`SNAPSHOT`, `LIGHT`, `DARK`, `FLAT`, and `BIAS`) may be selected. Any new image of the selected type(s) will be automatically sent via the services configured and enabled to do so. The format of the image may be chosen as JPEG or PNG, and may be scaled to a percentage of the original's size.
 * Text-to-speech voice can now be selected. Refer to Windows Settings > Time & Language > Speech > Voices to manage the voices available on your systetm.
 
