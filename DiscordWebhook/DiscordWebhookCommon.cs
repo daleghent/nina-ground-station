@@ -50,7 +50,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             }
         }
 
-        public async Task SendDiscordWebook(EmbedBuilder embed) {
+        public async Task SendDiscordWebook(string message, EmbedBuilder embed) {
             try {
                 if (string.IsNullOrEmpty(DiscordWebhookUrl)) {
                     throw new Exception("No webhook URL is set");
@@ -58,7 +58,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
                 using var client = new DiscordWebhookClient(DiscordWebhookUrl, discordRestConfig);
 
-                await client.SendMessageAsync(username: DiscordWebhookBotName, embeds: new[] { embed.Build() }, allowedMentions: allowedMentions);
+                await client.SendMessageAsync(message, username: DiscordWebhookBotName, embeds: new[] { embed.Build() }, allowedMentions: allowedMentions);
                 client.Dispose();
             } catch (Exception ex) {
                 throw new Exception($"Failed to send Discord webhook: {ex.Message}");

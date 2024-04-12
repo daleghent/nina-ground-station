@@ -37,10 +37,11 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class SendToDiscordWebhook : SequenceItem, IValidatable {
-        private bool isEmbed = true;
         private string message = string.Empty;
-        private string title = string.Empty;
-        private System.Windows.Media.Color discordMessageEdgeColor;
+        private string embedTitle = string.Empty;
+        private string embedText = string.Empty;
+        private System.Windows.Media.Color embedEdgeColor;
+        private bool showEmbed = false;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -88,7 +89,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 flatDeviceMediator, focuserMediator, guiderMediator, rotatorMediator,
                 safetyMonitorMediator, switchMediator, telescopeMediator, weatherDataMediator);
 
-            discordMessageEdgeColor = GroundStation.GroundStationConfig.DiscordMessageEdgeColor;
+            embedEdgeColor = GroundStation.GroundStationConfig.DiscordMessageEdgeColor;
             discordWebhookCommon = new DiscordWebhookCommon();
 
             Validate();
@@ -110,25 +111,6 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         }
 
         [JsonProperty]
-        public bool IsEmbed {
-            get => isEmbed;
-            set {
-                isEmbed = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [JsonProperty]
-        public string Title {
-            get => title;
-            set {
-                title = value;
-                RaisePropertyChanged();
-                Validate();
-            }
-        }
-
-        [JsonProperty]
         public string Message {
             get => message;
             set {
@@ -140,11 +122,39 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         }
 
         [JsonProperty]
-        public System.Windows.Media.Color DiscordMessageEdgeColor {
-            get => discordMessageEdgeColor;
+        public string EmbedTitle {
+            get => embedTitle;
             set {
-                discordMessageEdgeColor = value;
+                embedTitle = value;
                 RaisePropertyChanged();
+                Validate();
+            }
+        }
+
+        [JsonProperty]
+        public string EmbedText {
+            get => embedText;
+            set {
+                embedText = value;
+                RaisePropertyChanged();
+                Validate();
+            }
+        }
+
+        [JsonProperty]
+        public System.Windows.Media.Color EmbedEdgeColor {
+            get => embedEdgeColor;
+            set {
+                embedEdgeColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool ShowEmbed {
+            get => showEmbed;
+            set {
+                showEmbed = value;
+                RaiseAllPropertiesChanged();
             }
         }
 
@@ -153,8 +163,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 string text = string.Empty;
                 byte mesgPreviewLen = 50;
 
-                if (isEmbed && !string.IsNullOrEmpty(title)) {
-                    text = title;
+                if (!string.IsNullOrEmpty(embedTitle)) {
+                    text = embedTitle;
                 } else if (!string.IsNullOrEmpty(message)) {
                     var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
                     text = message[..count];
@@ -169,19 +179,18 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            var resolvedMessage = Utilities.Utilities.ResolveTokens(message, this, metadata);
 
-            if (isEmbed) {
-                var edgeColor = discordMessageEdgeColor;
-
+            if (!string.IsNullOrEmpty(embedTitle) && !string.IsNullOrEmpty(embedText)) {
                 var embed = new EmbedBuilder {
-                    Color = new Discord.Color(edgeColor.R, edgeColor.G, edgeColor.B),
+                    Color = new Discord.Color(embedEdgeColor.R, embedEdgeColor.G, embedEdgeColor.B),
                     Timestamp = DateTimeOffset.UtcNow,
                 };
 
-                embed.AddField(Utilities.Utilities.ResolveTokens(title, this, metadata), Utilities.Utilities.ResolveTokens(message, this, metadata));
-                await discordWebhookCommon.SendDiscordWebook(embed);
+                embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(message, this, metadata));
+                await discordWebhookCommon.SendDiscordWebook(resolvedMessage, embed);
             } else {
-                await discordWebhookCommon.SendDiscordWebook(Utilities.Utilities.ResolveTokens(message, this, metadata));
+                await discordWebhookCommon.SendDiscordWebook(resolvedMessage);
             }
         }
 
@@ -204,14 +213,14 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
         public override object Clone() {
             return new SendToDiscordWebhook(this) {
-                Title = Title,
                 Message = Message,
-                DiscordMessageEdgeColor = DiscordMessageEdgeColor,
+                EmbedTitle = EmbedTitle,
+                EmbedEdgeColor = EmbedEdgeColor,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Title: {Title}";
+            return $"Category: {Category}, Item: {Name}, Message: {MessagePreview}";
         }
 
         public IWindowService WindowService {
@@ -227,32 +236,32 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         [RelayCommand]
         private async Task OpenConfigurationWindow(object o) {
             var conf = new SendToDiscordWebhookSetup() {
-                IsEmbed = isEmbed,
-                Title = title,
                 Message = message,
-                DiscordMessageEdgeColor = discordMessageEdgeColor,
+                EmbedTitle = embedTitle,
+                EmbedText = embedText,
+                EmbedEdgeColor = embedEdgeColor,
             };
 
             await WindowService.ShowDialog(conf, "Send to Discord", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
-            IsEmbed = conf.IsEmbed;
-            Title = conf.Title;
             Message = conf.Message;
-            DiscordMessageEdgeColor = conf.DiscordMessageEdgeColor;
+            EmbedTitle = conf.EmbedTitle;
+            EmbedText = conf.EmbedText;
+            EmbedEdgeColor = conf.EmbedEdgeColor;
         }
     }
 
     public partial class SendToDiscordWebhookSetup : BaseINPC {
         [ObservableProperty]
-        private bool isEmbed;
+        private string embedTitle;
 
         [ObservableProperty]
-        private string title;
+        private string embedText;
 
         [ObservableProperty]
         private string message;
 
         [ObservableProperty]
-        private System.Windows.Media.Color discordMessageEdgeColor;
+        private System.Windows.Media.Color embedEdgeColor;
     }
 }

@@ -805,7 +805,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
 
             try {
                 var send = new DiscordWebhook.DiscordWebhookCommon();
-                await send.SendDiscordWebook(embed);
+                await send.SendDiscordWebook("A test message:", embed);
             } catch (Exception ex) {
                 Notification.ShowExternalError($"Failed to send message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
                 return false;

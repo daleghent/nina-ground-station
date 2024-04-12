@@ -21,10 +21,7 @@
     <StackPanel Orientation="Vertical">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -37,53 +34,16 @@
                 Grid.Column="0"
                 Margin="10,10,10,2"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Content="Format as Embed" />
-            <CheckBox
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="10,10,10,2"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                IsChecked="{Binding IsEmbed}" />
-
-            <Label
-                Grid.Row="1"
-                Grid.Column="0"
-                Margin="10,10,10,2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                Content="Title" />
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="10,10,10,2"
-                Width="600"
-                MaxWidth="600"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                HorizontalScrollBarVisibility="Auto"
-                MaxLines="1"
-                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                Text="{Binding Title, UpdateSourceTrigger=LostFocus}"
-                TextWrapping="NoWrap" />
-
-            <Label
-                Grid.Row="2"
-                Grid.Column="0"
-                Margin="10,2,10,2"
-                HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
             <TextBox
-                Grid.Row="2"
+                Grid.Row="0"
                 Grid.Column="1"
                 Width="600"
-                Height="400"
+                Height="250"
                 MaxWidth="600"
                 MaxHeight="400"
-                Margin="10,2,10,2"
+                Margin="10,10,10,2"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 AcceptsReturn="True"
@@ -92,26 +52,83 @@
                 TextWrapping="Wrap"
                 HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto" />
-
-            <Label
-                Grid.Row="3"
-                Grid.Column="0"
-                Margin="10,2,10,2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                Content="Edge color" />
-            <xceed:ColorPicker
-                Grid.Row="3"
-                Grid.Column="1"
-                Width="88"
-                Margin="10,2,10,2"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Visibility="{Binding IsEmbed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                SelectedColor="{Binding DiscordMessageEdgeColor}"
-                UsingAlphaChannel="False" />
         </Grid>
+
+        <GroupBox Header="Embed Content">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*"  />
+                </Grid.ColumnDefinitions>
+
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Content="Title" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="10,2,10,2"
+                    Width="600"
+                    MaxWidth="600"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalScrollBarVisibility="Auto"
+                    MaxLines="1"
+                    Text="{Binding EmbedTitle, UpdateSourceTrigger=LostFocus}"
+                    TextWrapping="NoWrap" />
+
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Content="Message" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="600"
+                    Height="250"
+                    MaxWidth="600"
+                    MaxHeight="400"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
+                    Text="{Binding EmbedText, UpdateSourceTrigger=LostFocus}"
+                    TextWrapping="Wrap"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto" />
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Content="Edge color" />
+                <xceed:ColorPicker
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="88"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    SelectedColor="{Binding EmbedEdgeColor}"
+                    UsingAlphaChannel="False" />
+            </Grid>
+        </GroupBox>
 
         <StackPanel
             Margin="10,10,10,10"

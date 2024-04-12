@@ -29,8 +29,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Drawing.Text;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -205,7 +203,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await discordWebhookCommon.SendDiscordWebook(embed);
+                        await discordWebhookCommon.SendDiscordWebook(string.Empty, embed);
                         break;
                     }
                 } catch (Exception ex) {
