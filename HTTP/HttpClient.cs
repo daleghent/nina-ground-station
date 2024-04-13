@@ -174,16 +174,21 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            const string descriptionToken = @"$$DESCRIPTION$$";
             var client = new System.Net.Http.HttpClient();
             var response = new HttpResponseMessage();
-            var resolvedUri = Utilities.Utilities.ResolveTokens(httpUri, this, metadata, true);
+
+            var resolvedUri = httpUri.Replace(descriptionToken, Utilities.Utilities.DoUrlEncode(true, httpClientDescription));
+            resolvedUri = Utilities.Utilities.ResolveTokens(resolvedUri, this, metadata, true);
+
             client.DefaultRequestHeaders.ExpectContinue = false;
 
             try {
                 if (HttpMethod == HttpMethodEnum.GET) {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
-                    var body = Utilities.Utilities.ResolveTokens(httpPostBody, this);
+                    var body = httpPostBody.Replace(descriptionToken, httpClientDescription);
+                    body = Utilities.Utilities.ResolveTokens(body, this);
                     HttpContent httpContent = new StringContent(body);
 
                     if (!string.IsNullOrEmpty(httpPostContentType)) {
@@ -191,7 +196,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                         httpContent.Headers.Add("Content-Type", httpPostContentType);
                     }
 
-                    Logger.Debug($"Sending {HttpMethod} {HttpUri} ({HttpPostContentType}), Reqest body:{Environment.NewLine}{body}");
+                    Logger.Debug($"Sending {HttpMethod} {HttpUri} ({HttpPostContentType}):{Environment.NewLine}Resolved URI: {resolvedUri}{Environment.NewLine}Reqest body:{Environment.NewLine}{body}");
                     response = await client.PostAsync(resolvedUri, httpContent, ct);
                 } else {
                     throw new SequenceEntityFailedException($"Unsupported HTTP method {HttpMethod}");

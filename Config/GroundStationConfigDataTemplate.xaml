@@ -11,6 +11,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Config"
+    xmlns:util="clr-namespace:DaleGhent.NINA.GroundStation.Utilities"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
@@ -1403,6 +1404,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATE$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -1417,6 +1419,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TIME$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -1431,6 +1434,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATETIME$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -1445,6 +1449,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATE_UTC$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -1459,6 +1464,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TIME_UTC$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -1473,6 +1479,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATETIME_UTC$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -1487,6 +1494,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$UNIX_EPOCH$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -1500,6 +1508,7 @@
                                     VerticalContentAlignment="Center"
                                     Background="Transparent"
                                     BorderThickness="0"
+                                    util:SelectTextOnFocus.Active="True"
                                     IsReadOnly="True">
                                     $$FORMAT_DATETIME format$$
                                 </TextBox>
@@ -1517,6 +1526,7 @@
                                     VerticalContentAlignment="Center"
                                     Background="Transparent"
                                     BorderThickness="0"
+                                    util:SelectTextOnFocus.Active="True"
                                     IsReadOnly="True">
                                     $$FORMAT_DATETIME_UTC format$$
                                 </TextBox>
@@ -1563,6 +1573,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -1577,6 +1588,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_RA$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -1591,6 +1603,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_DEC$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -1605,6 +1618,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_RA_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -1619,6 +1633,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_DEC_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -1633,6 +1648,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_EPOCH$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -1647,6 +1663,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$INSTRUCTION_SET$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -1728,6 +1745,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -1741,6 +1759,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_BATTERY$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -1754,6 +1773,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_SENSOR_TEMP$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -1768,6 +1788,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_NAME$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -1782,6 +1803,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_IS_PARKED$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -1795,6 +1817,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_IS_HOME$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -1808,6 +1831,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_SHUTTER$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -1821,6 +1845,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_AZ_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="8"
@@ -1835,6 +1860,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_NAME$$" />
                                 <TextBlock
                                     Grid.Row="9"
@@ -1849,6 +1875,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_FILTER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="10"
@@ -1862,6 +1889,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_FILTER_POS$$" />
                                 <TextBlock
                                     Grid.Row="11"
@@ -1876,6 +1904,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_NAME$$" />
                                 <TextBlock
                                     Grid.Row="12"
@@ -1890,6 +1919,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_COVER_STATUS$$" />
                                 <TextBlock
                                     Grid.Row="13"
@@ -1903,6 +1933,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_LAMP_STATUS$$" />
                                 <TextBlock
                                     Grid.Row="14"
@@ -1917,6 +1948,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="15"
@@ -1931,6 +1963,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_POSITION$$" />
                                 <TextBlock
                                     Grid.Row="16"
@@ -1944,6 +1977,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_TEMP$$" />
                                 <TextBlock
                                     Grid.Row="17"
@@ -1958,6 +1992,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_NAME$$" />
                                 <TextBlock
                                     Grid.Row="18"
@@ -1972,6 +2007,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_ANGLE$$" />
                                 <TextBlock
                                     Grid.Row="19"
@@ -1986,6 +2022,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_NAME$$" />
                                 <TextBlock
                                     Grid.Row="20"
@@ -2000,6 +2037,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_IS_SAFE$$" />
                                 <TextBlock
                                     Grid.Row="21"
@@ -2014,6 +2052,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_NAME$$" />
                                 <TextBlock
                                     Grid.Row="22"
@@ -2028,6 +2067,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_POINTING_STATE$$" />
                                 <TextBlock
                                     Grid.Row="23"
@@ -2041,6 +2081,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA$$" />
                                 <TextBlock
                                     Grid.Row="24"
@@ -2054,6 +2095,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="25"
@@ -2067,6 +2109,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC$$" />
                                 <TextBlock
                                     Grid.Row="26"
@@ -2080,6 +2123,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="27"
@@ -2093,6 +2137,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_PARKED$$" />
                                 <TextBlock
                                     Grid.Row="28"
@@ -2106,6 +2151,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_HOME$$" />
                                 <TextBlock
                                     Grid.Row="29"
@@ -2119,6 +2165,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT$$" />
                                 <TextBlock
                                     Grid.Row="30"
@@ -2132,6 +2179,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="31"
@@ -2145,6 +2193,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ$$" />
                                 <TextBlock
                                     Grid.Row="32"
@@ -2158,6 +2207,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="33"
@@ -2171,6 +2221,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_TTF$$" />
                                 <TextBlock
                                     Grid.Row="34"
@@ -2185,6 +2236,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_NAME$$" />
                                 <TextBlock
                                     Grid.Row="35"
@@ -2199,6 +2251,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_CLOUD_COVER$$" />
                                 <TextBlock
                                     Grid.Row="36"
@@ -2212,6 +2265,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_DEWPOINT$$" />
                                 <TextBlock
                                     Grid.Row="37"
@@ -2225,6 +2279,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_HUMIDITY$$" />
                                 <TextBlock
                                     Grid.Row="38"
@@ -2238,6 +2293,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_PRESSURE$$" />
                                 <TextBlock
                                     Grid.Row="39"
@@ -2251,6 +2307,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_RAINRATE$$" />
                                 <TextBlock
                                     Grid.Row="40"
@@ -2264,6 +2321,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYBRT$$" />
                                 <TextBlock
                                     Grid.Row="41"
@@ -2277,6 +2335,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYQUAL$$" />
                                 <TextBlock
                                     Grid.Row="42"
@@ -2290,6 +2349,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYTEMP$$" />
                                 <TextBlock
                                     Grid.Row="43"
@@ -2303,6 +2363,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_STARFWHM$$" />
                                 <TextBlock
                                     Grid.Row="44"
@@ -2316,6 +2377,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_AMBTEMP$$" />
                                 <TextBlock
                                     Grid.Row="45"
@@ -2329,6 +2391,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDDIR$$" />
                                 <TextBlock
                                     Grid.Row="46"
@@ -2342,6 +2405,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDGUST$$" />
                                 <TextBlock
                                     Grid.Row="47"
@@ -2355,6 +2419,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDSPD$$" />
                                 <TextBlock
                                     Grid.Row="48"
@@ -2392,6 +2457,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SYSTEM_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -2406,6 +2472,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$USER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -2420,6 +2487,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$NINA_VERSION$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -2434,6 +2502,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$GS_VERSION$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -2467,6 +2536,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM$$" />
                                 <TextBlock
                                     Grid.Row="0"
@@ -2481,6 +2551,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM_DESC$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -2495,6 +2566,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM_CATEGORY$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -2509,6 +2581,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ATTEMPTS$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -2523,6 +2596,7 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_INSTR_SET$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -2537,11 +2611,41 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ERROR_LIST$$" />
                                 <TextBlock
                                     Grid.Row="5"
                                     Grid.Column="1"
                                     Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Service-specific Tokens">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DESCRIPTION$$" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="Inserts the instruction's description text. Available with the Send HTTP Request instruction." />
                             </Grid>
                         </StackPanel>
                     </GroupBox>

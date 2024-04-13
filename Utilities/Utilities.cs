@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
@@ -355,7 +355,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         internal static string DoUrlEncode(bool doUrlEncode, string text) {
-            return doUrlEncode ? HttpUtils.UrlTokenEncode(Encoding.Unicode.GetBytes(text)) : text;
+            return doUrlEncode ? WebUtility.UrlEncode(text) : text;
         }
 
         [GeneratedRegex(@"\${2}CAMERA_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]
