@@ -7,6 +7,7 @@
 * Text-to-speech voice can now be selected. Refer to Windows Settings > Time & Language > Speech > Voices to manage the voices available on your systetm.
 * The **Send HTTP Request** instruction now offers a `$$DESCRIPTION$$` token that will insert the description text of the instruction into the request body or URL query string
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
+* Added test buttons for Play Sound default audio file settings
 
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
