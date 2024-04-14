@@ -701,8 +701,8 @@ namespace DaleGhent.NINA.GroundStation.Config {
         [RelayCommand]
         private static async Task<bool> EmailTest(object arg) {
             var send = new SendToEmail.SendToEmail() {
-                Subject = "Test Subject",
-                Body = "Test Body",
+                Subject = $"Ground Station {GroundStation.GetVersion()} email test",
+                Body = "Receiving this email means that your existing SMTP settings appear to work!",
                 Attempts = 1
             };
 
