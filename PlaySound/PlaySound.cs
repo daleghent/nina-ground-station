@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
-using NetCoreAudio;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
@@ -33,6 +32,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class PlaySound : SequenceItem, IValidatable {
+        private readonly PlaySoundCommon playSoundCommon;
         private string soundFile = string.Empty;
         private bool waitUntilFinished = true;
 
@@ -77,17 +77,12 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
         public string SoundFileShort => Path.GetFileName(soundFile);
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var player = new Player();
+            var playSoundCommon = new PlaySoundCommon() {
+                SoundFile = soundFile,
+                WaitUntilFinished = waitUntilFinished,
+            };
 
-            if (waitUntilFinished) {
-                await player.Play(soundFile);
-
-                do {
-                    await Task.Delay(250, ct);
-                } while (player.Playing);
-            } else {
-                await player.Play(soundFile);
-            }
+            await playSoundCommon.PlaySound(ct);
 
             return;
         }

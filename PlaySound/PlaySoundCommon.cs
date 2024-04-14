@@ -10,16 +10,43 @@
 
 #endregion "copyright"
 
+using NetCoreAudio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace DaleGhent.NINA.GroundStation.PlaySound
-{
-    public class PlaySoundCommon {
+namespace DaleGhent.NINA.GroundStation.PlaySound {
 
-        public static string FileTypeFilter = "Audio files|*.wav;*.aiff;*.aif;*.mp3|All files|*.*";
+    public class PlaySoundCommon {
+        public static string FileTypeFilter { get; } = "Audio files|*.wav;*.aiff;*.aif;*.mp3|All files|*.*";
+
+        public string SoundFile { get; set; } = string.Empty;
+
+        public bool WaitUntilFinished { get; set; } = true;
+
+        public async Task<bool> PlaySound(CancellationToken ct) {
+            if (string.IsNullOrEmpty(SoundFile)) {
+                throw new ArgumentException("Audio file not specified");
+            }
+
+            if (!File.Exists(SoundFile)) {
+                throw new FileNotFoundException($"{SoundFile} not found");
+            }
+
+            var player = new Player();
+
+            if (WaitUntilFinished) {
+                await player.Play(SoundFile);
+
+                do {
+                    await Task.Delay(250, ct);
+                } while (player.Playing);
+            } else {
+                await player.Play(SoundFile);
+            }
+
+            return true;
+        }
     }
 }

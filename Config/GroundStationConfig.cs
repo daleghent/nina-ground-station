@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.Images;
 using DaleGhent.NINA.GroundStation.Interfaces;
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.PlaySound;
 using DaleGhent.NINA.GroundStation.PushoverClient;
 using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
@@ -28,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Settings = DaleGhent.NINA.GroundStation.Properties.Settings;
@@ -808,6 +810,43 @@ namespace DaleGhent.NINA.GroundStation.Config {
                 await send.SendDiscordWebook("A test message:", embed);
             } catch (Exception ex) {
                 Notification.ShowExternalError($"Failed to send message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
+                return false;
+            }
+
+            return true;
+        }
+
+
+        [RelayCommand]
+        private static async Task<bool> PlaySoundTest(object arg) {
+            var audioFile = GroundStation.GroundStationConfig.PlaySoundDefaultFile;
+
+            try {
+                var playSoundCommon = new PlaySoundCommon() {
+                    SoundFile = audioFile
+                };
+
+                await playSoundCommon.PlaySound(CancellationToken.None);
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"{ex.Message}", "Playback Error");
+                return false;
+            }
+
+            return true;
+        }
+
+        [RelayCommand]
+        private static async Task<bool> PlayFailureSoundTest(object arg) {
+            var audioFile = GroundStation.GroundStationConfig.PlaySoundDefaultFailureFile;
+
+            try {
+                var playSoundCommon = new PlaySoundCommon() {
+                    SoundFile = audioFile
+                };
+
+                await playSoundCommon.PlaySound(CancellationToken.None);
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"{ex.Message}", "Playback Error");
                 return false;
             }
 

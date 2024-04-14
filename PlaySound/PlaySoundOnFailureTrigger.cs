@@ -11,7 +11,7 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
-using NetCoreAudio;
+using DaleGhent.NINA.GroundStation.PlaySound;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -38,6 +38,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class PlaySoundOnFailureTrigger : SequenceTrigger, IValidatable {
+        private readonly PlaySoundCommon playSoundCommon;
         private string soundFile = string.Empty;
         private ISequenceRootContainer failureHook;
 
@@ -109,8 +110,11 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
                 return;
             }
 
-            var player = new Player();
-            await player.Play(soundFile);
+            var playSoundCommon = new PlaySoundCommon() {
+                SoundFile = soundFile,
+            };
+
+            await playSoundCommon.PlaySound(CancellationToken.None);
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {

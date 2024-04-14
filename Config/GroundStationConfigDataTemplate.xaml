@@ -1260,12 +1260,23 @@
 
                         <Button
                             Width="25"
-                            Margin="5"
-                            HorizontalAlignment="Left"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Command="{Binding OpenSelectDefaultSoundFileDialogCommand}">
                             <Button.Content>
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="..." />
+                            </Button.Content>
+                        </Button>
+
+                        <Button
+                            Width="35"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding PlaySoundTestCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
                             </Button.Content>
                         </Button>
                     </StackPanel>
@@ -1290,12 +1301,23 @@
 
                         <Button
                             Width="25"
-                            Margin="5"
-                            HorizontalAlignment="Left"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Command="{Binding OpenSelectDefaultFailureSoundFileDialogCommand}">
                             <Button.Content>
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="..." />
+                            </Button.Content>
+                        </Button>
+
+                        <Button
+                            Width="35"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding PlayFailureSoundTestCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
                             </Button.Content>
                         </Button>
                     </StackPanel>
