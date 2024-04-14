@@ -32,7 +32,6 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class PlaySound : SequenceItem, IValidatable {
-        private readonly PlaySoundCommon playSoundCommon;
         private string soundFile = string.Empty;
         private bool waitUntilFinished = true;
 

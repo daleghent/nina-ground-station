@@ -38,7 +38,6 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class PlaySoundOnFailureTrigger : SequenceTrigger, IValidatable {
-        private readonly PlaySoundCommon playSoundCommon;
         private string soundFile = string.Empty;
         private ISequenceRootContainer failureHook;
 
