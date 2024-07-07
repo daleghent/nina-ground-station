@@ -16,7 +16,7 @@ using System;
 namespace DaleGhent.NINA.GroundStation.Slack {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class Channel {
+    public class Channel : IEquatable<Channel> {
         [JsonProperty]
         public string Id { get; set; }
 
@@ -32,8 +32,16 @@ namespace DaleGhent.NINA.GroundStation.Slack {
         [JsonProperty]
         public int NumMembers { get; set; }
 
+        public bool Equals(Channel other) {
+            return other != null && this.Id.Equals(other.Id);
+        }
+
         public override bool Equals(object obj) {
-            return obj is Channel other && this.Id == other.Id;
+            return obj is Channel && Equals(obj as Channel);
+        }
+
+        public override int GetHashCode() {
+            return this.Id.GetHashCode();
         }
     }
 }
