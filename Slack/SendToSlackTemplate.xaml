@@ -1,0 +1,66 @@
+﻿<!--
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.SendToSlack.SendToSlackTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Slack"
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:SendToSlackSetup}">
+        <local:SendToSlackSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:SendToSlack}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configure" />
+                    </Button>
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        Text="{Binding Channel.Name}" />
+
+                    <TextBlock
+                        Margin="1,0,0,0"
+                        VerticalAlignment="Center"
+                        Text=":" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DaleGhent.NINA.GroundStation.SendToSlack.SendToSlack_Mini">
+        <mini:MiniSequenceItem>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Send to Slack" />
+            </StackPanel>
+        </mini:MiniSequenceItem>
+    </DataTemplate>
+</ResourceDictionary>

@@ -148,19 +148,17 @@ Reasons: $$ERROR_LIST$$
 
 **Reasons:** $$ERROR_LIST$$</Value>
     </Setting>
-    <Setting Name="DiscordImageTypesSelected" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;string&gt;LIGHT&lt;/string&gt;
-  &lt;string&gt;SNAPSHOT&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
     <Setting Name="TtsTestMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)">It's full of stars!</Value>
     </Setting>
     <Setting Name="GroundStationMigratedProfiles" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
+    </Setting>
+    <Setting Name="SlackFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
+
+*Reasons:* $$ERROR_LIST$$</Value>
     </Setting>
   </Settings>
 </SettingsFile>

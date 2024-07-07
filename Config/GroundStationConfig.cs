@@ -16,9 +16,11 @@ using DaleGhent.NINA.GroundStation.Interfaces;
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.PlaySound;
 using DaleGhent.NINA.GroundStation.PushoverClient;
+using DaleGhent.NINA.GroundStation.Slack;
 using DaleGhent.NINA.GroundStation.TTS;
 using DaleGhent.NINA.GroundStation.Utilities;
 using Discord;
+using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
@@ -26,6 +28,7 @@ using NINA.Profile;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -635,6 +638,151 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         //
+        // Slack
+        //
+
+        public string SlackOAuthToken {
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(SlackOAuthToken), string.Empty));
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackOAuthToken), Security.Encrypt(value.Trim()));
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Channel> SlackChannels {
+            get {
+                var json = pluginOptionsAccessor.GetValueString(nameof(SlackChannels), "[]");
+                return JsonConvert.DeserializeObject<ObservableCollection<Channel>>(json);
+            }
+            set {
+                if (value != null) {
+                    var json = JsonConvert.SerializeObject(value);
+                    pluginOptionsAccessor.SetValueString(nameof(SlackChannels), json);
+
+                    if (!value.Contains(SlackImageEventChannel)) {
+                        SlackImageEventChannel = value.FirstOrDefault();
+                    }
+
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string SlackWorkspaceName {
+            get => pluginOptionsAccessor.GetValueString(nameof(SlackWorkspaceName), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackWorkspaceName), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SlackBotName {
+            get => pluginOptionsAccessor.GetValueString(nameof(SlackBotName), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackBotName), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SlackBotDisplayName {
+            get => pluginOptionsAccessor.GetValueString(nameof(SlackBotDisplayName), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackBotDisplayName), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SlackFailureMessage {
+            get => pluginOptionsAccessor.GetValueString(nameof(SlackFailureMessage), Settings.Default.SlackFailureMessage);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackFailureMessage), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool SlackImageEventEnabled {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(SlackImageEventEnabled), false);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(SlackImageEventEnabled), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SlackImageTypesSelected {
+            get => pluginOptionsAccessor.GetValueString(nameof(SlackImageTypesSelected), DefaultImageTypes());
+            set {
+                if (!string.IsNullOrEmpty(value)) {
+                    pluginOptionsAccessor.SetValueString(nameof(SlackImageTypesSelected), value);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public Channel SlackImageEventChannel {
+            get {
+                var json = pluginOptionsAccessor.GetValueString(nameof(SlackImageEventChannel), JsonConvert.SerializeObject(SlackChannels.FirstOrDefault()));
+                return JsonConvert.DeserializeObject<Channel>(json);
+            }
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(SlackImageEventChannel), JsonConvert.SerializeObject(value));
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool slackShowChannelInfo = false;
+
+        public bool SlackShowChannelInfo {
+            get => slackShowChannelInfo;
+            set {
+                slackShowChannelInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string slackSelectedChannelId = string.Empty;
+
+        public string SlackSelectedChannelId {
+            get => slackSelectedChannelId;
+            set {
+                slackSelectedChannelId = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool slackSelectedChannelIsPrivate;
+
+        public bool SlackSelectedChannelIsPrivate {
+            get => slackSelectedChannelIsPrivate;
+            set {
+                slackSelectedChannelIsPrivate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int slackSelectedChannelNumMembers;
+
+        public int SlackSelectedChannelNumMembers {
+            get => slackSelectedChannelNumMembers;
+            set {
+                slackSelectedChannelNumMembers = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private string slackSelectedChannelCreateDate;
+
+        public string SlackSelectedChannelCreateDate {
+            get => slackSelectedChannelCreateDate;
+            set {
+                slackSelectedChannelCreateDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        //
         // Image Service options
         //
 
@@ -874,6 +1022,30 @@ namespace DaleGhent.NINA.GroundStation.Config {
 
             if (dialog.ShowDialog() == true) {
                 PlaySoundDefaultFailureFile = dialog.FileName;
+            }
+        }
+
+        [RelayCommand]
+        internal async Task GetSlackChannelList(object obj) {
+            try {
+                var slack = new SlackClient();
+                var channels = new ObservableCollection<Channel>(await slack.GetChannelList());
+
+                if (channels.Count > 0) {
+                    SlackChannels = channels;
+                } else {
+                    Notification.ShowExternalError("No channels are visible", "Slack Error");
+                }
+
+                var botInfo = await slack.GetBotInfo();
+                SlackBotName = botInfo.BotName;
+                SlackBotDisplayName = botInfo.BotDisplayName;
+                SlackWorkspaceName = botInfo.WorkspaceName;
+
+                return;
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"Failed to fetch bot and workspace/team information: {ex.Message}", "Slack Error");
+                Logger.Error($"Failed to get Slack info:{Environment.NewLine}{ex}");
             }
         }
 

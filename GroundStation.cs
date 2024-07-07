@@ -14,6 +14,7 @@ using DaleGhent.NINA.GroundStation.Config;
 using DaleGhent.NINA.GroundStation.DiscordWebhook;
 using DaleGhent.NINA.GroundStation.Images;
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.Slack;
 using NINA.Core.Utility;
 using NINA.Image.Interfaces;
 using NINA.Plugin.Interfaces;
@@ -62,6 +63,7 @@ namespace DaleGhent.NINA.GroundStation {
 
             imageEventHandler.Start();
             DiscordWebhookEvents.Start();
+            SlackEvents.Start();
             MqttEvents.Start();
 
             Logger.Debug("Init completed");
@@ -70,6 +72,7 @@ namespace DaleGhent.NINA.GroundStation {
 
         public override async Task Teardown() {
             DiscordWebhookEvents.Stop();
+            SlackEvents.Stop();
             MqttEvents.Stop();
             imageEventHandler.Stop();
             GroundStationConfig.Dispose();

@@ -667,6 +667,224 @@
                 </StackPanel>
             </TabItem>
 
+            <TabItem Name="Slack" Header="Slack">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/start/quickstart" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Slack Apps quickstart</Hyperlink></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/apps" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Your Slack Apps</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>OAuth token</TextBlock.Text>
+                            <TextBlock.ToolTip>The OAuth token assigned to your Slack App</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding SlackOAuthToken}" />
+                        <ninactrl:AsyncProcessButton
+                            Width="100"
+                            Height="25"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            ButtonText="Get Bot Info"
+                            Command="{Binding GetSlackChannelListCommand}"
+                            LoadingImageBrush="{StaticResource PrimaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Text="Workspace" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackWorkspaceName}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Text="Bot/App name" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackBotName}" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="(" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackBotDisplayName}" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text=")" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top">
+                            <TextBlock.Text>Channels</TextBlock.Text>
+                        </TextBlock>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListBox
+                                MinWidth="150"
+                                MinHeight="50"
+                                MaxHeight="100"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BackgroundBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                SelectionMode="Single"
+                                SelectionChanged="SlackChannelsListBox_SelectionChanged"
+                                ItemsSource="{Binding SlackChannels}"
+                                DisplayMemberPath="Name" />
+                        </ScrollViewer>
+
+                        <StackPanel
+                            Visibility="{Binding SlackShowChannelInfo, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                            Orientation="Vertical" 
+                            VerticalAlignment="Top">
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="ID:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelId}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Private:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelIsPrivate}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Members:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelNumMembers}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Created:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelCreateDate}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                        <TabItem Name="Slack_FailureMessage" Header="Failure Message">
+                            <GroupBox Margin="0,10,0,5" Header="Failure message template">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                        <TextBox
+                                            MinWidth="515"
+                                            MinHeight="400"
+                                            MaxWidth="515"
+                                            MaxHeight="400"
+                                            Margin="0,5,0,0"
+                                            HorizontalAlignment="Left"
+                                            AcceptsReturn="True"
+                                            AcceptsTab="True"
+                                            Text="{Binding SlackFailureMessage}"
+                                            HorizontalScrollBarVisibility="Visible"
+                                            VerticalScrollBarVisibility="Visible" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                        </TabItem>
+
+                        <TabItem Name="Slack_ImageEvent" Header="Image Message">
+                            <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Enable</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post the latest image of the selected types to the specified channel</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding SlackImageEventEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Channel</TextBlock.Text>
+                                    </TextBlock>
+                                    <ComboBox
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Margin="5,0,0,0"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{Binding SlackChannels}"
+                                        SelectedValue="{Binding SlackImageEventChannel}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                        <TextBlock.Text>Image types</TextBlock.Text>
+                                        <TextBlock.ToolTip>The types of images that will be sent to the Discord server</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ListBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource TertiaryBackgroundBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        ItemsSource="{Binding ImageTypes}"
+                                        Initialized="SlackImageTypeListBox_Initialized"
+                                        SelectionChanged="SlackImageTypeListBox_SelectionChanged"
+                                        IsSynchronizedWithCurrentItem="true"
+                                        SelectionMode="Multiple" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                    </TabControl>
+                </StackPanel>
+            </TabItem>
+
             <TabItem Name="IFTTT_Webhooks" Header="IFTTT Webhooks">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">

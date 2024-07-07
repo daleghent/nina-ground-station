@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Collections.Generic;
+using DaleGhent.NINA.GroundStation.Slack;
 
 namespace DaleGhent.NINA.GroundStation.Config {
 
@@ -86,6 +87,48 @@ namespace DaleGhent.NINA.GroundStation.Config {
             if (sender is ListBox elem) {
                 if (elem.DataContext is GroundStationConfig) {
                     var selectedTypes = GroundStation.GroundStationConfig.DiscordImageTypesSelected.Split(',');
+                    elem.SelectedItems.Clear();
+
+                    foreach (var imgType in selectedTypes) {
+                        elem.SelectedItems.Add(imgType);
+                    }
+                }
+            }
+        }
+
+        private void SlackChannelsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (sender is ListBox elem) {
+                if (elem.DataContext is GroundStationConfig) {
+                    if (elem.SelectedItem is Channel channel) {
+                        GroundStation.GroundStationConfig.SlackSelectedChannelId = channel.Id;
+                        GroundStation.GroundStationConfig.SlackSelectedChannelIsPrivate = channel.IsPrivate;
+                        GroundStation.GroundStationConfig.SlackSelectedChannelCreateDate = channel.CreateDate.ToString("r");
+                        GroundStation.GroundStationConfig.SlackSelectedChannelNumMembers = channel.NumMembers;
+                        GroundStation.GroundStationConfig.SlackShowChannelInfo = true;
+                    }
+                }
+            }
+        }
+
+        private void SlackImageTypeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (sender is ListBox elem) {
+                if (elem.DataContext is GroundStationConfig) {
+                    List<string> typeNames = [];
+
+                    foreach (string type in elem.SelectedItems) {
+                        typeNames.Add(type);
+                    }
+
+                    var stringList = string.Join(",", typeNames);
+                    GroundStation.GroundStationConfig.SlackImageTypesSelected = stringList;
+                }
+            }
+        }
+
+        private void SlackImageTypeListBox_Initialized(object sender, EventArgs e) {
+            if (sender is ListBox elem) {
+                if (elem.DataContext is GroundStationConfig) {
+                    var selectedTypes = GroundStation.GroundStationConfig.SlackImageTypesSelected.Split(',');
                     elem.SelectedItems.Clear();
 
                     foreach (var imgType in selectedTypes) {
