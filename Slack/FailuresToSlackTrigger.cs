@@ -237,6 +237,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
 
         public override object Clone() {
             return new FailuresToSlackTrigger(this) {
+                Channel = Channel,
             };
         }
 
