@@ -38,7 +38,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
     [JsonObject(MemberSerialization.OptIn)]
     public partial class SendToSlack : SequenceItem, IValidatable {
         private readonly SlackClient slack;
-        private Channel channel;
+        private Channel channel = null;
         private string message = string.Empty;
 
         private readonly ICameraMediator cameraMediator;
