@@ -1199,7 +1199,7 @@
                                     <CheckBox
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
-                                        IsChecked="{Binding MqttLwtEnable, UpdateSourceTrigger=PropertyChanged}" />
+                                        IsChecked="{Binding MqttLwtEnabled, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
