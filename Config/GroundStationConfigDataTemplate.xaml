@@ -1294,6 +1294,7 @@
                                     <CheckBox
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
+                                        IsEnabled="{Binding MqttImagePubIsConfigured}"
                                         IsChecked="{Binding MqttImagePubliserEnabled, UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
 

@@ -306,6 +306,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
             set {
                 pluginOptionsAccessor.SetValueString(nameof(MqttBrokerHost), value.Trim());
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MqttImagePubIsConfigured));
             }
         }
 
@@ -314,6 +315,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
             set {
                 pluginOptionsAccessor.SetValueUInt16(nameof(MqttBrokerPort), value);
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MqttImagePubIsConfigured));
             }
         }
 
@@ -398,6 +400,10 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public bool MqttImagePubIsConfigured => !string.IsNullOrEmpty(MqttBrokerHost)
+                                                && MqttBrokerPort > 0
+                                                && !string.IsNullOrEmpty(MqttImagePublisherImageTopic);
+
         public string MqttLwtTopic {
             get => pluginOptionsAccessor.GetValueString(nameof(MqttLwtTopic), Settings.Default.MqttDefaultTopic);
             set {
@@ -451,6 +457,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
             set {
                 pluginOptionsAccessor.SetValueString(nameof(MqttImagePublisherImageTopic), value.Trim());
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MqttImagePubIsConfigured));
             }
         }
 
