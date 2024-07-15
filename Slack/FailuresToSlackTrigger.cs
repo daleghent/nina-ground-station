@@ -55,7 +55,6 @@ namespace DaleGhent.NINA.GroundStation.Slack {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
-        private readonly SlackClient slack;
 
         private Channel channel = null;
 
@@ -89,10 +88,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            slack = new SlackClient();
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-
-            Validate();
         }
 
         public FailuresToSlackTrigger(FailuresToSlackTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -201,6 +197,8 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
+
+                        var slack = new SlackClient();
                         await slack.PostMessage(channel, message);
                         break;
                     }
@@ -225,7 +223,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = slack.CommonValidations();
+            var i = SlackClient.CommonValidations();
 
             if (i != Issues) {
                 Issues = i;

@@ -124,10 +124,10 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             };
         }
 
-        public IList<string> CommonValidations() {
+        public static IList<string> CommonValidations() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(OAuthToken)) {
+            if (string.IsNullOrEmpty(GroundStation.GroundStationConfig.SlackOAuthToken)) {
                 i.Add("Slack OAuth token is missing");
             }
 

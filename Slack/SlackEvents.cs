@@ -34,13 +34,13 @@ namespace DaleGhent.NINA.GroundStation.Slack {
         }
 
         private static void PostImageToSlack() {
-            if (!GroundStation.GroundStationConfig.SlackImageEventEnabled) {
+            if (!GroundStation.GroundStationConfig.SlackImageEventEnabled || string.IsNullOrEmpty(GroundStation.GroundStationConfig.SlackOAuthToken)) {
                 return;
             }
 
-            var slackClient = new SlackClient();
+            var slack = new SlackClient();
 
-            if (slackClient.CommonValidations().Count > 1) {
+            if (SlackClient.CommonValidations().Count > 1) {
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             var imageFileName = Path.GetFileName(imageData.ImagePath);
             slackImage.FileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
 
-            slackClient.PostImage(slackImage).Wait();
+            slack.PostImage(slackImage).Wait();
         }
     }
 }

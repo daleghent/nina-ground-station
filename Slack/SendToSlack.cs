@@ -37,7 +37,6 @@ namespace DaleGhent.NINA.GroundStation.Slack {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class SendToSlack : SequenceItem, IValidatable {
-        private readonly SlackClient slack;
         private Channel channel = null;
         private string message = string.Empty;
 
@@ -85,8 +84,6 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
-
-            slack = new SlackClient();
         }
 
         public SendToSlack(SendToSlack copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -148,13 +145,15 @@ namespace DaleGhent.NINA.GroundStation.Slack {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
+
+            var slack = new SlackClient();
             await slack.PostMessage(channel, message);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = slack.CommonValidations();
+            var i = SlackClient.CommonValidations();
 
             if (string.IsNullOrEmpty(message)) {
                 i.Add("Slack message is missing");
