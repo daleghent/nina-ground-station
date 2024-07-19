@@ -41,6 +41,7 @@
                 Grid.Column="1"
                 MinWidth="100"
                 Margin="10,10,10,2"
+                IsSynchronizedWithCurrentItem="True"
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding Channels}"
                 SelectedValue="{Binding Channel}" />

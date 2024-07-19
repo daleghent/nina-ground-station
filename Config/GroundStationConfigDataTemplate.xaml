@@ -854,6 +854,7 @@
                                         VerticalAlignment="Center"
                                         Margin="5,0,0,0"
                                         DisplayMemberPath="Name"
+                                        IsSynchronizedWithCurrentItem="True"
                                         ItemsSource="{Binding SlackChannels}"
                                         SelectedValue="{Binding SlackImageEventChannel}" />
                                 </StackPanel>
