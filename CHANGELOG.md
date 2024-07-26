@@ -12,6 +12,7 @@
 
 * Known issues:
   - Slack channels may not populate correctly in the new **Send to Slack** instruction or **Failures to Slack** trigger.
+  - Slack and Discord currently lack a test function.
 
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
