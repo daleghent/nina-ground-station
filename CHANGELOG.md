@@ -10,6 +10,9 @@
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
 * Added test buttons for Play Sound default audio file settings
 
+* Known issues:
+  - Slack channels may not populate correctly in the new **Send to Slack** instruction or **Failures to Slack** trigger.
+
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
 * Small optimizations for all token regular expressions
