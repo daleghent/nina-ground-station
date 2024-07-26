@@ -13,6 +13,7 @@
 using DaleGhent.NINA.GroundStation.Images;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -95,7 +96,12 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             var imageFileName = Path.GetFileName(imageData.ImagePath);
             slackImage.FileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
 
-            slack.PostImage(slackImage).Wait();
+            try {
+                slack.PostImage(slackImage).Wait();
+            } catch (Exception ex) {
+                Logger.Error($"Error posting image to Slack: {ex.Message}");
+                return;
+            }
         }
     }
 }

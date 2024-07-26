@@ -57,12 +57,17 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
             var qos = GroundStation.GroundStationConfig.MqttImagePublisherQoSLevel;
             var contentType = "application/json";
 
-            await MqttCommon.PublishMessage(topic, json, qos, CancellationToken.None, contentType);
+            try {
+                await MqttCommon.PublishMessage(topic, json, qos, CancellationToken.None, contentType);
 
-            if (!GroundStation.GroundStationConfig.MqttImagePubliserMetadataOnly) {
-                topic = GroundStation.GroundStationConfig.MqttImagePublisherImageTopic;
+                if (!GroundStation.GroundStationConfig.MqttImagePubliserMetadataOnly) {
+                    topic = GroundStation.GroundStationConfig.MqttImagePublisherImageTopic;
 
-                await MqttCommon.PublishByteMessage(topic, ImageService.Instance.Image.Bitmap.ToArray(), qos, ImageService.Instance.Image.ImageMimeType, CancellationToken.None);
+                    await MqttCommon.PublishByteMessage(topic, ImageService.Instance.Image.Bitmap.ToArray(), qos, ImageService.Instance.Image.ImageMimeType, CancellationToken.None);
+                }
+            } catch (Exception ex) {
+                Logger.Error($"Error sending image to MQTT broker: {ex.Message}");
+                return;
             }
         }
 
