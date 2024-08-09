@@ -37,9 +37,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToMqttTrigger : SequenceTrigger, IValidatable, IDisposable {
-        private readonly MqttCommon mqtt;
         private string topic;
         private int qos = 0;
+        private bool retain = true;
 
         private ISequenceRootContainer failureHook;
         private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
@@ -47,7 +47,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         [ImportingConstructor]
         public FailuresToMqttTrigger() {
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-            mqtt = new MqttCommon();
             Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
             QoS = GroundStation.GroundStationConfig.MqttDefaultFailureQoSLevel;
         }
@@ -70,6 +69,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             get => qos;
             set {
                 qos = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public bool Retain {
+            get => retain;
+            set {
+                retain = value;
                 RaisePropertyChanged();
             }
         }
@@ -171,7 +179,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await MqttCommon.PublishMessage(Topic, payload, QoS, newCts.Token);
+                        await MqttCommon.PublishMessage(Topic, payload, QoS, Retain, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -215,11 +223,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             return new FailuresToMqttTrigger(this) {
                 Topic = Topic,
                 QoS = QoS,
+                Retain = Retain,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}";
+            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}, Retain: {Retain}";
         }
 
         private class PreviousItem {

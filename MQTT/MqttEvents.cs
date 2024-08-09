@@ -55,10 +55,11 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
 
             var topic = GroundStation.GroundStationConfig.MqttImagePublisherMetdataTopic;
             var qos = GroundStation.GroundStationConfig.MqttImagePublisherQoSLevel;
+            var retain = GroundStation.GroundStationConfig.MqttImagePublisherRetain;
             var contentType = "application/json";
 
             try {
-                await MqttCommon.PublishMessage(topic, json, qos, CancellationToken.None, contentType);
+                await MqttCommon.PublishMessage(topic, json, qos, retain, CancellationToken.None, contentType);
 
                 if (!GroundStation.GroundStationConfig.MqttImagePubliserMetadataOnly) {
                     topic = GroundStation.GroundStationConfig.MqttImagePublisherImageTopic;

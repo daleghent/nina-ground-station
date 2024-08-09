@@ -34,10 +34,10 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
     public class SendToMqtt : SequenceItem, IValidatable {
-        private readonly MqttCommon mqtt;
         private string topic;
         private string payload = string.Empty;
         private int qos = 0;
+        private bool retain = true;
 
         private readonly ICameraMediator cameraMediator;
         private readonly IDomeMediator domeMediator;
@@ -84,13 +84,11 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            mqtt = new MqttCommon();
             Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
             QoS = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
         }
 
         public SendToMqtt() {
-            mqtt = new MqttCommon();
             Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
             QoS = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
         }
@@ -136,13 +134,22 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             }
         }
 
+        [JsonProperty]
+        public bool Retain {
+            get => retain;
+            set {
+                retain = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public static IList<string> QoSLevels => MqttCommon.QoSLevels;
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var payload = Utilities.Utilities.ResolveTokens(Payload, this, metadata);
 
             Logger.Trace($"{this}: {payload}");
-            await MqttCommon.PublishMessage(Topic, payload, QoS, ct);
+            await MqttCommon.PublishMessage(Topic, payload, QoS, Retain, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -152,10 +159,6 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
 
             if (string.IsNullOrEmpty(Topic)) {
                 i.Add("A topic is not defined");
-            }
-
-            if (string.IsNullOrEmpty(Payload)) {
-                i.Add("A payload is not defined");
             }
 
             if (i != Issues) {
@@ -170,12 +173,13 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             return new SendToMqtt(this) {
                 Topic = Topic,
                 QoS = QoS,
+                Retain = Retain,
                 Payload = Payload,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}, PayloadLength={Payload.Length}";
+            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}, Retain: {Retain}, PayloadLength={Payload.Length}";
         }
     }
 }

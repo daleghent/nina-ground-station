@@ -51,6 +51,18 @@
                         VerticalAlignment="Center"
                         ItemsSource="{Binding QoSLevels}"
                         SelectedIndex="{Binding QoS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="Retain" />
+
+                    <CheckBox
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0"
+                        IsChecked="{Binding Retain}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

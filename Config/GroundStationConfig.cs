@@ -335,6 +335,14 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public bool MqttDefaultRetain {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(MqttDefaultRetain), true);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(MqttDefaultRetain), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public string MqttDefaultTopic {
             get => pluginOptionsAccessor.GetValueString(nameof(MqttDefaultTopic), Settings.Default.MqttDefaultTopic);
             set {
@@ -473,6 +481,14 @@ namespace DaleGhent.NINA.GroundStation.Config {
             get => pluginOptionsAccessor.GetValueInt32(nameof(MqttImagePublisherQoSLevel), MqttDefaultQoSLevel);
             set {
                 pluginOptionsAccessor.SetValueInt32(nameof(MqttImagePublisherQoSLevel), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool MqttImagePublisherRetain {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(MqttImagePublisherRetain), false);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(MqttImagePublisherRetain), value);
                 RaisePropertyChanged();
             }
         }

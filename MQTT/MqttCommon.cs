@@ -23,11 +23,12 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
         public MqttCommon() {
         }
 
-        public static async Task PublishMessage(string topic, string message, int qos, CancellationToken ct, string contentType = "text/plain") {
+        public static async Task PublishMessage(string topic, string message, int qos, bool retain, CancellationToken ct, string contentType = "text/plain") {
             var mqttClient = new MqttClient() {
                 Topic = topic,
                 Payload = message,
                 Qos = qos,
+                Retain = retain,
                 ContentType = contentType,
             };
 

@@ -1344,21 +1344,37 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
-                                    <TextBlock
-                                        Width="110"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center">
-                                        <TextBlock.Text>QoS level</TextBlock.Text>
-                                        <TextBlock.ToolTip>The QoS level that images and metadata are published with</TextBlock.ToolTip>
-                                    </TextBlock>
-                                    <ComboBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        VerticalAlignment="Center"
-                                        ItemsSource="{Binding MqttQoSLevels}"
-                                        SelectedIndex="{Binding MqttImagePublisherQoSLevel, Mode=TwoWay}" />
-                                </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="110"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>QoS level</TextBlock.Text>
+                                            <TextBlock.ToolTip>The QoS level that images and metadata are published with</TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ComboBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            ItemsSource="{Binding MqttQoSLevels}"
+                                            SelectedIndex="{Binding MqttImagePublisherQoSLevel, Mode=TwoWay}" />
+                                    </StackPanel>
 
+                                    <StackPanel Margin="50,0,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="66"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>Retention</TextBlock.Text>
+                                            <TextBlock.ToolTip>Marks the message for retention on the broker</TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <CheckBox
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding MqttImagePublisherRetain}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
                                     <TextBlock
                                         Width="110"

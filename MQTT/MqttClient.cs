@@ -42,6 +42,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
         public string LastWillTopic { get; set; } = GroundStation.GroundStationConfig.MqttLwtTopic;
         public string LastWillPayload { get; set; } = GroundStation.GroundStationConfig.MqttLwtLastWillPayload;
         public int Qos { get; set; } = GroundStation.GroundStationConfig.MqttDefaultQoSLevel;
+        public bool Retain { get; set; } = GroundStation.GroundStationConfig.MqttDefaultRetain;
         public string MqttBrokerHost { get; } = GroundStation.GroundStationConfig.MqttBrokerHost;
         public ushort MqttBrokerPort { get; } = GroundStation.GroundStationConfig.MqttBrokerPort;
         public bool UseTls { get; } = GroundStation.GroundStationConfig.MqttBrokerUseTls;
@@ -76,7 +77,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                     .WithTopic(LastWillTopic)
                     .WithPayload(LastWillPayload)
                     .WithQualityOfServiceLevel((MqttQualityOfServiceLevel)Qos)
-                    .WithRetainFlag()
+                    .WithRetainFlag(Retain)
                     .Build();
 
                 clientOptions.WithWillMessage(lwtPayload);
@@ -146,7 +147,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                         .WithContentType(ContentType)
                         .WithPayload(Payload)
                         .WithQualityOfServiceLevel(Qos)
-                        .WithRetainFlag()
+                        .WithRetainFlag(Retain)
                         .Build();
 
                     result = await mqttClient.PublishAsync(payload, ct);
@@ -171,7 +172,7 @@ namespace DaleGhent.NINA.GroundStation.Mqtt {
                         .WithPayload(BytePayload)
                         .WithContentType(ContentType)
                         .WithQualityOfServiceLevel(Qos)
-                        .WithRetainFlag()
+                        .WithRetainFlag(Retain)
                         .Build();
 
                     result = await mqttClient.PublishAsync(payload, ct);
