@@ -6,7 +6,7 @@
 * **New:** Slack support. Configure an app in Slack and supply its OAuth `xoxb` token to send messages, images, and failure messages to channels in a Slack workspace.
 * **New:** Ground Station now features an Image Service that stores the latest image taken by NINA and makes it available to seleted messaging systems which, within reason, support the trasmission of images. Initially, this includes Discord, Slack, and MQTT and the feasibility of adding this to existing or additional services will be investigated. The type of images that will be sent (`SNAPSHOT`, `LIGHT`, `DARK`, `FLAT`, and `BIAS`) may be selected. Any new image of the selected type(s) will be automatically sent via the services configured and enabled to do so. The format of the image may be chosen as JPEG or PNG, and may be scaled to a percentage of the original's size.
 * The retention flag for MQTT messages can now be specified.
-* Text-to-speech voice can now be selected. Refer to Windows Settings > Time & Language > Speech > Voices to manage the voices available on your systetm.
+* Text-to-speech voice can now be selected. Refer to Windows Settings > Time & Language > Speech > Voices to manage the voices available on your system.
 * The **Send HTTP Request** instruction now offers a `$$DESCRIPTION$$` token that will insert the description text of the instruction into the request body or URL query string
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
 * Added test buttons for Play Sound default audio file settings
