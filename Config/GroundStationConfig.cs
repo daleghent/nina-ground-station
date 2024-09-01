@@ -526,14 +526,14 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         public string TtsVoice {
-            get => pluginOptionsAccessor.GetValueString(nameof(TtsVoice), TTS.TTS.GetVoiceNames()[0]);
+            get => pluginOptionsAccessor.GetValueString(nameof(TtsVoice), TextToSpeech.GetVoiceNames()[0]);
             set {
                 pluginOptionsAccessor.SetValueString(nameof(TtsVoice), value);
                 RaisePropertyChanged();
             }
         }
 
-        public IList<string> TtsVoices => TTS.TTS.GetVoiceNames();
+        public static IList<string> TtsVoices => TextToSpeech.GetVoiceNames();
 
         //
         // Sound Player options
@@ -953,20 +953,15 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         [RelayCommand]
-        private async Task<bool> TtsTest(object arg) {
-            var send = new SendToTTS() {
-                Message = TtsTestMessage,
-                Attempts = 1
-            };
+        private async Task TtsTest(object arg) {
+            using var tts = new TextToSpeech();
 
-            await send.Run(default, default);
-
-            if (send.Status == SequenceEntityStatus.FAILED) {
-                Notification.ShowExternalError($"Failed to send message to TTS:{Environment.NewLine}{string.Join(Environment.NewLine, send.Issues)}", "TTS Error");
-                return false;
+            try {
+                await tts.Speak(TtsTestMessage, CancellationToken.None);
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"Failed to send message to TTS:{Environment.NewLine}{string.Join(Environment.NewLine, ex.Message)}", "TTS Error");
+                return;
             }
-
-            return true;
         }
 
         [RelayCommand]

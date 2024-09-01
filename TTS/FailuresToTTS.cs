@@ -24,7 +24,6 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +37,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToTTS : SequenceTrigger, IValidatable, IDisposable {
-        private readonly TTS tts;
         private ISequenceRootContainer failureHook;
         private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
@@ -86,7 +84,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            tts = new TTS();
             queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
         }
 
@@ -177,8 +174,9 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             var text = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TTSFailureMessage, item.Entity, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
-            Logger.Info($"{this.Name}: Speaking \"{text}\"");
-            await TTS.Speak(text, token);
+            Logger.Info($"{Name}: Speaking \"{text}\"");
+            using var tts = new TextToSpeech();
+            await tts.Speak(text, token);
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
@@ -197,8 +195,9 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         public bool Validate() {
             var i = new List<string>();
+            using var tts = new TextToSpeech();
 
-            if (!TTS.HasVoice()) {
+            if (!tts.HasVoice()) {
                 i.Add("No Text-To-Speech voices found");
             }
 
