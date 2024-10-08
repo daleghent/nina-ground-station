@@ -183,7 +183,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 if (HttpMethod == HttpMethodEnum.GET) {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
-                    var body = Utilities.Utilities.ResolveTokens(httpPostBody, this);
+                    var body = Utilities.Utilities.ResolveTokens(httpPostBody, this, metadata);
                     HttpContent httpContent = new StringContent(body);
 
                     if (!string.IsNullOrEmpty(httpPostContentType)) {
