@@ -11,6 +11,9 @@
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
 * Added test buttons for Play Sound default audio file settings
 
+* Fixed issues:
+  - Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
+
 * Known issues:
   - Slack channels may not populate correctly in the new **Send to Slack** instruction or **Failures to Slack** trigger.
   - Slack and Discord currently lack a test function.

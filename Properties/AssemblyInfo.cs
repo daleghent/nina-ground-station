@@ -18,8 +18,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.0.0.103")]
-[assembly: AssemblyFileVersion("3.0.0.103")]
+[assembly: AssemblyVersion("3.0.0.104")]
+[assembly: AssemblyFileVersion("3.0.0.104")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
@@ -95,7 +95,8 @@ Help for this plugin may be found in the **#plugin-discussions** channel on the 
 * Most services require an Internet connection in order to function
 * I do not provide in-depth technical support or training for the services themselves
 * Ground Station is provided 'as is' under the terms of the [Mozilla Public License 2.0](https://github.com/daleghent/nina-plugins/blob/main/LICENSE.txt)
-* Source code for this plugin is available in my NINA plugins [source code repository](https://github.com/daleghent/nina-plugins)")]
+* Source code for this plugin is available in my NINA plugins [source code repository](https://github.com/daleghent/nina-plugins)
+* If you would like, you may [buy me a coffee](https://buymeacoffee.com/daleghent)")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
