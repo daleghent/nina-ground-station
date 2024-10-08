@@ -1,5 +1,8 @@
 ﻿# Ground Station
 
+## 2.4.1.0 - 2024-10-07
+* Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
+
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMAT_DATETIME` tokens when used on the same line as another token
 * Small optimizations for all token regular expressions
