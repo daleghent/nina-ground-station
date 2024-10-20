@@ -189,7 +189,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             Logger.Info($"{this.Name}: Sending message to [{Recipient}] because {failedItem.Name} failed");
 
             var subject = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureSubjectText, item.Entity, metadata);
-            var body = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureBodyText, item.Entity);
+            var body = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureBodyText, item.Entity, metadata);
 
             subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);
             body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
