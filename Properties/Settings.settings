@@ -160,5 +160,16 @@ Reasons: $$ERROR_LIST$$
 
 *Reasons:* $$ERROR_LIST$$</Value>
     </Setting>
+    <Setting Name="NtfyShFailureTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
+    </Setting>
+    <Setting Name="NtfyShFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
+
+Reasons: $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="NtfyShFailureTags" Type="System.String" Scope="User">
+      <Value Profile="(Default)">exclamation</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

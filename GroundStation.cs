@@ -66,6 +66,10 @@ namespace DaleGhent.NINA.GroundStation {
             SlackEvents.Start();
             MqttEvents.Start();
 
+            if (string.IsNullOrEmpty(GroundStationConfig.NtfyShDefaultTopic)) {
+                GroundStationConfig.NtfyShDefaultTopic = profileService.ActiveProfile.Id.ToString()[..8].ToLower();
+            }
+
             Logger.Debug("Init completed");
             return;
         }

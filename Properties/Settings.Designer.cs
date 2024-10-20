@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -603,6 +603,43 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["SlackFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string NtfyShFailureTitle {
+            get {
+                return ((string)(this["NtfyShFailureTitle"]));
+            }
+            set {
+                this["NtfyShFailureTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$")]
+        public string NtfyShFailureMessage {
+            get {
+                return ((string)(this["NtfyShFailureMessage"]));
+            }
+            set {
+                this["NtfyShFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("exclamation")]
+        public string NtfyShFailureTags {
+            get {
+                return ((string)(this["NtfyShFailureTags"]));
+            }
+            set {
+                this["NtfyShFailureTags"] = value;
             }
         }
     }

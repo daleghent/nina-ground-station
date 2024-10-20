@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.Images;
 using DaleGhent.NINA.GroundStation.Interfaces;
 using DaleGhent.NINA.GroundStation.Mqtt;
+using DaleGhent.NINA.GroundStation.NtfySh;
 using DaleGhent.NINA.GroundStation.PlaySound;
 using DaleGhent.NINA.GroundStation.PushoverClient;
 using DaleGhent.NINA.GroundStation.Slack;
@@ -804,6 +805,88 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        //
+        // ntfy.sh
+        //
+        public string NtfyShDefaultTopic {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShDefaultTopic), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShDefaultTopic), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShDefaultIcon {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShDefaultIcon), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShDefaultIcon), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShUrl {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShUrl), "https://ntfy.sh/");
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShUrl), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShUser {
+            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShUser)), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShUser), Security.Encrypt(value.Trim()));
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShPassword {
+            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShPassword)), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShPassword), Security.Encrypt(value.Trim()));
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShToken {
+            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShToken)), string.Empty);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShToken), Security.Encrypt(value.Trim()));
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShFailureTitle {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShFailureTitle), Settings.Default.NtfyShFailureTitle);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShFailureTitle), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShFailureMessage {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShFailureMessage), Settings.Default.NtfyShFailureMessage);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShFailureMessage), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public string NtfyShFailureTags {
+            get => pluginOptionsAccessor.GetValueString(nameof(NtfyShFailureTags), Settings.Default.NtfyShFailureTags);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(NtfyShFailureTags), value.Trim());
+                RaisePropertyChanged();
+            }
+        }
+
+        public NtfyShPriorityLevels NtfyShFailurePriority {
+            get => (NtfyShPriorityLevels)pluginOptionsAccessor.GetValueInt16(nameof(NtfyShFailurePriority), (short)NtfyShPriorityLevels.Max);
+            set {
+                pluginOptionsAccessor.SetValueInt16(nameof(NtfyShFailurePriority), (short)value);
+                RaisePropertyChanged();
+            }
+        }
 
         //
         // Image Service options
