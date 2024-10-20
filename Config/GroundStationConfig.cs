@@ -592,6 +592,14 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public string DiscordWebhookFailureTitle {
+            get => pluginOptionsAccessor.GetValueString(nameof(DiscordWebhookFailureTitle), Settings.Default.DiscordWebhookFailureTitle);
+            set {
+                pluginOptionsAccessor.SetValueString(nameof(DiscordWebhookFailureTitle), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public string DiscordWebhookFailureMessage {
             get => pluginOptionsAccessor.GetValueString(nameof(DiscordWebhookFailureMessage), Settings.Default.DiscordWebhookFailureMessage);
             set {

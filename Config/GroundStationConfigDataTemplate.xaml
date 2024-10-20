@@ -543,6 +543,21 @@
                         <TabItem Name="Discord_FailureMessage" Header="Failure Message">
                             <GroupBox Margin="0,10,0,5" Header="Failure message template">
                                 <StackPanel Orientation="Vertical">
+                                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="110"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>Title</TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBox
+                                            Width="400"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding DiscordWebhookFailureTitle}" />
+                                    </StackPanel>
+
                                     <StackPanel Margin="0,0,0,0" Orientation="Vertical">
                                         <TextBox
                                             MinWidth="515"

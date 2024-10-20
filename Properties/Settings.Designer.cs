@@ -642,5 +642,17 @@ namespace DaleGhent.NINA.GroundStation.Properties {
                 this["NtfyShFailureTags"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string DiscordWebhookFailureTitle {
+            get {
+                return ((string)(this["DiscordWebhookFailureTitle"]));
+            }
+            set {
+                this["DiscordWebhookFailureTitle"] = value;
+            }
+        }
     }
 }

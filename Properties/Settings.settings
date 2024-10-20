@@ -171,5 +171,8 @@ Reasons: $$ERROR_LIST$$</Value>
     <Setting Name="NtfyShFailureTags" Type="System.String" Scope="User">
       <Value Profile="(Default)">exclamation</Value>
     </Setting>
+    <Setting Name="DiscordWebhookFailureTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

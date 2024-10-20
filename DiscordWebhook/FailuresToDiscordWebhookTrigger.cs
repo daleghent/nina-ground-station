@@ -178,8 +178,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
 
             Logger.Info($"{this.Name}: Posting message to Discord because {failedItem.Name} failed");
 
-            var title = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.EmailFailureSubjectText, item.Entity, metadata);
-            var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.DiscordWebhookFailureMessage, item.Entity);
+            var title = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.DiscordWebhookFailureTitle, item.Entity, metadata);
+            var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.DiscordWebhookFailureMessage, item.Entity, metadata);
 
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
