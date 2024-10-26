@@ -103,7 +103,11 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
-            Text="Type" />
+            Text="Content Type">
+            <TextBlock.ToolTip>
+                <TextBlock Text="The MIME type of the data being sent. Usually this is &apos;text/plain&apos; for plain text, or &apos;application/json&apos; for JSON payloads. The HTTP server may reject or mishandle the request if this is incorrectly specified." />
+            </TextBlock.ToolTip>
+        </TextBlock>
         <TextBox
             Grid.Row="3"
             Grid.Column="1"
