@@ -88,7 +88,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(capacity: 1000);
         }
 
         public FailuresToSlackTrigger(FailuresToSlackTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -119,20 +119,15 @@ namespace DaleGhent.NINA.GroundStation.Slack {
 
         public static ObservableCollection<Channel> Channels => GroundStation.GroundStationConfig.SlackChannels;
 
-        public override void Initialize() {
-            _ = queueWorker.Start();
-        }
-
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.ShutdownAsync();
         }
 
         public void Dispose() {
-            queueWorker.Dispose();
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -140,12 +135,11 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.ShutdownAsync();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                _ = queueWorker.Start();
             }
             base.AfterParentChanged();
         }
@@ -180,7 +174,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             }
 
             Logger.Debug($"{Name} received FailureEvent from {arg2.Entity.Name}");
-            await queueWorker.Enqueue(arg2);
+            await queueWorker.AddItemAsync(async (arg2, ct) => { await WorkerFn(arg2, ct); });
         }
 
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {

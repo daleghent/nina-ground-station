@@ -90,7 +90,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(capacity: 1000);
             pushover = new PushoverClient.PushoverClient();
 
             NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultFailureSound;
@@ -111,33 +112,28 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             CopyMetaData(copyMe);
         }
 
-        public override void Initialize() {
-            _ = queueWorker.Start();
-        }
-
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.ShutdownAsync();
         }
 
         public void Dispose() {
-            queueWorker.Dispose();
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
                 // This could potentially be skipped by just using weak events instead
+                await queueWorker.ShutdownAsync();
+
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                _ = queueWorker.Start();
             }
             base.AfterParentChanged();
         }
@@ -151,7 +147,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             base.SequenceBlockInitialize();
         }
 
-        public override void SequenceBlockTeardown() {
+        public async override void SequenceBlockTeardown() {
+            await queueWorker.ShutdownAsync();
+
             // Unregister failure event when the parent context ends
             failureHook = ItemUtility.GetRootContainer(this.Parent);
             if (failureHook != null) {
@@ -171,7 +169,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
                 return;
             }
 
-            await queueWorker.Enqueue(arg2);
+            await queueWorker.AddItemAsync(async (arg2, ct) => { await WorkerFn(arg2, ct); });
         }
 
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
