@@ -28,12 +28,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public BackgroundQueueWorker(int queueSize, Func<T, CancellationToken, Task> workerFn) {
             this.queueSize = queueSize;
             this.workerFn = workerFn;
-            semaphore = new(initialCount: 1);
+            semaphore = new(initialCount: 1, maxCount: 1);
         }
 
         public async Task Enqueue(T item) {
-            if (messageQueue == null) { return; }
-            await messageQueue.EnqueueAsync(item);
+            var localCopy = messageQueue;
+            if (localCopy == null) { return; }
+            await localCopy.EnqueueAsync(item);
         }
 
         public async void Stop() {
@@ -44,7 +45,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 // If a running WorkerFn() is taking more than 1 minute to complete, time out the attempt and finish shutting down
                 await semaphore.WaitAsync(TimeSpan.FromMinutes(1));
 
-                messageQueue?.CompleteAdding();
+                var localCopy = messageQueue;
+                localCopy?.CompleteAdding();
             } catch (Exception) {
             } finally {
                 try {
@@ -60,14 +62,15 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public async Task Start() {
             try {
                 workerCts = new CancellationTokenSource();
-                messageQueue = new AsyncProducerConsumerQueue<T>(1000);
-                while (await messageQueue.OutputAvailableAsync(workerCts.Token)) {
+                var localCopy = new AsyncProducerConsumerQueue<T>(1000);
+                messageQueue = localCopy;
+                while (await localCopy.OutputAvailableAsync(workerCts.Token)) {
                     try {
                         Logger.Trace($"Message queue loop has awaken");
                         await semaphore.WaitAsync(workerCts.Token);
                         Logger.Trace($"Message queue loop acquired semaphore");
 
-                        var item = await messageQueue.DequeueAsync(workerCts.Token);
+                        var item = await localCopy.DequeueAsync(workerCts.Token);
                         await workerFn(item, workerCts.Token);
 
                         semaphore.Release();
