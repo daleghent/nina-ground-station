@@ -124,7 +124,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         private string TTSFailureMessage { get; set; }
 
         public override void Initialize() {
-            _ = queueWorker.Start();
+            queueWorker.Start();
         }
 
         public override void Teardown() {
@@ -149,7 +149,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                _ = queueWorker.Start();
+                queueWorker.Start();
             }
             base.AfterParentChanged();
         }
