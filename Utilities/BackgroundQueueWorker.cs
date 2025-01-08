@@ -28,23 +28,27 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         public BackgroundQueueWorker(int queueSize, Func<T, CancellationToken, Task> workerFn) {
             this.queueSize = queueSize;
             this.workerFn = workerFn;
-            semaphore = new(initialCount: 1);
+            semaphore = new(initialCount: 1, maxCount: 1);
         }
 
         public async Task Enqueue(T item) {
-            if (messageQueue == null) { return; }
-            await messageQueue.EnqueueAsync(item);
+            var localCopy = messageQueue;
+            if (localCopy == null) { return; }
+            await localCopy.EnqueueAsync(item);
         }
 
-        public async void Stop() {
+        public async Task Stop() {
             try {
+                // use a local copy of the current message queue to prevent case where Start() could be run prior to the delays passing and setting a fresh queue
+                var localCopy = messageQueue;
                 // Wait a little for any last items to be enqueued, such as at the very end of a sequence
                 await Task.Delay(TimeSpan.FromSeconds(5));
 
                 // If a running WorkerFn() is taking more than 1 minute to complete, time out the attempt and finish shutting down
                 await semaphore.WaitAsync(TimeSpan.FromMinutes(1));
 
-                messageQueue?.CompleteAdding();
+                Logger.Trace("Complete adding to queue");
+                localCopy?.CompleteAdding();
             } catch (Exception) {
             } finally {
                 try {
@@ -57,18 +61,23 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             }
         }
 
-        public async Task Start() {
+        public void Start() {
+            workerCts = new CancellationTokenSource();
+            messageQueue = new AsyncProducerConsumerQueue<T>(1000);
+            // Start the work in background. The inside method uses local copies of the class fields to prevent race conditions
+            _ = DoWork(messageQueue, workerCts.Token);
+        }
+
+        private async Task DoWork(AsyncProducerConsumerQueue<T> queue, CancellationToken token) {
             try {
-                workerCts = new CancellationTokenSource();
-                messageQueue = new AsyncProducerConsumerQueue<T>(1000);
-                while (await messageQueue.OutputAvailableAsync(workerCts.Token)) {
+                while (await queue.OutputAvailableAsync(token)) {
                     try {
                         Logger.Trace($"Message queue loop has awaken");
-                        await semaphore.WaitAsync(workerCts.Token);
+                        await semaphore.WaitAsync(token);
                         Logger.Trace($"Message queue loop acquired semaphore");
 
-                        var item = await messageQueue.DequeueAsync(workerCts.Token);
-                        await workerFn(item, workerCts.Token);
+                        var item = await queue.DequeueAsync(token);
+                        await workerFn(item, token);
 
                         semaphore.Release();
                         Logger.Trace($"Message queue loop released semaphore");
