@@ -124,7 +124,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         }
 
         public override void Initialize() {
-            _ = queueWorker.Start();
+            queueWorker.Start();
         }
 
         public override void Teardown() {
@@ -149,7 +149,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                _ = queueWorker.Start();
+                queueWorker.Start();
             }
             base.AfterParentChanged();
         }
