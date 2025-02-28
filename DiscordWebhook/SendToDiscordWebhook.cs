@@ -187,7 +187,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                     Timestamp = DateTimeOffset.UtcNow,
                 };
 
-                embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(message, this, metadata));
+                embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(embedText, this, metadata));
                 await discordWebhookCommon.SendDiscordWebook(resolvedMessage, embed);
             } else {
                 await discordWebhookCommon.SendDiscordWebook(resolvedMessage);
@@ -215,12 +215,13 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             return new SendToDiscordWebhook(this) {
                 Message = Message,
                 EmbedTitle = EmbedTitle,
+                EmbedText = EmbedText,
                 EmbedEdgeColor = EmbedEdgeColor,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Message: {MessagePreview}";
+            return $"Category: {Category}, Item: {Name}, Message: {MessagePreview}, Embed Title: {EmbedTitle}, Embed Text: {EmbedText[0..10]}";
         }
 
         public IWindowService WindowService {
