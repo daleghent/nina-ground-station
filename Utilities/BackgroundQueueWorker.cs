@@ -19,16 +19,12 @@ using System.Threading.Tasks;
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
     internal class BackgroundQueueWorker<T> : IDisposable {
-        private readonly int queueSize;
         private CancellationTokenSource workerCts;
         private AsyncProducerConsumerQueue<T> messageQueue;
-        private Func<T, CancellationToken, Task> workerFn;
-        private readonly SemaphoreSlim semaphore;
+        private readonly Func<T, CancellationToken, Task> workerFn;
 
-        public BackgroundQueueWorker(int queueSize, Func<T, CancellationToken, Task> workerFn) {
-            this.queueSize = queueSize;
+        public BackgroundQueueWorker(Func<T, CancellationToken, Task> workerFn) {
             this.workerFn = workerFn;
-            semaphore = new(initialCount: 1, maxCount: 1);
         }
 
         public async Task Enqueue(T item) {
@@ -44,9 +40,6 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 // Wait a little for any last items to be enqueued, such as at the very end of a sequence
                 await Task.Delay(TimeSpan.FromSeconds(5));
 
-                // If a running WorkerFn() is taking more than 1 minute to complete, time out the attempt and finish shutting down
-                await semaphore.WaitAsync(TimeSpan.FromMinutes(1));
-
                 Logger.Trace("Complete adding to queue");
                 localCopy?.CompleteAdding();
             } catch (Exception) {
@@ -55,8 +48,6 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                     workerCts?.Cancel();
                     workerCts?.Dispose();
                 } catch {
-                } finally {
-                    semaphore?.Release();
                 }
             }
         }
@@ -72,21 +63,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             try {
                 while (await queue.OutputAvailableAsync(token)) {
                     try {
-                        Logger.Trace($"Message queue loop has awaken");
-                        await semaphore.WaitAsync(token);
-                        Logger.Trace($"Message queue loop acquired semaphore");
-
+                        Logger.Trace($"Message queue loop has awoken");
                         var item = await queue.DequeueAsync(token);
                         await workerFn(item, token);
-
-                        semaphore.Release();
-                        Logger.Trace($"Message queue loop released semaphore");
                     } catch (OperationCanceledException) {
                         throw;
                     } catch (Exception ex) {
                         Logger.Error(ex);
-                    } finally {
-                        semaphore?.Release();
                     }
                 }
             } catch (OperationCanceledException) {
@@ -97,7 +80,6 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         public void Dispose() {
-            semaphore?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

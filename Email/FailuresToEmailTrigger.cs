@@ -90,7 +90,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(WorkerFn);
             email = new EmailCommon();
 
             Recipient = GroundStation.GroundStationConfig.SmtpDefaultRecipients;
@@ -123,8 +123,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             queueWorker.Start();
         }
 
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.Stop();
         }
 
         public void Dispose() {
@@ -132,7 +132,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -140,7 +140,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;

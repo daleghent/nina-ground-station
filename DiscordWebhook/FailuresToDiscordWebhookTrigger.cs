@@ -90,7 +90,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 telescopeMediator, weatherDataMediator);
 
             discordWebhookCommon = new DiscordWebhookCommon();
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(WorkerFn);
 
             Validate();
         }
@@ -110,11 +110,11 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
         }
 
         public override void Initialize() {
-            _ = queueWorker.Start();
+            queueWorker.Start();
         }
 
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.Stop();
         }
 
         public void Dispose() {
@@ -122,7 +122,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -130,12 +130,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
-                _ = queueWorker.Start();
+                queueWorker.Start();
             }
             base.AfterParentChanged();
         }
