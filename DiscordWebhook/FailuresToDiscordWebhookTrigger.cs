@@ -205,7 +205,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await discordWebhookCommon.SendDiscordWebhook(string.Empty, embeds);
+                        await discordWebhookCommon.SendDiscordWebhook(string.Empty, embeds, isFailure: true);
                         break;
                     }
                 } catch (Exception ex) {
@@ -229,7 +229,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = discordWebhookCommon.CommonValidation();
+            var i = DiscordWebhookCommon.CommonValidation();
 
             if (i != Issues) {
                 Issues = i;

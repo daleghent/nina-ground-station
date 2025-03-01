@@ -199,7 +199,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = discordWebhookCommon.CommonValidation();
+            var i = DiscordWebhookCommon.CommonValidation();
 
             if (string.IsNullOrEmpty(message)) {
                 i.Add("There is no message content");

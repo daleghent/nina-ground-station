@@ -43,7 +43,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
             var discordWebhookCommon = new DiscordWebhookCommon();
 
-            if (discordWebhookCommon.CommonValidation().Count > 1) {
+            if (DiscordWebhookCommon.CommonValidation().Count > 1) {
                 return;
             }
 
