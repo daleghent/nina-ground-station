@@ -14,7 +14,9 @@ using DaleGhent.NINA.GroundStation.Images;
 using Discord;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
+using NINA.Core.Utility.Converters;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -85,13 +87,89 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 embed.AddField(Loc.Instance["LblFilter"], imageData.ImageMetaData.FilterWheel.Filter);
             }
 
-            embed.AddField(Loc.Instance["LblStatistics"],
-                        $"**{Loc.Instance["LblExposureTime"]}:** {imageData.ImageMetaData.Image.ExposureTime:F2}s, **{Loc.Instance["LblGain"]}:** {imageData.ImageMetaData.Camera.Gain}, **{Loc.Instance["LblOffset"]}:** {imageData.ImageMetaData.Camera.Offset}\n" +
-                        $"**{Loc.Instance["LblMean"]}:** {imageData.ImageStatistics.Mean:F2}, **{Loc.Instance["LblStDev"]}:** {imageData.ImageStatistics.StDev:F2}\n" +
-                        $"**{Loc.Instance["LblMedian"]}:** {imageData.ImageStatistics.Median:F2}, **{Loc.Instance["LblMAD"]}:** {imageData.ImageStatistics.MedianAbsoluteDeviation:F2}\n" +
-                        $"**{Loc.Instance["LblMin"]}:** {imageData.ImageStatistics.Min} (x{imageData.ImageStatistics.MinOccurrences}), **{Loc.Instance["LblMax"]}:** {imageData.ImageStatistics.Max} (x{imageData.ImageStatistics.MaxOccurrences})\n" +
-                        $"**{Loc.Instance["LblStarCount"]}:** {imageData.StarDetectionAnalysis.DetectedStars}, **{Loc.Instance["LblHFR"]}:** {imageData.StarDetectionAnalysis.HFR:F2}\n" +
-                        $"**{Loc.Instance["LblBitDepth"]}:** {imageData.ImageStatistics.BitDepth}, **{Loc.Instance["LblHFRStDev"]}:** {imageData.StarDetectionAnalysis.HFRStDev:F2}");
+            var nanToDoubleDash = new NaNToDoubleDashConverter();
+            var negativeOneToDoubleDashConverter = new IntNegativeOneToDoubleDashConverter();
+
+            var statsFields = new List<EmbedFieldBuilder>() {
+                new() {
+                    Name = Loc.Instance["LblStatistics"],
+                    Value = $"{imageData.ImageMetaData.Image.ExposureTime}s, {imageData.ImageMetaData.Image.Binning}, {imageData.ImageMetaData.Image.ImageType}",
+                }
+            };
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblGain"],
+                Value = $"{imageData.ImageMetaData.Camera.Gain}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblOffset"],
+                Value = $"{imageData.ImageMetaData.Camera.Offset}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblMean"],
+                Value = $"{imageData.ImageStatistics.Mean:F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblStDev"],
+                Value = $"{imageData.ImageStatistics.StDev:F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblMedian"],
+                Value = $"{imageData.ImageStatistics.Median:F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblMAD"],
+                Value = $"{imageData.ImageStatistics.MedianAbsoluteDeviation:F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblMin"],
+                Value = $"{imageData.ImageStatistics.Min} (x{imageData.ImageStatistics.MinOccurrences})",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblMax"],
+                Value = $"{imageData.ImageStatistics.Max} (x{imageData.ImageStatistics.MaxOccurrences})",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblBitDepth"],
+                Value = $"{imageData.ImageStatistics.BitDepth}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblHFR"],
+                Value = $"{nanToDoubleDash.Convert(imageData.StarDetectionAnalysis.HFR, typeof(string), null, CultureInfo.CurrentCulture):F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblHFRStDev"],
+                Value = $"{nanToDoubleDash.Convert(imageData.StarDetectionAnalysis.HFRStDev, typeof(string), null, CultureInfo.CurrentCulture):F2}",
+                IsInline = true,
+            });
+
+            statsFields.Add(new() {
+                Name = Loc.Instance["LblStarCount"],
+                Value = $"{negativeOneToDoubleDashConverter.Convert(imageData.StarDetectionAnalysis.DetectedStars, typeof(string), null, null)}",
+                IsInline = true,
+            });
+
+            embed.WithFields(statsFields);
 
             var imageFileName = Path.GetFileName(imageData.ImagePath);
             imageFileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
