@@ -35,7 +35,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             allowedMentions = new(AllowedMentionTypes.Everyone | AllowedMentionTypes.Users | AllowedMentionTypes.Roles);
         }
 
-        public async Task SendDiscordWebook(string text) {
+        public async Task SendDiscordWebhook(string text) {
             try {
                 if (string.IsNullOrEmpty(DiscordWebhookUrl)) {
                     throw new Exception("No webhook URL is set");
@@ -50,7 +50,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             }
         }
 
-        public async Task SendDiscordWebook(string message, EmbedBuilder embed) {
+        public async Task SendDiscordWebhook(string message, EmbedBuilder embed) {
             try {
                 if (string.IsNullOrEmpty(DiscordWebhookUrl)) {
                     throw new Exception("No webhook URL is set");

@@ -203,7 +203,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await discordWebhookCommon.SendDiscordWebook(string.Empty, embed);
+                        await discordWebhookCommon.SendDiscordWebhook(string.Empty, embed);
                         break;
                     }
                 } catch (Exception ex) {
