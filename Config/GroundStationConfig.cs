@@ -1060,11 +1060,13 @@ namespace DaleGhent.NINA.GroundStation.Config {
             var embed = new EmbedBuilder() {
                 Title = "Test message title",
                 Description = "This is a test message description",
-            };
+            }.Build();
+
+            var embeds = new List<Embed>() { embed };
 
             try {
                 var send = new DiscordWebhook.DiscordWebhookCommon();
-                await send.SendDiscordWebhook("A test message:", embed);
+                await send.SendDiscordWebhook("A test message:", embeds);
             } catch (Exception ex) {
                 Notification.ShowExternalError($"Failed to send message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
                 return false;

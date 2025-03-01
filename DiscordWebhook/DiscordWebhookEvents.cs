@@ -14,6 +14,7 @@ using DaleGhent.NINA.GroundStation.Images;
 using Discord;
 using NINA.Core.Locale;
 using NINA.Core.Utility;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -96,7 +97,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             imageFileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
             embed.WithImageUrl($"attachment://{imageFileName}");
 
-            discordWebhookCommon.SendDiscordImage(imageData, imageFileName, embed).Wait();
+            var embeds = new List<Embed>() { embed.Build() };
+            discordWebhookCommon.SendDiscordImage(imageData, imageFileName, embeds).Wait();
         }
     }
 }

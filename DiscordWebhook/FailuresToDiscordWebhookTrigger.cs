@@ -197,13 +197,15 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
 
             embed.AddField(Loc.Instance["LblDetails"], message);
 
+            var embeds = new List<Embed>() { embed.Build() };
+
             var attempts = 3; // Todo: Make it configurable?
 
             for (int i = 0; i < attempts; i++) {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await discordWebhookCommon.SendDiscordWebhook(string.Empty, embed);
+                        await discordWebhookCommon.SendDiscordWebhook(string.Empty, embeds);
                         break;
                     }
                 } catch (Exception ex) {

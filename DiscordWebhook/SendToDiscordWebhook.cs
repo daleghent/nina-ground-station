@@ -188,7 +188,9 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 };
 
                 embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(embedText, this, metadata));
-                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, embed);
+                var embeds = new List<Embed>() { embed.Build() };
+
+                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, embeds);
             } else {
                 await discordWebhookCommon.SendDiscordWebhook(resolvedMessage);
             }
