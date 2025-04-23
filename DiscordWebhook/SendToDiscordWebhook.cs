@@ -223,7 +223,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Message: {MessagePreview}, Embed Title: {EmbedTitle}, Embed Text: {EmbedText[0..10]}";
+            return $"Category: {Category}, Item: {Name}, Message: {MessagePreview}";
         }
 
         public IWindowService WindowService {
