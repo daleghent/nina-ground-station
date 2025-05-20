@@ -179,6 +179,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 text = text.Replace(@"$$ROTATOR_NAME$$", DoUrlEncode(urlEncode, rotator.Name));
 
                 text = text.Replace(@"$$ROTATOR_ANGLE$$", DoUrlEncode(urlEncode, rotator.MechanicalPosition.ToString("F", culture)));
+
+                text = text.Replace(@"$$ROTATOR_SKY_ANGLE$$", DoUrlEncode(urlEncode, rotator.Position.ToString("F", culture)));
+
+                text = text.Replace(@"$$ROTATOR_IS_SYNCED$$", DoUrlEncode(urlEncode, rotator.Synced.ToString()));
             } else {
                 var pattern = RotatorRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
