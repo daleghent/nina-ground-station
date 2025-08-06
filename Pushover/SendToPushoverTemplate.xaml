@@ -40,6 +40,34 @@
                         TextWrapping="Wrap"
                         FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
                         Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="|" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="Priority:" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0"
+                        Text="{Binding Priority}" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="|" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="Sound:" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0"
+                        Text="{Binding NotificationSound}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
