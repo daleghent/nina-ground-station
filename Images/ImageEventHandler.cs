@@ -78,7 +78,9 @@ namespace DaleGhent.NINA.GroundStation.Images {
 
                 switch ((ImageFormatEnum)GroundStation.GroundStationConfig.ImageServiceFormat) {
                     case ImageFormatEnum.JPEG:
-                        var jpegBitmap = new JpegBitmapEncoder();
+                        var jpegBitmap = new JpegBitmapEncoder() {
+                            QualityLevel = GroundStation.GroundStationConfig.ImageServiceJpegQuality,
+                        };
                         jpegBitmap.Frames.Add(BitmapFrame.Create(bitmapFrame));
                         jpegBitmap.Save(memoryStream);
                         contentType = "image/jpeg";

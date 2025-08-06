@@ -921,6 +921,17 @@ namespace DaleGhent.NINA.GroundStation.Config {
 
         public static ImageFormatEnum[] ImageServiceFormats => Enum.GetValues(typeof(ImageFormatEnum)).Cast<ImageFormatEnum>().ToArray();
 
+        public byte ImageServiceJpegQuality {
+            get => pluginOptionsAccessor.GetValueByte(nameof(ImageServiceJpegQuality), 90);
+            set {
+                if (value < 1) { value = 1; }
+                if (value > 100) { value = 100; }
+
+                pluginOptionsAccessor.SetValueByte(nameof(ImageServiceJpegQuality), value);
+                RaisePropertyChanged();
+            }
+        }
+
         //
         // Utility methods
         //

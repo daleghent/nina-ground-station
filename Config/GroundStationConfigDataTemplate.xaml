@@ -1766,11 +1766,50 @@
                             <TextBlock.ToolTip>The format which the images will be sent</TextBlock.ToolTip>
                         </TextBlock>
                         <ComboBox
+                            Name="PART_ImageServiceFormats"
                             MinWidth="50"
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             ItemsSource="{Binding ImageServiceFormats}"
                             SelectedIndex="{Binding ImageServiceFormat, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_ImageServiceFormats, Path=SelectedItem}" Value="PNG">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>JPEG Quality</TextBlock.Text>
+                            <TextBlock.ToolTip>Lower quality yields a smaller image file size</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="50"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="%">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="ImageServiceJpegQuality">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Maximum="100" Minimum="10" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
                     </StackPanel>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">

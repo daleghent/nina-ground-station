@@ -120,5 +120,6 @@ namespace DaleGhent.NINA.GroundStation.Interfaces {
         // Image Service options
         public byte ImageServiceFormat { get; set; }
         public byte ImageServiceImageScaling { get; set; }
+        public byte ImageServiceJpegQuality { get; set; }
     }
 }
