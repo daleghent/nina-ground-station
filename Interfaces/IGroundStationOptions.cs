@@ -10,9 +10,11 @@
 
 #endregion "copyright"
 
-using DaleGhent.NINA.GroundStation.Images;
+using DaleGhent.NINA.GroundStation.NtfySh;
 using DaleGhent.NINA.GroundStation.PushoverClient;
+using DaleGhent.NINA.GroundStation.Slack;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace DaleGhent.NINA.GroundStation.Interfaces {
     public interface IGroundStationOptions {
@@ -87,5 +89,36 @@ namespace DaleGhent.NINA.GroundStation.Interfaces {
         public string DiscordFailureWebhookUrl { get; set; }
         public string DiscordWebhookFailureMessage { get; set; }
         public string DiscordImageTypesSelected { get; set; }
+
+        // slack options
+        public string SlackOAuthToken { get; set; }
+        public ObservableCollection<Channel> SlackChannels { get; set; }
+        public string SlackWorkspaceName { get; set; }
+        public string SlackBotName { get; set; }
+        public string SlackBotDisplayName { get; set; }
+        public string SlackFailureMessage { get; set; }
+        public string SlackImageTypesSelected { get; set; }
+        public Channel SlackImageEventChannel { get; set; }
+        public bool SlackShowChannelInfo { get; set; }
+        public string SlackSelectedChannelId { get; set; }
+        public bool SlackSelectedChannelIsPrivate { get; set; }
+        public int SlackSelectedChannelNumMembers { get; set; }
+        public string SlackSelectedChannelCreateDate { get; set; }
+
+        // ntfy.sh options
+        public string NtfyShDefaultTopic { get; set; }
+        public string NtfyShDefaultIcon { get; set; }
+        public string NtfyShUrl { get; set; }
+        public string NtfyShUser { get; set; }
+        public string NtfyShPassword { get; set; }
+        public string NtfyShToken { get; set; }
+        public string NtfyShFailureTitle { get; set; }
+        public string NtfyShFailureMessage { get; set; }
+        public string NtfyShFailureTags { get; set; }
+        public NtfyShPriorityLevels NtfyShFailurePriority { get; set; }
+
+        // Image Service options
+        public byte ImageServiceFormat { get; set; }
+        public byte ImageServiceImageScaling { get; set; }
     }
 }
