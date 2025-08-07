@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024-2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,10 +10,13 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -61,6 +64,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private IWindowService windowService;
 
         [ImportingConstructor]
         public SendUdp(ICameraMediator cameraMediator,
@@ -127,8 +131,10 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
             get => address;
             set {
                 address = value;
-                Validate();
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -137,8 +143,10 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
             get => port;
             set {
                 port = value;
-                Validate();
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -152,8 +160,9 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                     PayloadBytes = Encoding.ASCII.GetBytes(value);
                 }
 
-                Validate();
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -168,6 +177,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                 }
 
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
             }
         }
 
@@ -176,16 +186,42 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
             get => lineTermination;
             set {
                 lineTermination = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
             }
         }
 
-        private byte[] PayloadBytes { get; set; } = Array.Empty<byte>();
+        private byte[] PayloadBytes { get; set; } = [];
         private bool AddressIsOK { get; set; } = true;
         private IPAddress ResolvedIP { get; set; }
 
         public static PayloadType[] PayloadTypes => Enum.GetValues(typeof(PayloadType)).Cast<PayloadType>().ToArray();
         public static LineTermination[] LineTerminations => Enum.GetValues(typeof(LineTermination)).Cast<LineTermination>().ToArray();
+
+        public string MessagePreview {
+            get {
+                string text;
+                byte mesgPreviewLen = 50;
+
+                if (!string.IsNullOrEmpty(address) && !string.IsNullOrEmpty(payload)) {
+                    text = $"{address}:{port} <{PayloadTypes[payloadType]}> \'";
+
+                    var count = payload.Length > mesgPreviewLen ? mesgPreviewLen : payload.Length;
+                    text += payload[..count];
+
+                    if (payload.Length > mesgPreviewLen) {
+                        text += "...";
+                    }
+
+                    text += '\'';
+                } else {
+                    text = "No address and payload specified";
+                }
+
+                return text;
+            }
+        }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             try {
@@ -197,13 +233,13 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                     if (lineTermination == (short)IpCommon.LineTermination.CR) {
                         payload = payload.Replace(Environment.NewLine, "\r");
 
-                        if (!payload.EndsWith("\r")) {
+                        if (!payload.EndsWith('\r')) {
                             payload += '\r';
                         }
                     } else if (lineTermination == (short)IpCommon.LineTermination.LF) {
                         payload = payload.Replace(Environment.NewLine, "\n");
 
-                        if (!payload.EndsWith("\n")) {
+                        if (!payload.EndsWith('\n')) {
                             payload += '\n';
                         }
                     } else if (lineTermination == (short)IpCommon.LineTermination.CRLF) {
@@ -335,7 +371,59 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
             return $"Category: {Category}, Item: {Name}, Endpoint: {Address}:{Port}, Payload Type: {(PayloadType)payloadType}";
         }
 
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendToUdpSetup() {
+                Address = address,
+                Port = port,
+                Payload = payload,
+                PayloadType = payloadType,
+                LineTermination = lineTermination,
+            };
+
+            await WindowService.ShowDialog(conf, "Send UDP", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            Address = conf.Address;
+            Port = conf.Port;
+            Payload = conf.Payload;
+            PayloadType = conf.PayloadType;
+            LineTermination = conf.LineTermination;
+        }
+
         [GeneratedRegex("^[0-9a-f]{2}$", RegexOptions.IgnoreCase, "en-US")]
         private static partial Regex HexRegex();
+    }
+
+    public partial class SendToUdpSetup : BaseINPC {
+        [ObservableProperty]
+        private string address;
+
+        [ObservableProperty]
+        private ushort port;
+
+        [ObservableProperty]
+        private string payload;
+
+        [ObservableProperty]
+        private short payloadType;
+
+        [ObservableProperty]
+        private short lineTermination;
+
+        [ObservableProperty]
+        private PayloadType[] payloadTypes = SendUdp.PayloadTypes;
+
+        [ObservableProperty]
+        private LineTermination[] lineTerminations = SendUdp.LineTerminations;
     }
 }

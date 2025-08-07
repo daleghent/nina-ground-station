@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,15 +10,16 @@
 
 #endregion "copyright"
 
-using System.ComponentModel.Composition;
-using System.Windows;
+using System.Windows.Controls;
 
 namespace DaleGhent.NINA.GroundStation.IpProtocols {
 
-    [Export(typeof(ResourceDictionary))]
-    public partial class IpProtocolsTemplate : ResourceDictionary {
+    /// <summary>
+    /// Interaction logic for SendUdpSetupView.xaml
+    /// </summary>
+    public partial class SendUdpSetupView : UserControl {
 
-        public IpProtocolsTemplate() {
+        public SendUdpSetupView() {
             InitializeComponent();
         }
     }
