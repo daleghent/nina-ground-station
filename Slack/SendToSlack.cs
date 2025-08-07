@@ -195,7 +195,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 Message = Message,
             };
 
-            await WindowService.ShowDialog(conf, "Send to Slack", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             Channel = conf.Channel;
             Message = conf.Message;

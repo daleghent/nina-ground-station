@@ -245,7 +245,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 EmbedEdgeColor = embedEdgeColor,
             };
 
-            await WindowService.ShowDialog(conf, "Send to Discord", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             Message = conf.Message;
             EmbedTitle = conf.EmbedTitle;

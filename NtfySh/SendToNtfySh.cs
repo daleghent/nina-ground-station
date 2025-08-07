@@ -212,7 +212,7 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
                 Priority = priority,
             };
 
-            await WindowService.ShowDialog(conf, "Send to ntfy", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             Message = conf.Message;
             Title = conf.Title;

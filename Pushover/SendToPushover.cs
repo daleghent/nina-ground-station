@@ -240,7 +240,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 NotificationSound = notificationSound
             };
 
-            await WindowService.ShowDialog(conf, "Send to Pushover", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             Title = conf.Title;
             Message = conf.Message;

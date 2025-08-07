@@ -391,7 +391,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                 LineTermination = lineTermination,
             };
 
-            await WindowService.ShowDialog(conf, "Send UDP", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             Address = conf.Address;
             Port = conf.Port;
