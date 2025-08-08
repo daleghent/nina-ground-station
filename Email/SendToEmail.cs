@@ -10,11 +10,15 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.Email;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using MimeKit;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -33,7 +37,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SendToEmail : SequenceItem, IValidatable {
+    public partial class SendToEmail : SequenceItem, IValidatable {
         private readonly EmailCommon email;
         private string recipient;
         private string subject = string.Empty;
@@ -52,6 +56,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private IWindowService windowService;
 
         [ImportingConstructor]
         public SendToEmail(ICameraMediator cameraMediator,
@@ -109,10 +114,19 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         [JsonProperty]
         public string Recipient {
-            get => recipient;
+            get {
+                if (string.IsNullOrEmpty(recipient)) {
+                    recipient = GroundStation.GroundStationConfig.SmtpDefaultRecipients;
+                }
+
+                return recipient;
+            }
             set {
                 recipient = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -121,7 +135,10 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             get => subject;
             set {
                 subject = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -130,7 +147,36 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             get => body;
             set {
                 body = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
+            }
+        }
+
+        public string MessagePreview {
+            get {
+                string text;
+                byte mesgPreviewLen = 30;
+
+                if (string.IsNullOrEmpty(Recipient)) {
+                    return "No recipient specified";
+                } else {
+                    text = $"To: {Recipient}";
+                }
+
+                if (!string.IsNullOrEmpty(subject)) {
+                    var count = subject.Length > mesgPreviewLen ? mesgPreviewLen : subject.Length;
+                    text += $"; Subject: {subject[..count]}";
+
+                    if (subject.Length > mesgPreviewLen) {
+                        text += "...";
+                    }
+                } else {
+                    text += "; No subject";
+                }
+
+                return text;
             }
         }
 
@@ -184,5 +230,40 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Recipient: {recipient}, Subject: {subject}";
         }
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendEmailSetup() {
+                Recipient = this.Recipient,
+                Subject = this.Subject,
+                Body = this.Body,
+            };
+
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            Recipient = conf.Recipient;
+            Subject = conf.Subject;
+            Body = conf.Body;
+        }
+    }
+
+    public partial class SendEmailSetup : BaseINPC {
+        [ObservableProperty]
+        private string recipient;
+
+        [ObservableProperty]
+        private string subject;
+
+        [ObservableProperty]
+        private string body;
     }
 }
