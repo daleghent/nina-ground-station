@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024-2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,38 +11,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToTelegram"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
-    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:SendToTelegramSetup}">
+        <local:SendToTelegramSetupView />
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SendToTelegram}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configure" />
+                    </Button>
+
                     <TextBlock
                         VerticalAlignment="Center"
-                        Text="Message" />
-                    <TextBox
-                        MinWidth="500"
-                        MaxWidth="500"
-                        MaxHeight="150"
-                        Margin="5,3,0,3"
+                        Margin="10,0,0,0"
                         TextWrapping="Wrap"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        AcceptsReturn="True"
-                        AcceptsTab="True"
-                        TextAlignment="Left"
-                        Text="{Binding Message}" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock.Text>Silent</TextBlock.Text>
-                        <TextBlock.ToolTip>Prevents the message from sounding an alert on devices that receive it</TextBlock.ToolTip>
-                    </TextBlock>
-                    <CheckBox
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding DoNotNotify, UpdateSourceTrigger=PropertyChanged}" />
+                        FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

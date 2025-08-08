@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024-2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,10 +10,14 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using DaleGhent.NINA.GroundStation.Telegram;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -32,7 +36,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SendToTelegram : SequenceItem, IValidatable {
+    public partial class SendToTelegram : SequenceItem, IValidatable {
         private readonly TelegramCommon telegram;
         private string message = string.Empty;
         private bool doNotNotify = false;
@@ -50,6 +54,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private IWindowService windowService;
 
         [ImportingConstructor]
         public SendToTelegram(ICameraMediator cameraMediator,
@@ -107,7 +112,10 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
             get => message;
             set {
                 message = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -116,7 +124,28 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
             get => doNotNotify;
             set {
                 doNotNotify = value;
+
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
+            }
+        }
+
+        public string MessagePreview {
+            get {
+                string text = string.Empty;
+                byte mesgPreviewLen = 50;
+
+                if (!string.IsNullOrEmpty(message)) {
+                    var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
+                    text = message[..count];
+
+                    if (message.Length > mesgPreviewLen) {
+                        text += "...";
+                    }
+                }
+
+                return text;
             }
         }
 
@@ -153,5 +182,38 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}";
         }
+
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendToTelegramSetup() {
+                Message = message,
+                DoNotNotify = doNotNotify,
+            };
+
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            Message = conf.Message;
+            DoNotNotify = conf.DoNotNotify;
+        }
     }
+
+    public partial class SendToTelegramSetup : BaseINPC {
+        [ObservableProperty]
+        private string message;
+
+        [ObservableProperty]
+        private bool doNotNotify;
+
+    }
+
 }
