@@ -18,7 +18,7 @@
     d:DataContext="{d:DesignInstance Type=local:SendToEmail}"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" MinWidth="600">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -69,10 +69,9 @@
             <TextBox
                 Grid.Row="2"
                 Grid.Column="1"
-                Width="600"
                 Height="250"
                 Margin="10,10,10,2"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 AcceptsReturn="True"
                 AcceptsTab="True"
