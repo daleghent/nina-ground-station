@@ -230,6 +230,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Recipient: {recipient}, Subject: {subject}";
         }
+
         public IWindowService WindowService {
             get {
                 windowService ??= new WindowService();
