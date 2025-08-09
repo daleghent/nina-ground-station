@@ -11,45 +11,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToIftttWebhook"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
-    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:SendToIftttWebhookSetup}">
+        <local:SendToIftttWebhookSetupView />
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SendToIftttWebhook}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Event name" />
-                    <TextBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
-                        Text="{Binding EventName}"
-                        TextAlignment="Left" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Value 1" />
-                    <TextBox
-                        MinWidth="100"
-                        Margin="5,3,0,3"
-                        Text="{Binding Value1}"
-                        TextAlignment="Left" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Value 2" />
-                    <TextBox
-                        MinWidth="100"
-                        Margin="5,3,0,3"
-                        Text="{Binding Value2}"
-                        TextAlignment="Left" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center"  Margin="10,0,0,0" Text="Value 3" />
-                    <TextBox
-                        MinWidth="100"
-                        Margin="5,3,0,3"
-                        Text="{Binding Value3}"
-                        TextAlignment="Left" />
+                    <Button
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configure" />
+                    </Button>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        FontStyle="{Binding InstructionDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding InstructionDescription, Converter={StaticResource EmptyStringToNoContent}}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>

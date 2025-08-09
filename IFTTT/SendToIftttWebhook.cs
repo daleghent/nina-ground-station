@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024-2025 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,10 +10,14 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.Ifttt;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -26,14 +30,15 @@ using System.Threading.Tasks;
 
 namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
-    [ExportMetadata("Name", "Send to IFTTT Webhooks")]
+    [ExportMetadata("Name", "Send to IFTTT Webhook")]
     [ExportMetadata("Description", "Sends a free form 3-value message to IFTTT Webhooks")]
     [ExportMetadata("Icon", "IFTTT_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SendToIftttWebhook : SequenceItem, IValidatable {
+    public partial class SendToIftttWebhook : SequenceItem, IValidatable {
         private readonly IftttCommon ifttt;
+        private string instructionDescription = string.Empty;
         private string eventName = "nina";
         private string value1 = string.Empty;
         private string value2 = string.Empty;
@@ -52,6 +57,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private IWindowService windowService;
 
         [ImportingConstructor]
         public SendToIftttWebhook(ICameraMediator cameraMediator,
@@ -103,6 +109,15 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                                                                     telescopeMediator: copyMe.telescopeMediator,
                                                                     weatherDataMediator: copyMe.weatherDataMediator) {
             CopyMetaData(copyMe);
+        }
+
+        [JsonProperty]
+        public string InstructionDescription {
+            get => instructionDescription;
+            set {
+                instructionDescription = value;
+                RaisePropertyChanged();
+            }
         }
 
         [JsonProperty]
@@ -183,5 +198,46 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}";
         }
+
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendToIftttWebhookSetup() {
+                EventName = this.EventName,
+                Value1 = this.Value1,
+                Value2 = this.Value2,
+                Value3 = this.Value3,
+            };
+
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            EventName = conf.EventName;
+            Value1 = conf.Value1;
+            Value2 = conf.Value2;
+            Value3 = conf.Value3;
+        }
+    }
+
+    public partial class SendToIftttWebhookSetup : BaseINPC {
+        [ObservableProperty]
+        private string eventName;
+
+        [ObservableProperty]
+        private string value1;
+
+        [ObservableProperty]
+        private string value2;
+
+        [ObservableProperty]
+        private string value3;
     }
 }
