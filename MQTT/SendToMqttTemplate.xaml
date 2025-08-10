@@ -11,58 +11,46 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToMqtt"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
-    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
+    <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
+
+    <DataTemplate DataType="{x:Type local:SendToMqttSetup}">
+        <local:SendToMqttSetupView />
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type local:SendToMqtt}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Topic" />
-                    <TextBox
-                        MinWidth="100"
-                        MaxLines="1"
-                        TextWrapping="NoWrap"
-                        Margin="5,3,0,3"
-                        Text="{Binding Topic}"
-                        TextAlignment="Left" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Payload" />
-                    <TextBox
-                        MinWidth="500"
-                        MaxWidth="500"
-                        MaxHeight="150"
-                        Margin="5,3,0,3"
-                        TextWrapping="Wrap"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto"
-                        AcceptsReturn="True"
-                        AcceptsTab="True"
-                        TextAlignment="Left"
-                        Text="{Binding Payload}" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="QoS" />
-                    <ComboBox
-                        MinWidth="40"
-                        Margin="5,0,0,0"
+                    <Button
                         VerticalAlignment="Center"
-                        ItemsSource="{Binding QoSLevels}"
-                        SelectedIndex="{Binding QoS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="|" />
+                        Command="{Binding OpenConfigurationWindowCommand}">
+                        <TextBlock
+                            Margin="5,2,5,2"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="Configure" />
+                    </Button>
 
                     <TextBlock
+                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="Retain" />
+                        FontStyle="{Binding Topic, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding Topic, Converter={StaticResource EmptyStringToNoContent}}" />
 
-                    <CheckBox
+                    <TextBlock
                         VerticalAlignment="Center"
-                        Margin="5,0,0,0"
-                        IsChecked="{Binding Retain}" />
+                        Margin="10,0,0,0"
+                        Text="|" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        TextWrapping="Wrap"
+                        FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
+                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
