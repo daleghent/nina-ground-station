@@ -12,13 +12,10 @@
 * The **Send HTTP Request** instruction now offers a `$$DESCRIPTION$$` token that will insert the description text of the instruction into the request body or URL query string
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
 * Added test buttons for Play Sound default audio file settings
+* Message configuration for all **Send to ...** is now done via configuration window, with summary text replacing the text input fields in the instruction.
 
 * Fixed issues:
   - Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
-
-* Known issues:
-  - Slack channels may not populate correctly in the new **Send to Slack** instruction or **Failures to Slack** trigger.
-  - Slack and Discord currently lack a test function.
 
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
