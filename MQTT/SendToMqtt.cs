@@ -115,6 +115,9 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         public string Topic {
             get => topic;
             set {
+                if (string.IsNullOrEmpty(value)) {
+                    value = GroundStation.GroundStationConfig.MqttDefaultTopic;
+                }
                 topic = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(MessagePreview));
