@@ -183,7 +183,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await TelegramCommon.SendTelegram(message, true, newCts.Token);
+                        await TelegramCommon.SendTelegram(message, false, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
