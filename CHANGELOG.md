@@ -16,6 +16,7 @@
 
 * Fixed issues:
   - Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
+  - *Failures to Telegram*: Messages are no longer sent with "Do not notify" on
 
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token
