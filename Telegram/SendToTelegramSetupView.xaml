@@ -68,7 +68,7 @@
                     Margin="10,10,10,2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Content="Do Not Notify" />
+                    Content="Silent" />
                 <CheckBox
                     Grid.Row="0"
                     Grid.Column="1"

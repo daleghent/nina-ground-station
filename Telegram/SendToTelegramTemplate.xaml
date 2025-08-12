@@ -40,6 +40,21 @@
                         TextWrapping="Wrap"
                         FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
                         Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="|" />
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Text="Silent:" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0"
+                        Text="{Binding DoNotNotify}" />
+
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
