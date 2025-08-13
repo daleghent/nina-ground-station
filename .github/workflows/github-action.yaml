@@ -51,7 +51,23 @@ jobs:
         run: |
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.dll" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -Force
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.pdb" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.pdb" -Force          
-          
+          Copy-Item "bin/Release/runtimes\win\lib\net8.0\System.Speech.dll" "packages/" -Force
+          Copy-Item "bin/Release/MailKit.dll" "packages/" -Force
+          Copy-Item "bin/Release/MimeKit.dll" "packages/" -Force
+          Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/" -Force
+          Copy-Item "bin/Release/Telegram.Bot.dll" "packages/" -Force
+          Copy-Item "bin/Release/MQTTnet.dll" "packages/" -Force
+          Copy-Item "bin/Release/NetCoreAudio.dll" "packages/" -Force
+          Copy-Item "bin/Release/Discord.Net.Core.dll" "packages/" -Force
+          Copy-Item "bin/Release/Discord.Net.Rest.dll" "packages/" -Force
+          Copy-Item "bin/Release/Discord.Net.Webhook.dll" "packages/" -Force
+          Copy-Item "bin/Release/SlackNet.dll" "packages/" -Force
+          Copy-Item "bin/Release/ntfy.dll" "packages/" -Force
+          Copy-Item "bin/Release/NetTools.dll" "packages/" -Force
+          Copy-Item "bin/Release/NetTools.Crypto.dll" "packages/" -Force
+          Copy-Item "bin/Release/RestSharp.dll" "packages/" -Force
+          Copy-Item "bin/Release/RestSharp.Serializers.NewtonsoftJson.dll" "packages/" -Force
+
       - name: Create Plugin archives and manifests
         run: |
           curl -LO https://raw.githubusercontent.com/isbeorn/nina.plugin.manifests/refs/heads/main/tools/CreateManifest.ps1?raw=true
