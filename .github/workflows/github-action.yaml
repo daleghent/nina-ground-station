@@ -26,6 +26,8 @@ env:
   PLUGIN_DLL_NAME: "DaleGhent.NINA.GroundStation"
   # The relative path to your manifest folder inside the manifest repository
   PLUGIN_MANIFEST_PATH: "g/Ground Station/3.0.0"
+  # Should this be in the beta plugin channel?
+  PLUGIN_IS_BETA: true
 
 jobs:
   build-and-release:
@@ -70,8 +72,13 @@ jobs:
 
       - name: Create Plugin archives and manifests
         run: |
+          BETA_FLAG=""
+          if [[ "${{ env.PLUGIN_IS_BETA }}" == "true" ]]; then
+            BETA_FLAG="-beta"
+          fi
+
           curl -LO https://raw.githubusercontent.com/isbeorn/nina.plugin.manifests/refs/heads/main/tools/CreateManifest.ps1?raw=true
-          pwsh CreateManifest.ps1 -file "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -installerUrl "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.zip" -createArchive -includeAll -appendVersionToArchive
+          pwsh CreateManifest.ps1 -file "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" ${BETA_FLAG} -installerUrl "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.zip" -createArchive -includeAll -appendVersionToArchive
           Rename-Item -Path "manifest.json" -NewName "${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.manifest.json"
 
       - name: Create Release
