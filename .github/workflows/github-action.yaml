@@ -51,22 +51,22 @@ jobs:
         run: |
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.dll" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -Force
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.pdb" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.pdb" -Force          
-          Copy-Item "bin/Release/runtimes\win\lib\net8.0\System.Speech.dll" "packages/" -Force
-          Copy-Item "bin/Release/MailKit.dll" "packages/" -Force
-          Copy-Item "bin/Release/MimeKit.dll" "packages/" -Force
-          Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/" -Force
-          Copy-Item "bin/Release/Telegram.Bot.dll" "packages/" -Force
-          Copy-Item "bin/Release/MQTTnet.dll" "packages/" -Force
-          Copy-Item "bin/Release/NetCoreAudio.dll" "packages/" -Force
-          Copy-Item "bin/Release/Discord.Net.Core.dll" "packages/" -Force
-          Copy-Item "bin/Release/Discord.Net.Rest.dll" "packages/" -Force
-          Copy-Item "bin/Release/Discord.Net.Webhook.dll" "packages/" -Force
-          Copy-Item "bin/Release/SlackNet.dll" "packages/" -Force
-          Copy-Item "bin/Release/ntfy.dll" "packages/" -Force
-          Copy-Item "bin/Release/NetTools.dll" "packages/" -Force
-          Copy-Item "bin/Release/NetTools.Crypto.dll" "packages/" -Force
-          Copy-Item "bin/Release/RestSharp.dll" "packages/" -Force
-          Copy-Item "bin/Release/RestSharp.Serializers.NewtonsoftJson.dll" "packages/" -Force
+          Copy-Item "bin/Release/runtimes\win\lib\net8.0\System.Speech.dll" "packages/${{ env.PLUGIN_NAME }}/System.Speech.dll" -Force
+          Copy-Item "bin/Release/MailKit.dll" "packages/${{ env.PLUGIN_NAME }}/MailKit.dll" -Force
+          Copy-Item "bin/Release/MimeKit.dll" "packages/${{ env.PLUGIN_NAME }}/MimeKit.dll" -Force
+          Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/${{ env.PLUGIN_NAME }}/BouncyCastle.Cryptography.dll" -Force
+          Copy-Item "bin/Release/Telegram.Bot.dll" "packages/${{ env.PLUGIN_NAME }}/Telegram.Bot.dll" -Force
+          Copy-Item "bin/Release/MQTTnet.dll" "packages/${{ env.PLUGIN_NAME }}/MQTTnet.dll" -Force
+          Copy-Item "bin/Release/NetCoreAudio.dll" "packages/${{ env.PLUGIN_NAME }}/NetCoreAudio.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Core.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Core.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Rest.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Rest.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Webhook.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Webhook.dll" -Force
+          Copy-Item "bin/Release/SlackNet.dll" "packages/${{ env.PLUGIN_NAME }}/SlackNet.dll" -Force
+          Copy-Item "bin/Release/ntfy.dll" "packages/${{ env.PLUGIN_NAME }}/ntfy.dll" -Force
+          Copy-Item "bin/Release/NetTools.dll" "packages/${{ env.PLUGIN_NAME }}/NetTools.dll" -Force
+          Copy-Item "bin/Release/NetTools.Crypto.dll" "packages/${{ env.PLUGIN_NAME }}/NetTools.Crypto.dll" -Force
+          Copy-Item "bin/Release/RestSharp.dll" "packages/${{ env.PLUGIN_NAME }}/RestSharp.dll" -Force
+          Copy-Item "bin/Release/RestSharp.Serializers.NewtonsoftJson.dll" "packages/${{ env.PLUGIN_NAME }}/RestSharp.Serializers.NewtonsoftJson.dll" -Force
 
       - name: Create Plugin archives and manifests
         run: |
