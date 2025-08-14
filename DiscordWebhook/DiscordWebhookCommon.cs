@@ -14,6 +14,7 @@ using DaleGhent.NINA.GroundStation.Images;
 using Discord;
 using Discord.Rest;
 using Discord.Webhook;
+using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -73,6 +74,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
                 string webhookUrl = string.IsNullOrEmpty(GroundStation.GroundStationConfig.DiscordImageWebhookUrl) ?
                     GroundStation.GroundStationConfig.DiscordWebhookDefaultUrl : GroundStation.GroundStationConfig.DiscordImageWebhookUrl;
+
                 using var client = new DiscordWebhookClient(webhookUrl, discordRestConfig);
 
                 await client.SendFileAsync(imageData.Bitmap, fileName, string.Empty, username: GroundStation.GroundStationConfig.DiscordWebhookDefaultBotName, embeds: embeds, allowedMentions: allowedMentions);

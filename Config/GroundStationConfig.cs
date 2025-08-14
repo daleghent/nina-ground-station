@@ -626,6 +626,17 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public int DiscordImageInterval {
+            get => pluginOptionsAccessor.GetValueInt32(nameof(DiscordImageInterval), 1);
+            set {
+                if (value < 1) {
+                    value = 1; // Ensure the interval is at least every image
+                }
+                pluginOptionsAccessor.SetValueInt32(nameof(DiscordImageInterval), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public IList<string> ImageTypes => Enum.GetValues(typeof(ImageTypesEnum)).Cast<ImageTypesEnum>().Select(x => x.ToString()).ToList();
 
         public System.Windows.Media.Color DiscordImageEdgeColor {
@@ -761,6 +772,16 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public int SlackImageInterval {
+            get => pluginOptionsAccessor.GetValueInt32(nameof(SlackImageInterval), 1);
+            set {
+                if (value < 1) {
+                    value = 1; // Ensure the interval is at least every image
+                }
+                pluginOptionsAccessor.SetValueInt32(nameof(SlackImageInterval), value);
+                RaisePropertyChanged();
+            }
+        }
 
         private bool slackShowChannelInfo = false;
 

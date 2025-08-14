@@ -11,6 +11,8 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using System;
+using System.Collections.Generic;
 
 namespace DaleGhent.NINA.GroundStation.Images {
     public delegate void ImageUpdatedEvent();
@@ -32,6 +34,17 @@ namespace DaleGhent.NINA.GroundStation.Images {
             }
         }
 
+        private Dictionary<ImageTypeTarget, int> imageTypeCounter = [];
+
+        public Dictionary<ImageTypeTarget, int> ImageTypeCounter {
+            get {
+                lock (imageLock) {
+                    return imageTypeCounter;
+                }
+            }
+            private set => imageTypeCounter = value;
+        }
+
         private ImageData image;
 
         public ImageData Image {
@@ -44,11 +57,43 @@ namespace DaleGhent.NINA.GroundStation.Images {
             set {
                 lock (imageLock) {
                     image = value;
-                    ImageUpdatedEvent?.Invoke();
-                    Logger.Debug($"ImageService: Image set. {image.ImageFormat} size = {image.Bitmap.Length} bytes, Camera = {image.ImageMetaData.Camera.Name}");
 
+                    var imageTypeTarget = new ImageTypeTarget(image.ImageMetaData.Image.ImageType.ToString(), image.ImageMetaData.Target.Name.ToString());
+                    ImageTypeCounter[imageTypeTarget] = !ImageTypeCounter.TryGetValue(imageTypeTarget, out int count) ? 1 : ImageTypeCounter[imageTypeTarget] + 1;
+
+                    Logger.Debug($"ImageService: Image set. {image.ImageFormat} size = {image.Bitmap.Length} bytes, Camera = {image.ImageMetaData.Camera.Name}");
                 }
+
+                ImageUpdatedEvent?.Invoke();
             }
+        }
+
+        public sealed class ImageTypeTarget : IEquatable<ImageTypeTarget> {
+            public string ImageType { get; }
+            public string Target { get; }
+
+            public ImageTypeTarget(string imageType, string target) {
+                ImageType = imageType ?? throw new ArgumentNullException(nameof(imageType));
+                Target = target ?? throw new ArgumentNullException(nameof(target));
+            }
+
+            public bool Equals(ImageTypeTarget? other) =>
+                other is not null &&
+                StringComparer.Ordinal.Equals(ImageType, other.ImageType) &&
+                StringComparer.Ordinal.Equals(Target, other.Target);
+
+            public override bool Equals(object? obj) => Equals(obj as ImageTypeTarget);
+
+            public override int GetHashCode() =>
+                HashCode.Combine(
+                    StringComparer.Ordinal.GetHashCode(ImageType),
+                    StringComparer.Ordinal.GetHashCode(Target));
+
+            public override string ToString() => $"[Target: {Target}, Type: {ImageType}]";
+
+            public static bool operator ==(ImageTypeTarget? left, ImageTypeTarget? right) =>
+                EqualityComparer<ImageTypeTarget>.Default.Equals(left, right);
+            public static bool operator !=(ImageTypeTarget? left, ImageTypeTarget? right) => !(left == right);
         }
     }
 }

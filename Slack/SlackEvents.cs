@@ -17,6 +17,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static DaleGhent.NINA.GroundStation.Images.ImageService;
 
 namespace DaleGhent.NINA.GroundStation.Slack {
     public class SlackEvents {
@@ -39,15 +40,22 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 return;
             }
 
-            var slack = new SlackClient();
+            var imageData = ImageService.Instance.Image;
 
-            if (SlackClient.CommonValidations().Count > 1) {
+            if (!GroundStation.GroundStationConfig.SlackImageTypesSelected.Split(',').Contains(imageData.ImageMetaData.Image.ImageType.ToString())) {
                 return;
             }
 
-            var imageData = ImageService.Instance.Image;
+            var imageTypeTarget = new ImageTypeTarget(imageData.ImageMetaData.Image.ImageType.ToString(), imageData.ImageMetaData.Target.Name.ToString());
+            var interval = GroundStation.GroundStationConfig.SlackImageInterval;
 
-            if (!GroundStation.GroundStationConfig.SlackImageTypesSelected.Split(',').Contains(imageData.ImageMetaData.Image.ImageType)) {
+            if (ImageService.Instance.ImageTypeCounter[imageTypeTarget] > 1 && ImageService.Instance.ImageTypeCounter[imageTypeTarget] % interval != 0) {
+                return;
+            }
+
+            var slack = new SlackClient();
+
+            if (SlackClient.CommonValidations().Count > 1) {
                 return;
             }
 
@@ -97,9 +105,9 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             slackImage.FileName = Path.ChangeExtension(imageFileName, imageData.ImageFileExtension);
 
             try {
-                slack.PostImage(slackImage).Wait();
+                slack.PostImage(slackImage).Wait(TimeSpan.FromSeconds(30));
             } catch (Exception ex) {
-                Logger.Error($"Error posting image to Slack: {ex.Message}");
+                Logger.Error($"Error posting image to Slack: {ex}");
                 return;
             }
         }

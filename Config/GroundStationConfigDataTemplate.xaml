@@ -600,12 +600,28 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center">
                                         <TextBlock.Text>Enable</TextBlock.Text>
-                                        <TextBlock.ToolTip>Post the latest image of the selected types a webhookr</TextBlock.ToolTip>
+                                        <TextBlock.ToolTip>Post the latest image of the selected types a Discord channel via webhook</TextBlock.ToolTip>
                                     </TextBlock>
                                     <CheckBox
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding DiscordImageEventEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Interval</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post images at the specified interval. For example, setting this to 5 will post every 5th image by image type and target name</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="100"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding DiscordImageInterval}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
@@ -856,6 +872,22 @@
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
                                         IsChecked="{Binding SlackImageEventEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Interval</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post images at the specified interval. For example, setting this to 5 will post every 5th image by image type and target name</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="100"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding SlackImageInterval}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">

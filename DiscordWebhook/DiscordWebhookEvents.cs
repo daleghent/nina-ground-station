@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using static DaleGhent.NINA.GroundStation.Images.ImageService;
 
 namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
     public class DiscordWebhookEvents {
@@ -41,15 +42,22 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 return;
             }
 
-            var discordWebhookCommon = new DiscordWebhookCommon();
-
-            if (DiscordWebhookCommon.CommonValidation().Count > 1) {
-                return;
-            }
-
             var imageData = ImageService.Instance.Image;
 
             if (!GroundStation.GroundStationConfig.DiscordImageTypesSelected.Split(',').Contains(imageData.ImageMetaData.Image.ImageType)) {
+                return;
+            }
+
+            var imageTypeTarget = new ImageTypeTarget(imageData.ImageMetaData.Image.ImageType.ToString(), imageData.ImageMetaData.Target.Name.ToString());
+            var interval = GroundStation.GroundStationConfig.DiscordImageInterval;
+
+            if (ImageService.Instance.ImageTypeCounter[imageTypeTarget] > 1 && ImageService.Instance.ImageTypeCounter[imageTypeTarget] % interval != 0) {
+                return;
+            }
+
+            var discordWebhookCommon = new DiscordWebhookCommon();
+
+            if (DiscordWebhookCommon.CommonValidation().Count > 1) {
                 return;
             }
 

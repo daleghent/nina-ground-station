@@ -49,6 +49,8 @@ namespace DaleGhent.NINA.GroundStation.Slack {
         }
 
         public async Task PostImage(SlackImage slackImage) {
+            ExternalFileReference fileRef;
+
             try {
                 Logger.Debug($"Uploading file: {slackImage.FileName}, {slackImage.FileContent.Length} bytes");
 
@@ -59,12 +61,17 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                     Title = slackImage.Title,
                 };
 
-                var fileRef = await slack.Files.Upload(fileUpload);
+                fileRef = await slack.Files.Upload(fileUpload);
+
                 Logger.Debug($"Uploaded file: {slackImage.FileName}, ID: {fileRef.Id}, Title: {fileRef.Title}");
+            } catch (Exception ex) {
+                throw new Exception($"Failed to upload Slack image: {ex}");
+            }
 
-                // Slacks apparently needs a moment to process an uploaded file before it can be referenced in a message block
-                await Task.Delay(1000);
+            // Slacks apparently needs a moment to process an uploaded file before it can be referenced in a message block
+            await Task.Delay(TimeSpan.FromSeconds(2));
 
+            try {
                 var msg = new Message {
                     Channel = slackImage.Channel.Id,
                     Blocks = [
@@ -85,7 +92,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
 
                 var response = await slack.Chat.PostMessage(msg);
             } catch (Exception ex) {
-                throw new Exception($"Failed to send Slack image: {ex.Message}");
+                throw new Exception($"Failed to send Slack message with image attachment: {ex}");
             }
         }
 
