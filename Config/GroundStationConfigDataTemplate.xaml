@@ -2247,7 +2247,9 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
-                                    <!--  49  -->
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <!--  51  -->
                                 </Grid.RowDefinitions>
 
                                 <TextBlock
@@ -2532,10 +2534,38 @@
                                 <TextBlock
                                     Grid.Row="19"
                                     Grid.Column="1"
-                                    Text="Current angle of the rotator, degrees" />
+                                    Text="Current mechanical angle of the rotator, degrees" />
 
                                 <TextBox
                                     Grid.Row="20"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_SKY_ANGLE$$" />
+                                <TextBlock
+                                    Grid.Row="20"
+                                    Grid.Column="1"
+                                    Text="Current angle of the rotator in the night sky, degrees" />
+
+                                <TextBox
+                                    Grid.Row="21"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_IS_SYNCED$$" />
+                                <TextBlock
+                                    Grid.Row="21"
+                                    Grid.Column="1"
+                                    Text="True/False if rotator is synced" />
+
+                                <TextBox
+                                    Grid.Row="22"
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
@@ -2545,13 +2575,13 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="20"
+                                    Grid.Row="22"
                                     Grid.Column="1"
                                     Margin="0,8,0,0"
                                     Text="Name of safety monitor device" />
 
                                 <TextBox
-                                    Grid.Row="21"
+                                    Grid.Row="23"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2560,12 +2590,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_IS_SAFE$$" />
                                 <TextBlock
-                                    Grid.Row="21"
+                                    Grid.Row="23"
                                     Grid.Column="1"
                                     Text="True/False regarding safety state" />
 
                                 <TextBox
-                                    Grid.Row="22"
+                                    Grid.Row="24"
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
@@ -2575,13 +2605,13 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="22"
+                                    Grid.Row="24"
                                     Grid.Column="1"
                                     Margin="0,8,0,0"
                                     Text="Name of mount device" />
 
                                 <TextBox
-                                    Grid.Row="23"
+                                    Grid.Row="25"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2590,12 +2620,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_POINTING_STATE$$" />
                                 <TextBlock
-                                    Grid.Row="23"
+                                    Grid.Row="25"
                                     Grid.Column="1"
                                     Text="Current pointing state (aka side of pier)" />
 
                                 <TextBox
-                                    Grid.Row="24"
+                                    Grid.Row="26"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2604,12 +2634,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA$$" />
                                 <TextBlock
-                                    Grid.Row="24"
+                                    Grid.Row="26"
                                     Grid.Column="1"
                                     Text="Current RA, in H:M:S" />
 
                                 <TextBox
-                                    Grid.Row="25"
+                                    Grid.Row="27"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2618,12 +2648,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="25"
+                                    Grid.Row="27"
                                     Grid.Column="1"
                                     Text="Current RA, degrees" />
 
                                 <TextBox
-                                    Grid.Row="26"
+                                    Grid.Row="28"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2632,12 +2662,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC$$" />
                                 <TextBlock
-                                    Grid.Row="26"
+                                    Grid.Row="28"
                                     Grid.Column="1"
                                     Text="Current declination, in D:M:S" />
 
                                 <TextBox
-                                    Grid.Row="27"
+                                    Grid.Row="29"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2646,12 +2676,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="27"
+                                    Grid.Row="29"
                                     Grid.Column="1"
                                     Text="Current declination, degrees" />
 
                                 <TextBox
-                                    Grid.Row="28"
+                                    Grid.Row="30"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2660,12 +2690,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_PARKED$$" />
                                 <TextBlock
-                                    Grid.Row="28"
+                                    Grid.Row="30"
                                     Grid.Column="1"
                                     Text="True/Fase regarding parked state" />
 
                                 <TextBox
-                                    Grid.Row="29"
+                                    Grid.Row="31"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2674,12 +2704,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_HOME$$" />
                                 <TextBlock
-                                    Grid.Row="29"
+                                    Grid.Row="31"
                                     Grid.Column="1"
                                     Text="True/False regarding homed state" />
 
                                 <TextBox
-                                    Grid.Row="30"
+                                    Grid.Row="32"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2688,12 +2718,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT$$" />
                                 <TextBlock
-                                    Grid.Row="30"
+                                    Grid.Row="32"
                                     Grid.Column="1"
                                     Text="Current pointing altitude, in D:M:S" />
 
                                 <TextBox
-                                    Grid.Row="31"
+                                    Grid.Row="33"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2702,12 +2732,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="31"
+                                    Grid.Row="33"
                                     Grid.Column="1"
                                     Text="Current pointing altitude, degrees" />
 
                                 <TextBox
-                                    Grid.Row="32"
+                                    Grid.Row="34"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2716,12 +2746,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ$$" />
                                 <TextBlock
-                                    Grid.Row="32"
+                                    Grid.Row="34"
                                     Grid.Column="1"
                                     Text="Current pointing azimuth, in D:M:S" />
 
                                 <TextBox
-                                    Grid.Row="33"
+                                    Grid.Row="35"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2730,12 +2760,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ_DECIMAL$$" />
                                 <TextBlock
-                                    Grid.Row="33"
+                                    Grid.Row="35"
                                     Grid.Column="1"
                                     Text="Current pointing azimuth, degrees" />
 
                                 <TextBox
-                                    Grid.Row="34"
+                                    Grid.Row="36"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2744,12 +2774,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_TTF$$" />
                                 <TextBlock
-                                    Grid.Row="34"
+                                    Grid.Row="36"
                                     Grid.Column="1"
                                     Text="Time until flip, in H:M:S" />
 
                                 <TextBox
-                                    Grid.Row="35"
+                                    Grid.Row="37"
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
@@ -2759,13 +2789,13 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_NAME$$" />
                                 <TextBlock
-                                    Grid.Row="35"
+                                    Grid.Row="37"
                                     Grid.Column="1"
                                     Margin="0,8,0,0"
                                     Text="Name of weather device" />
 
                                 <TextBox
-                                    Grid.Row="36"
+                                    Grid.Row="38"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2774,12 +2804,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_CLOUD_COVER$$" />
                                 <TextBlock
-                                    Grid.Row="36"
+                                    Grid.Row="38"
                                     Grid.Column="1"
                                     Text="Cloud cover, in %" />
 
                                 <TextBox
-                                    Grid.Row="37"
+                                    Grid.Row="39"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2788,12 +2818,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_DEWPOINT$$" />
                                 <TextBlock
-                                    Grid.Row="37"
+                                    Grid.Row="39"
                                     Grid.Column="1"
                                     Text="Dewpoint, in C" />
 
                                 <TextBox
-                                    Grid.Row="38"
+                                    Grid.Row="40"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2802,12 +2832,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_HUMIDITY$$" />
                                 <TextBlock
-                                    Grid.Row="38"
+                                    Grid.Row="40"
                                     Grid.Column="1"
                                     Text="Relative humidity, in %" />
 
                                 <TextBox
-                                    Grid.Row="39"
+                                    Grid.Row="41"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2816,12 +2846,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_PRESSURE$$" />
                                 <TextBlock
-                                    Grid.Row="39"
+                                    Grid.Row="41"
                                     Grid.Column="1"
                                     Text="Air pressure, in hectopascals (hPa)" />
 
                                 <TextBox
-                                    Grid.Row="40"
+                                    Grid.Row="42"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2830,12 +2860,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_RAINRATE$$" />
                                 <TextBlock
-                                    Grid.Row="40"
+                                    Grid.Row="42"
                                     Grid.Column="1"
                                     Text="Rain rate, in mm/hour" />
 
                                 <TextBox
-                                    Grid.Row="41"
+                                    Grid.Row="43"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2844,12 +2874,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYBRT$$" />
                                 <TextBlock
-                                    Grid.Row="41"
+                                    Grid.Row="43"
                                     Grid.Column="1"
                                     Text="Sky brightness, in lux" />
 
                                 <TextBox
-                                    Grid.Row="42"
+                                    Grid.Row="44"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2858,12 +2888,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYQUAL$$" />
                                 <TextBlock
-                                    Grid.Row="42"
+                                    Grid.Row="44"
                                     Grid.Column="1"
                                     Text="Sky quality, in magnitudes per square arc second" />
 
                                 <TextBox
-                                    Grid.Row="43"
+                                    Grid.Row="45"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2872,12 +2902,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYTEMP$$" />
                                 <TextBlock
-                                    Grid.Row="43"
+                                    Grid.Row="45"
                                     Grid.Column="1"
                                     Text="Sky temperature, in C" />
 
                                 <TextBox
-                                    Grid.Row="44"
+                                    Grid.Row="46"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2886,12 +2916,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_STARFWHM$$" />
                                 <TextBlock
-                                    Grid.Row="44"
+                                    Grid.Row="46"
                                     Grid.Column="1"
                                     Text="Star FHWM, in arcseconds" />
 
                                 <TextBox
-                                    Grid.Row="45"
+                                    Grid.Row="47"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2900,12 +2930,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_AMBTEMP$$" />
                                 <TextBlock
-                                    Grid.Row="45"
+                                    Grid.Row="47"
                                     Grid.Column="1"
                                     Text="Ambient air temperature, in C" />
 
                                 <TextBox
-                                    Grid.Row="46"
+                                    Grid.Row="48"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2914,12 +2944,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDDIR$$" />
                                 <TextBlock
-                                    Grid.Row="46"
+                                    Grid.Row="48"
                                     Grid.Column="1"
                                     Text="Wind direction, in degrees" />
 
                                 <TextBox
-                                    Grid.Row="47"
+                                    Grid.Row="49"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2928,12 +2958,12 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDGUST$$" />
                                 <TextBlock
-                                    Grid.Row="47"
+                                    Grid.Row="49"
                                     Grid.Column="1"
                                     Text="Wind gust, in m/s" />
 
                                 <TextBox
-                                    Grid.Row="48"
+                                    Grid.Row="50"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
@@ -2942,7 +2972,7 @@
                                     util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDSPD$$" />
                                 <TextBlock
-                                    Grid.Row="48"
+                                    Grid.Row="50"
                                     Grid.Column="1"
                                     Text="Wind speed, in m/s" />
                             </Grid>
