@@ -13,6 +13,7 @@
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
 * Added test buttons for Play Sound default audio file settings
 * Message configuration for all **Send to ...** is now done via configuration window, with summary text replacing the text input fields in the instruction.
+* New message tokens for rotators - `$$ROTATOR_SKY_ANGLE$$` and `$$ROTATOR_IS_SYNCED$$` (contributed by @USA-RedDragon)
 
 * Fixed issues:
   - Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
