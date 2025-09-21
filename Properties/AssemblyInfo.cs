@@ -18,8 +18,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.0.0.115")]
-[assembly: AssemblyFileVersion("3.0.0.115")]
+[assembly: AssemblyVersion("3.0.0.116")]
+[assembly: AssemblyFileVersion("3.0.0.116")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
