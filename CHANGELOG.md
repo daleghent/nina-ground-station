@@ -9,16 +9,17 @@
 * **New:** Ground Station now features an Image Service that stores the latest image taken by NINA and makes it available to seleted messaging systems which, within reason, support the trasmission of images. Initially, this includes Discord, Slack, and MQTT and the feasibility of adding this to existing or additional services will be investigated. The type of images that will be sent (`SNAPSHOT`, `LIGHT`, `DARK`, `FLAT`, and `BIAS`) may be selected. Any new image of the selected type(s) will be automatically sent via the services configured and enabled to do so. The format of the image may be chosen as JPEG or PNG, and may be scaled to a percentage of the original's size.
 * The retention flag for MQTT messages can now be specified.
 * Text-to-speech voice can now be selected. Refer to Windows Settings > Time & Language > Speech > Voices to manage the voices available on your system.
-* The **Send HTTP Request** instruction now offers a `$$DESCRIPTION$$` token that will insert the description text of the instruction into the request body or URL query string
+* **Send HTTP Request** instruction now offers a `$$DESCRIPTION$$` token that will insert the description text of the instruction into the request body or URL query string.
+* **Send HTTP Request** now offers username and password fields in which to do HTTP Basic authentication.
 * Clicking on any message token listed on the **Message Token Help** tab will now select the entire token text for easy copying via Ctrl+C.
-* Added test buttons for Play Sound default audio file settings
+* Added test buttons for Play Sound default audio file settings.
 * Message configuration for all **Send to ...** is now done via configuration window, with summary text replacing the text input fields in the instruction.
-* New message tokens for rotators - `$$ROTATOR_SKY_ANGLE$$` and `$$ROTATOR_IS_SYNCED$$` (contributed by @USA-RedDragon)
+* New message tokens for rotators - `$$ROTATOR_SKY_ANGLE$$` and `$$ROTATOR_IS_SYNCED$$`. (contributed by @USA-RedDragon)
 
 * Fixed issues:
-  - Fixed an issue with *Send HTTP Request* where device-related tokens in POST bodies were not processed due to a missing metadata object
-  - *Failures to Telegram*: Messages are no longer sent with "Do not notify" on
-  - Fixed possible sound file permissions issue
+  - Fixed an issue with **Send HTTP Request** where device-related tokens in POST bodies were not processed due to a missing metadata object.
+  - **Failures to Telegram**: Messages are no longer sent with "Do not notify" on.
+  - Fixed possible sound file permissions issue.
 
 ## 2.4.0.0 - 2024-03-01
 * Fixed parsing of `FORMATTED_DATETIME` tokens when used on the same line as another token

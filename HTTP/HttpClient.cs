@@ -10,6 +10,8 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
@@ -26,8 +28,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using static DaleGhent.NINA.GroundStation.HTTP.HttpClient;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
@@ -43,6 +43,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         private string httpUri = string.Empty;
         private string httpPostBody = string.Empty;
         private string httpClientDescription = string.Empty;
+        private string httpAuthUsername = string.Empty;
+        private string httpAuthPassword = string.Empty;
         private string httpPostContentType = "text/plain";
 
         private readonly ICameraMediator cameraMediator;
@@ -157,6 +159,24 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             }
         }
 
+        [JsonProperty]
+        public string HttpAuthUsername {
+            get => httpAuthUsername;
+            set {
+                httpAuthUsername = value.Trim();
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public string HttpAuthPassword {
+            get => httpAuthPassword;
+            set {
+                httpAuthPassword = value.Trim();
+                RaisePropertyChanged();
+            }
+        }
+
         public string HttpClientInstructionToolTip {
             get {
                 string text = "Not configured";
@@ -182,6 +202,14 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             resolvedUri = Utilities.Utilities.ResolveTokens(resolvedUri, this, metadata, true);
 
             client.DefaultRequestHeaders.ExpectContinue = false;
+
+            if (!string.IsNullOrEmpty(HttpAuthUsername)) {
+                var credentialBytes = System.Text.Encoding.ASCII.GetBytes($"{HttpAuthUsername}:{HttpAuthPassword}");
+                var authToken = Convert.ToBase64String(credentialBytes);
+
+                client.DefaultRequestHeaders.Remove("Authorization");
+                client.DefaultRequestHeaders.Add("Authorization", $"Basic {authToken}");
+            }
 
             try {
                 if (HttpMethod == HttpMethodEnum.GET) {
@@ -254,6 +282,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpPostBody = HttpPostBody,
                 HttpPostContentType = HttpPostContentType,
                 HttpClientDescription = HttpClientDescription,
+                HttpAuthUsername = HttpAuthUsername,
+                HttpAuthPassword = HttpAuthPassword,
             };
         }
 
@@ -279,6 +309,9 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpPostContentType = httpPostContentType,
                 HttpPostBody = httpPostBody,
                 HttpClientDescription = httpClientDescription,
+                HttpAuthUsername = httpAuthUsername,
+                HttpAuthPassword = httpAuthPassword,
+                ShowAuthDetails = !string.IsNullOrEmpty(httpAuthUsername),
             };
 
             await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -288,6 +321,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             HttpPostContentType = conf.HttpPostContentType;
             HttpPostBody = conf.HttpPostBody;
             HttpClientDescription = conf.HttpClientDescription;
+            HttpAuthUsername = conf.HttpAuthUsername;
+            HttpAuthPassword = conf.HttpAuthPassword;
         }
     }
 
@@ -308,5 +343,14 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
         [ObservableProperty]
         private string httpClientDescription;
+
+        [ObservableProperty]
+        private string httpAuthUsername;
+
+        [ObservableProperty]
+        private string httpAuthPassword;
+
+        [ObservableProperty]
+        private bool showAuthDetails;
     }
 }
