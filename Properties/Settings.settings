@@ -66,7 +66,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MqttDefaultTopic" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">/nina</Value>
     </Setting>
     <Setting Name="MqttClientId" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -114,7 +114,7 @@ Reasons: $$ERROR_LIST$$
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MqttLwtTopic" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">/nina/lastwill</Value>
     </Setting>
     <Setting Name="MqttLwtBirthPayload" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -142,6 +142,37 @@ Reasons: $$ERROR_LIST$$
     </Setting>
     <Setting Name="PlaySoundDefaultFailureFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DiscordWebhookFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
+
+**Reasons:** $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="TtsTestMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">It's full of stars!</Value>
+    </Setting>
+    <Setting Name="GroundStationMigratedProfiles" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
+    </Setting>
+    <Setting Name="SlackFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
+
+*Reasons:* $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="NtfyShFailureTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
+    </Setting>
+    <Setting Name="NtfyShFailureMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!
+
+Reasons: $$ERROR_LIST$$</Value>
+    </Setting>
+    <Setting Name="NtfyShFailureTags" Type="System.String" Scope="User">
+      <Value Profile="(Default)">exclamation</Value>
+    </Setting>
+    <Setting Name="DiscordWebhookFailureTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failure running $$FAILED_ITEM$$</Value>
     </Setting>
   </Settings>
 </SettingsFile>

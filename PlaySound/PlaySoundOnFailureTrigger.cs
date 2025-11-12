@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,7 +11,7 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
-using NetCoreAudio;
+using DaleGhent.NINA.GroundStation.PlaySound;
 using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Model;
@@ -33,7 +33,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
 
     [ExportMetadata("Name", "Play Sound On Failure")]
     [ExportMetadata("Description", "Plays the specified sound when a sequence instruction fails")]
-    [ExportMetadata("Icon", "PlaySoundSVG")]
+    [ExportMetadata("Icon", "PlaySound_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -43,7 +43,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
 
         [ImportingConstructor]
         public PlaySoundOnFailureTrigger() {
-            SoundFile = Properties.Settings.Default.PlaySoundDefaultFailureFile;
+            SoundFile = GroundStation.GroundStationConfig.PlaySoundDefaultFailureFile;
 
             Validate();
         }
@@ -109,8 +109,11 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
                 return;
             }
 
-            var player = new Player();
-            await player.Play(soundFile);
+            var playSoundCommon = new PlaySoundCommon() {
+                SoundFile = soundFile,
+            };
+
+            await playSoundCommon.PlaySound(CancellationToken.None);
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
@@ -130,7 +133,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySoundOnFailureTrigger {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(soundFile) || string.IsNullOrWhiteSpace(soundFile)) {
+            if (string.IsNullOrEmpty(soundFile)) {
                 i.Add("Sound file has not been specified");
             } else {
                 if (!File.Exists(soundFile)) {

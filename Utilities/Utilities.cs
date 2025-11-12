@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
@@ -77,7 +77,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             text = text.Replace(@"$$DATE_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("d")));
             text = text.Replace(@"$$TIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("T")));
             text = text.Replace(@"$$DATETIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("G")));
-            text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch().ToString());
+            text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch(datetime).ToString());
 
             text = ParseFormattedDateTime(text, datetime, urlEncode);
 
@@ -179,6 +179,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 text = text.Replace(@"$$ROTATOR_NAME$$", DoUrlEncode(urlEncode, rotator.Name));
 
                 text = text.Replace(@"$$ROTATOR_ANGLE$$", DoUrlEncode(urlEncode, rotator.MechanicalPosition.ToString("F", culture)));
+
+                text = text.Replace(@"$$ROTATOR_SKY_ANGLE$$", DoUrlEncode(urlEncode, rotator.Position.ToString("F", culture)));
+
+                text = text.Replace(@"$$ROTATOR_IS_SYNCED$$", DoUrlEncode(urlEncode, rotator.Synced.ToString()));
             } else {
                 var pattern = RotatorRegex();
                 text = pattern.Replace(text, DoUrlEncode(urlEncode, "----"));
@@ -332,8 +336,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return target;
         }
 
-        internal static long UnixEpoch() {
-            return (long)DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds;
+        internal static long UnixEpoch(DateTime dateTime) {
+            return (long)dateTime.ToUniversalTime().Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
         private static string ParseFormattedDateTime(string text, DateTime datetime, bool urlEncode) {
@@ -355,7 +359,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         internal static string DoUrlEncode(bool doUrlEncode, string text) {
-            return doUrlEncode ? HttpUtils.UrlTokenEncode(Encoding.Unicode.GetBytes(text)) : text;
+            return doUrlEncode ? WebUtility.UrlEncode(text) : text;
         }
 
         [GeneratedRegex(@"\${2}CAMERA_[A-Z0-9_]+\${2}", RegexOptions.Compiled)]

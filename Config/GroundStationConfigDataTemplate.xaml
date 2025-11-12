@@ -1,0 +1,3206 @@
+﻿<!--
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
+<ResourceDictionary
+    x:Class="DaleGhent.NINA.GroundStation.Config.GroundStationConfigDataTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Config"
+    xmlns:util="clr-namespace:DaleGhent.NINA.GroundStation.Utilities"
+    xmlns:ntfysh="clr-namespace:DaleGhent.NINA.GroundStation.NtfySh"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d">
+
+    <DataTemplate x:Key="Ground_Station_Config">
+        <TabControl
+            Height="Auto"
+            d:DataContext="{d:DesignInstance local:GroundStationConfig, IsDesignTimeCreatable=False}"
+            TabStripPlacement="Top">
+
+            <TabItem Name="Pushover" Header="Pushover">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Website: " />
+                        <TextBlock><Hyperlink NavigateUri="https://pushover.net/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">pushover.net</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>User key</TextBlock.Text>
+                            <TextBlock.ToolTip>The user key for your Pushover account</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="PushoverUserKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>App API token/key</TextBlock.Text>
+                            <TextBlock.ToolTip>The application API token or key assigned for NINA</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="PushoverAppKey" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default notification sound</TextBlock.Text>
+                            <TextBlock.ToolTip>The sound that new instances of the Send to Pushover sequence item will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="100"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverNotificationSounds}"
+                            SelectedItem="{Binding PushoverDefaultNotificationSound}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default notification priority</TextBlock.Text>
+                            <TextBlock.ToolTip>The message priority that new instances of the Send to Pushover sequence item will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="100"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverPriorities}"
+                            SelectedItem="{Binding PushoverDefaultNotificationPriority}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default failure sound</TextBlock.Text>
+                            <TextBlock.ToolTip>The sound that new instances of the Failures to Pushover sequence trigger will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="100"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverNotificationSounds}"
+                            SelectedItem="{Binding PushoverDefaultFailureSound}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default failure priority</TextBlock.Text>
+                            <TextBlock.ToolTip>The message priority that new instances of the Failures to Pushover sequence trigger will default to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="100"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ItemsSource="{Binding PushoverPriorities}"
+                            SelectedItem="{Binding PushoverDefaultFailurePriority}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Emergency retry interval</TextBlock.Text>
+                            <TextBlock.ToolTip>The interval in which a message with an Emergency prioity will alert in the Pushover client until it is acknowledged. Minimum = 30 seconds. Maximum = 86400 seconds (24 hours)</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="s">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PushoverEmergRetryInterval">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Maximum="86400" Minimum="30" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="160"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Emergency retry limit</TextBlock.Text>
+                            <TextBlock.ToolTip>The time limit for which Emergency priority messages will alert for after being received. Minimum = 30 seconds. Maximum = 86400 seconds (24 hours)</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="s">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="PushoverEmergExpireAfter">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Maximum="86400" Minimum="30" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Send Test Message"
+                        Command="{Binding PushoverTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Title</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding PushoverFailureTitleText}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                <TextBlock Width="110" HorizontalAlignment="Left">
+                                    <TextBlock.Text>Body</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    MinWidth="515"
+                                    MinHeight="400"
+                                    MaxWidth="515"
+                                    MaxHeight="400"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Text="{Binding PushoverFailureBodyText}"
+                                    VerticalScrollBarVisibility="Visible" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Telegram" Header="Telegram">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Website: " />
+                        <TextBlock><Hyperlink NavigateUri="https://telegram.org/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">telegram.org</Hyperlink></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock><Hyperlink NavigateUri="https://core.telegram.org/bots" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Bot Help</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Bot access token</TextBlock.Text>
+                            <TextBlock.ToolTip>The assigned to your Telegram bot</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="TelegramAccessToken" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Chat ID</TextBlock.Text>
+                            <TextBlock.ToolTip>The chat ID that messages should be sent to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="TelegramChatId" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Send Test Message"
+                        Command="{Binding TelegramTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                <TextBox
+                                    MinWidth="515"
+                                    MinHeight="400"
+                                    MaxWidth="515"
+                                    MaxHeight="400"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Text="{Binding TelegramFailureBodyText}"
+                                    VerticalScrollBarVisibility="Visible" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Email" Header="Email">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>From address</TextBlock.Text>
+                            <TextBlock.ToolTip>The email address which will be used as the From address of the email being sent</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpFromAddress" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default recipient(s)</TextBlock.Text>
+                            <TextBlock.ToolTip>The default email address that email will be addressed to. Multiple addresses may be specified, separated by a comma</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpDefaultRecipients" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>SMTP host</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP/outgoing mail server hostname or IP address</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpHostName" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>SMTP port</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP/outgoing mail server service port. Commmonly 25 or 587. Sometimes 465. Default: 587</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpHostPort" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Username</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP service username</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="SmtpUsername" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Password</TextBlock.Text>
+                            <TextBlock.ToolTip>SMTP service password</TextBlock.ToolTip>
+                        </TextBlock>
+                        <PasswordBox
+                            Width="400"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            CaretBrush="{StaticResource PrimaryBrush}"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            Loaded="PasswordBox_Smtp_Loaded"
+                            PasswordChanged="PasswordBox_Smtp_PasswordChanged">
+                            <PasswordBox.Background>
+                                <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                            </PasswordBox.Background>
+                        </PasswordBox>
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Send Test Message"
+                        Command="{Binding EmailTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Subject</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding EmailFailureSubjectText}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                <TextBlock Width="110" HorizontalAlignment="Left">
+                                    <TextBlock.Text>Body</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    MinWidth="515"
+                                    MinHeight="400"
+                                    MaxWidth="515"
+                                    MaxHeight="400"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Text="{Binding EmailFailureBodyText}"
+                                    VerticalScrollBarVisibility="Visible" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Discord" Header="Discord">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <TextBlock Margin="0,0,0,5" VerticalAlignment="Center">
+                        <Hyperlink NavigateUri="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" RequestNavigate="Hyperlink_RequestNavigate">Discord webhook help</Hyperlink>
+                    </TextBlock>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Webhook URL</TextBlock.Text>
+                            <TextBlock.ToolTip>The default webhook URL you wish to send messages to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding DiscordWebhookDefaultUrl}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Bot name</TextBlock.Text>
+                        </TextBlock>
+                        <TextBox
+                            Width="200"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding DiscordWebhookDefaultBotName}" />
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Send Test Message"
+                        Command="{Binding DiscordWebhookTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                    <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                        <TabItem Name="Discord_FailureMessage" Header="Failure Message">
+                            <GroupBox Margin="0,10,0,5" Header="Failure message template">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="110"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>Title</TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBox
+                                            Width="400"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding DiscordWebhookFailureTitle}" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                        <TextBox
+                                            MinWidth="515"
+                                            MinHeight="400"
+                                            MaxWidth="515"
+                                            MaxHeight="400"
+                                            Margin="0,5,0,0"
+                                            HorizontalAlignment="Left"
+                                            AcceptsReturn="True"
+                                            AcceptsTab="True"
+                                            HorizontalScrollBarVisibility="Visible"
+                                            Text="{Binding DiscordWebhookFailureMessage}"
+                                            VerticalScrollBarVisibility="Visible" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="110"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>Failures Webhook</TextBlock.Text>
+                                            <TextBlock.ToolTip>An alternate webhook URL, different from the default one, specifically for failure messages</TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <TextBox
+                                            Width="400"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding DiscordFailureWebhookUrl}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                        </TabItem>
+
+                        <TabItem Name="Discord_ImageEvent" Header="Image Message">
+                            <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Enable</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post the latest image of the selected types a Discord channel via webhook</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding DiscordImageEventEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Interval</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post images at the specified interval. For example, setting this to 5 will post every 5th image by image type and target name</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="100"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding DiscordImageInterval}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Post title</TextBlock.Text>
+                                        <TextBlock.ToolTip>The text which appears at the top of an image post</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="400"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding DiscordImagePostTitle}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                        <TextBlock.Text>Image types</TextBlock.Text>
+                                        <TextBlock.ToolTip>The types of images that will be sent to the Discord server</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ListBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource TertiaryBackgroundBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        Initialized="DiscordImageTypeListBox_Initialized"
+                                        IsSynchronizedWithCurrentItem="true"
+                                        ItemsSource="{Binding ImageTypes}"
+                                        SelectionChanged="DiscordImageTypeListBox_SelectionChanged"
+                                        SelectionMode="Multiple" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Edge color</TextBlock.Text>
+                                        <TextBlock.ToolTip>The color of the left side of the embedded Discord image post</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <xceed:ColorPicker
+                                        Width="88"
+                                        Margin="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        SelectedColor="{Binding DiscordImageEdgeColor}"
+                                        UsingAlphaChannel="False" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Image webhook</TextBlock.Text>
+                                        <TextBlock.ToolTip>An alternate webhook URL, different from the default one, specifically for image posts</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="400"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding DiscordImageWebhookUrl}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                    </TabControl>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Slack" Header="Slack">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/start/quickstart" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Slack Apps quickstart</Hyperlink></TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/apps" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Your Slack Apps</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>OAuth token</TextBlock.Text>
+                            <TextBlock.ToolTip>The OAuth token assigned to your Slack App</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding SlackOAuthToken}" />
+                        <ninactrl:AsyncProcessButton
+                            Width="100"
+                            Height="25"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            ButtonText="Get Bot Info"
+                            Command="{Binding GetSlackChannelListCommand}"
+                            LoadingImageBrush="{StaticResource PrimaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Text="Workspace" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackWorkspaceName}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Text="Bot/App name" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackBotName}" />
+
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="(" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SlackBotDisplayName}" />
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text=")" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top">
+                            <TextBlock.Text>Channels</TextBlock.Text>
+                        </TextBlock>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListBox
+                                MinWidth="150"
+                                MinHeight="50"
+                                MaxHeight="100"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BackgroundBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                SelectionMode="Single"
+                                SelectionChanged="SlackChannelsListBox_SelectionChanged"
+                                ItemsSource="{Binding SlackChannels}"
+                                DisplayMemberPath="Name" />
+                        </ScrollViewer>
+
+                        <StackPanel
+                            Visibility="{Binding SlackShowChannelInfo, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
+                            Orientation="Vertical" 
+                            VerticalAlignment="Top">
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="ID:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelId}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Private:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelIsPrivate}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Members:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelNumMembers}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="Created:" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{Binding SlackSelectedChannelCreateDate}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                        <TabItem Name="Slack_FailureMessage" Header="Failure Message">
+                            <GroupBox Margin="0,10,0,5" Header="Failure message template">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                        <TextBox
+                                            MinWidth="515"
+                                            MinHeight="400"
+                                            MaxWidth="515"
+                                            MaxHeight="400"
+                                            Margin="0,5,0,0"
+                                            HorizontalAlignment="Left"
+                                            AcceptsReturn="True"
+                                            AcceptsTab="True"
+                                            Text="{Binding SlackFailureMessage}"
+                                            HorizontalScrollBarVisibility="Visible"
+                                            VerticalScrollBarVisibility="Visible" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                        </TabItem>
+
+                        <TabItem Name="Slack_ImageEvent" Header="Image Message">
+                            <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Enable</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post the latest image of the selected types to the specified channel</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding SlackImageEventEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Interval</TextBlock.Text>
+                                        <TextBlock.ToolTip>Post images at the specified interval. For example, setting this to 5 will post every 5th image by image type and target name</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="100"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding SlackImageInterval}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Channel</TextBlock.Text>
+                                    </TextBlock>
+                                    <ComboBox
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Margin="5,0,0,0"
+                                        DisplayMemberPath="Name"
+                                        IsSynchronizedWithCurrentItem="True"
+                                        ItemsSource="{Binding SlackChannels}"
+                                        SelectedValue="{Binding SlackImageEventChannel}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                        <TextBlock.Text>Image types</TextBlock.Text>
+                                        <TextBlock.ToolTip>The types of images that will be sent to the Discord server</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ListBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource TertiaryBackgroundBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        ItemsSource="{Binding ImageTypes}"
+                                        Initialized="SlackImageTypeListBox_Initialized"
+                                        SelectionChanged="SlackImageTypeListBox_SelectionChanged"
+                                        IsSynchronizedWithCurrentItem="true"
+                                        SelectionMode="Multiple" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                    </TabControl>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="ntfy" Header="ntfy">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Website: " />
+                        <TextBlock><Hyperlink NavigateUri="https://ntfy.sh" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">ntfy.sh</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default topic</TextBlock.Text>
+                            <TextBlock.ToolTip>The default ntfy topic to send messages to. If blank or not previously set, the topic defaults to be the first 8 characters of the currently-loaded NINA profile ID.</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding NtfyShDefaultTopic}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default icon</TextBlock.Text>
+                            <TextBlock.ToolTip>The default ntfy icon to display with messages</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding NtfyShDefaultIcon}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>ntfy URL</TextBlock.Text>
+                            <TextBlock.ToolTip>The URL of the ntfy service</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding NtfyShUrl}" />
+                    </StackPanel>
+
+                    <GroupBox Header="Authentication" Margin="0,10,0,0">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Margin="0,5,0,5" Text="Authentication is optional. It is required if your ntfy service is protected with a username and password or an access token. If all three items are configured here, access token overrides username and password authentication." />
+                            
+                            <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Access token</TextBlock.Text>
+                                    <TextBlock.ToolTip>Optional. User access token, if required</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding NtfyShToken}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Username</TextBlock.Text>
+                                    <TextBlock.ToolTip>Optional.Username to access the ntfy service</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding NtfyShUser}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Password</TextBlock.Text>
+                                    <TextBlock.ToolTip>Required if a username is specified.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding NtfyShPassword}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Title</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding NtfyShFailureTitle}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                <TextBlock Width="110" HorizontalAlignment="Left">
+                                    <TextBlock.Text>Message</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    MinWidth="515"
+                                    MinHeight="400"
+                                    MaxWidth="515"
+                                    MaxHeight="400"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Text="{Binding NtfyShFailureMessage}"
+                                    VerticalScrollBarVisibility="Visible" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Tags</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding NtfyShFailureTags}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Priority</TextBlock.Text>
+                                </TextBlock>
+                                <ComboBox
+                                    Width="100"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    ItemsSource="{Binding Source={util:EnumBindingSource {x:Type ntfysh:NtfyShPriorityLevels}}}"
+                                    SelectedItem="{Binding NtfyShFailurePriority}"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="IFTTT_Webhooks" Header="IFTTT Webhooks">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Website: " />
+                        <TextBlock><Hyperlink NavigateUri="https://ifttt.com/maker_webhooks" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">ifttt.com/maker_webhooks</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>IFTTT Webhooks key</TextBlock.Text>
+                            <TextBlock.ToolTip>Your IFTTT Webhooks API key</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Text="{Binding IftttWebhookKey}" />
+                    </StackPanel>
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Value 1</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue1}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Value 2</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue2}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Value 3</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding IftttFailureValue3}" />
+                            </StackPanel>
+
+                            <ninactrl:AsyncProcessButton
+                                Width="515"
+                                Height="25"
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Left"
+                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                ButtonText="Send Test Message"
+                                Command="{Binding IftttTestCommand}"
+                                LoadingImageBrush="{StaticResource PrimaryBrush}" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="MQTT" Header="MQTT">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Website: " />
+                        <TextBlock><Hyperlink NavigateUri="https://mqtt.org/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">mqtt.org</Hyperlink></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Broker host</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker hostname or IP</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttBrokerHost" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Broker port</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker port</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttBrokerPort" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default topic</TextBlock.Text>
+                            <TextBlock.ToolTip>The default topic to publish to</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttDefaultTopic" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Client ID prefix</TextBlock.Text>
+                            <TextBlock.ToolTip>
+                                If left blank, the client ID will be auto-generated by the broker. If one is specified here, the text will be used as a prefix to a randomized client ID string in the format of
+                                [text].[random string]
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttClientId" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default QoS</TextBlock.Text>
+                            <TextBlock.ToolTip>The default QoS level that message payloads are assigned</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding MqttQoSLevels}"
+                            SelectedIndex="{Binding MqttDefaultQoSLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default failure QoS</TextBlock.Text>
+                            <TextBlock.ToolTip>The default QoS level that failure payloads are assigned</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding MqttQoSLevels}"
+                            SelectedIndex="{Binding MqttDefaultFailureQoSLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Username</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker username</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttUsername" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Password</TextBlock.Text>
+                            <TextBlock.ToolTip>MQTT broker password</TextBlock.ToolTip>
+                        </TextBlock>
+                        <PasswordBox
+                            Width="400"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            CaretBrush="{StaticResource PrimaryBrush}"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            Loaded="PasswordBox_Mqtt_Loaded"
+                            PasswordChanged="PasswordBox_Mqtt_PasswordChanged">
+                            <PasswordBox.Background>
+                                <SolidColorBrush Opacity="0.05" Color="{Binding Color, Source={StaticResource PrimaryBrush}}" />
+                            </PasswordBox.Background>
+                        </PasswordBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Use TLS</TextBlock.Text>
+                            <TextBlock.ToolTip>Use TLS on broker connections</TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding MqttBrokerUseTls, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Reconnect attempts</TextBlock.Text>
+                            <TextBlock.ToolTip>The maximum number of reconnect attempts that will be made if a session is interrupted</TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="MqttMaxReconnectAttempts" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Send Test Message"
+                        Command="{Binding MQTTTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}">
+                        <ninactrl:AsyncProcessButton.ToolTip>
+                            <TextBlock>
+                                <TextBlock.Text>Sends a test message to the /nina/test topic on the broker</TextBlock.Text>
+                            </TextBlock>
+                        </ninactrl:AsyncProcessButton.ToolTip>
+                    </ninactrl:AsyncProcessButton>
+
+                    <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                        <TabItem Name="Mqtt_LWT" Header="Last Will &amp; Testament">
+                            <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Enable</TextBlock.Text>
+                                        <TextBlock.ToolTip>Starts the Last Will &amp; Testament connection with the broker when NINA starts</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding MqttLwtEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Topic</TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="400"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding MqttLwtTopic}" />
+                                </StackPanel>
+
+                                <TabControl Margin="0,10,0,0">
+                                    <TabItem Name="Birth_payload" Header="Birth payload">
+                                        <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                            <TextBlock Width="110" HorizontalAlignment="Left">
+                                                <TextBlock.Text>Payload text</TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBox
+                                                MinWidth="515"
+                                                MinHeight="400"
+                                                MaxWidth="515"
+                                                MaxHeight="400"
+                                                Margin="0,5,0,0"
+                                                HorizontalAlignment="Left"
+                                                AcceptsReturn="True"
+                                                AcceptsTab="True"
+                                                HorizontalScrollBarVisibility="Visible"
+                                                Text="{Binding MqttLwtBirthPayload}"
+                                                VerticalScrollBarVisibility="Visible" />
+                                        </StackPanel>
+                                    </TabItem>
+
+                                    <TabItem Name="Last_will_payload" Header="Last will payload">
+                                        <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                            <TextBlock Width="110" HorizontalAlignment="Left">
+                                                <TextBlock.Text>Payload text</TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBox
+                                                MinWidth="515"
+                                                MinHeight="400"
+                                                MaxWidth="515"
+                                                MaxHeight="400"
+                                                Margin="0,5,0,0"
+                                                HorizontalAlignment="Left"
+                                                AcceptsReturn="True"
+                                                AcceptsTab="True"
+                                                HorizontalScrollBarVisibility="Visible"
+                                                Text="{Binding MqttLwtLastWillPayload}"
+                                                VerticalScrollBarVisibility="Visible" />
+                                        </StackPanel>
+                                    </TabItem>
+
+                                    <TabItem Name="Close_payload" Header="Close payload">
+                                        <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                            <TextBlock Width="110" HorizontalAlignment="Left">
+                                                <TextBlock.Text>Payload text</TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBox
+                                                MinWidth="515"
+                                                MinHeight="400"
+                                                MaxWidth="515"
+                                                MaxHeight="400"
+                                                Margin="0,5,0,0"
+                                                HorizontalAlignment="Left"
+                                                AcceptsReturn="True"
+                                                AcceptsTab="True"
+                                                HorizontalScrollBarVisibility="Visible"
+                                                Text="{Binding MqttLwtClosePayload}"
+                                                VerticalScrollBarVisibility="Visible" />
+                                        </StackPanel>
+                                    </TabItem>
+                                </TabControl>
+                            </StackPanel>
+                        </TabItem>
+
+                        <TabItem Name="Mqtt_ImageEvent" Header="Image Publishing">
+                            <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Enable</TextBlock.Text>
+                                        <TextBlock.ToolTip>Publish the latest image of the selected type to the broker</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsEnabled="{Binding MqttImagePubIsConfigured}"
+                                        IsChecked="{Binding MqttImagePubliserEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Metadata only</TextBlock.Text>
+                                        <TextBlock.ToolTip>Publish only the metdata for the latest image</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding MqttImagePubliserMetadataOnly, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Image topic</TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="400"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding MqttImagePublisherImageTopic}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>Metadata topic</TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBox
+                                        Width="400"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding MqttImagePublisherMetdataTopic}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="110"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>QoS level</TextBlock.Text>
+                                            <TextBlock.ToolTip>The QoS level that images and metadata are published with</TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <ComboBox
+                                            MinWidth="40"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            ItemsSource="{Binding MqttQoSLevels}"
+                                            SelectedIndex="{Binding MqttImagePublisherQoSLevel, Mode=TwoWay}" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="50,0,0,0" Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="66"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center">
+                                            <TextBlock.Text>Retention</TextBlock.Text>
+                                            <TextBlock.ToolTip>Marks the message for retention on the broker</TextBlock.ToolTip>
+                                        </TextBlock>
+                                        <CheckBox
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding MqttImagePublisherRetain}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                
+                                <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                        <TextBlock.Text>Image types</TextBlock.Text>
+                                        <TextBlock.ToolTip>The types of images that will be published</TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ListBox
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource TertiaryBackgroundBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        Initialized="MqttImageTypeListBox_Initialized"
+                                        IsSynchronizedWithCurrentItem="true"
+                                        ItemsSource="{Binding ImageTypes}"
+                                        SelectionChanged="MqttImageTypeListBox_SelectionChanged"
+                                        SelectionMode="Multiple" />
+                                </StackPanel>
+
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="TTS" Header="Text-to-Speech">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <TextBlock Margin="0,0,0,5" VerticalAlignment="Center">
+                        <Hyperlink NavigateUri="ms-settings:speech" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">
+                            <Run Text="Windows Text-to-speech settings" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Voice</TextBlock.Text>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="180"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding TtsVoices}"
+                            SelectedItem="{Binding TtsVoice, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Test message</TextBlock.Text>
+                        </TextBlock>
+                        <TextBox
+                            Width="400"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="TtsTestMessage" />
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <ninactrl:AsyncProcessButton
+                        Width="515"
+                        Height="25"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Left"
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonText="Speak Test Message"
+                        Command="{Binding TtsTestCommand}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                    <GroupBox Margin="0,10,0,0" Header="Failure message template">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Vertical">
+                                <TextBox
+                                    MinWidth="515"
+                                    MinHeight="400"
+                                    MaxWidth="515"
+                                    MaxHeight="400"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    AcceptsTab="True"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    Text="{Binding TTSFailureMessage}"
+                                    VerticalScrollBarVisibility="Visible" />
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="PlaySound" Header="Sounds">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default sound</TextBlock.Text>
+                        </TextBlock>
+                        <TextBox
+                            MinWidth="300"
+                            MaxWidth="500"
+                            MaxHeight="150"
+                            Margin="5,3,0,3"
+                            HorizontalScrollBarVisibility="Auto"
+                            Text="{Binding PlaySoundDefaultFile}"
+                            TextAlignment="Left"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
+
+                        <Button
+                            Width="25"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenSelectDefaultSoundFileDialogCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="..." />
+                            </Button.Content>
+                        </Button>
+
+                        <Button
+                            Width="35"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding PlaySoundTestCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Default failure sound</TextBlock.Text>
+                        </TextBlock>
+                        <TextBox
+                            MinWidth="300"
+                            MaxWidth="500"
+                            MaxHeight="150"
+                            Margin="5,3,0,3"
+                            HorizontalScrollBarVisibility="Auto"
+                            Text="{Binding PlaySoundDefaultFailureFile}"
+                            TextAlignment="Left"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
+
+                        <Button
+                            Width="25"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding OpenSelectDefaultFailureSoundFileDialogCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="..." />
+                            </Button.Content>
+                        </Button>
+
+                        <Button
+                            Width="35"
+                            Margin="5,3,0,3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{Binding PlayFailureSoundTestCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Image_Service" Header="Image Service">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="NOTE: These settings apply to the images sent by all of the services which support doing so." />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Image format</TextBlock.Text>
+                            <TextBlock.ToolTip>The format which the images will be sent</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Name="PART_ImageServiceFormats"
+                            MinWidth="50"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding ImageServiceFormats}"
+                            SelectedIndex="{Binding ImageServiceFormat, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5"
+                        Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_ImageServiceFormats, Path=SelectedItem}" Value="PNG">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>JPEG Quality</TextBlock.Text>
+                            <TextBlock.ToolTip>Lower quality yields a smaller image file size</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="50"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="%">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="ImageServiceJpegQuality">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Maximum="100" Minimum="10" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock
+                            Width="110"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBlock.Text>Image scaling</TextBlock.Text>
+                            <TextBlock.ToolTip>Resize the image to the specified percentage before sending it</TextBlock.ToolTip>
+                        </TextBlock>
+                        <ninactrl:UnitTextBox
+                            Width="50"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Unit="%">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="ImageServiceImageScaling">
+                                    <Binding.ValidationRules>
+                                        <rules:IntRangeRuleWithDefault>
+                                            <rules:IntRangeRuleWithDefault.ValidRange>
+                                                <rules:IntRangeChecker Maximum="100" Minimum="10" />
+                                            </rules:IntRangeRuleWithDefault.ValidRange>
+                                        </rules:IntRangeRuleWithDefault>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </ninactrl:UnitTextBox>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Name="Token_Help" Header="Message Token Help">
+                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                    <TextBlock
+                        Width="600"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        TextWrapping="Wrap">
+                        Regular and Failure messages can contain tokens that allow you to insert dynamic information into the message. Tokens take the form of $$TOKEN_NAME$$, similar to how N.I.N.A. file patterns work. Ground Station provides its own list of supported tokens, which are listed below.<LineBreak />
+                        <LineBreak />
+                        Global tokens are available in both regular and failure messages. Failure tokens are will be resolved only in failure messages.</TextBlock>
+
+                    <TextBlock Margin="0,10,0,0" />
+
+                    <GroupBox Header="Global tokens">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    FontSize="16"
+                                    Text="Date &amp; Time"
+                                    TextDecorations="Underline" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DATE$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenDate}" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TIME$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenTime}" />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DATETIME$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenDateTime}" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DATE_UTC$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenDateUtc}" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TIME_UTC$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenTimeUtc}" />
+
+                                <TextBox
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DATETIME_UTC$$" />
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenDateTimeUtc}" />
+
+                                <TextBox
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$UNIX_EPOCH$$" />
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="{Binding TokenUnixEpoch}" />
+
+                                <TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    util:SelectTextOnFocus.Active="True"
+                                    IsReadOnly="True">
+                                    $$FORMAT_DATETIME format$$
+                                </TextBox>
+                                <TextBlock Grid.Row="8" Grid.Column="1">
+                                    Inserts a custom local date and time format. Replace<Span FontWeight="Bold"><Span FontStyle="Italic">format</Span></Span>
+                                    with any<LineBreak />
+                                    arrangement of<Hyperlink NavigateUri="https://docs.microsoft.com/dotnet/standard/base-types/custom-date-and-time-format-strings" RequestNavigate="Hyperlink_RequestNavigate">date and time format specifiers</Hyperlink>
+                                </TextBlock>
+
+                                <TextBox
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Margin="0,5,0,0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    util:SelectTextOnFocus.Active="True"
+                                    IsReadOnly="True">
+                                    $$FORMAT_DATETIME_UTC format$$
+                                </TextBox>
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Margin="0,5,0,0">
+                                    Same as<Span FontWeight="Bold">
+                                        $$FORMAT_DATETIME<Span FontStyle="Italic">format</Span>
+                                        $$</Span>
+                                    but uses UTC date and time instead</TextBlock>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    FontSize="16"
+                                    Text="Target info"
+                                    TextDecorations="Underline" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="The name of the target being imaged" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_RA$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="The right ascension of the target being imaged, in 24 hour format" />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_DEC$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="The declination of the target being imaged, in sexagesimal format" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_RA_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="The right ascension of the target being imaged, decimal format" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_DEC_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="The declination of the target being imaged, decimal format" />
+
+                                <TextBox
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TARGET_EPOCH$$" />
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Text="The epoch of the target's coordinates" />
+
+                                <TextBox
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$INSTRUCTION_SET$$" />
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="The name of the enclosing instruction set" />
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <!--  51  -->
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    FontSize="16"
+                                    Text="Equipment info"
+                                    TextDecorations="Underline" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$CAMERA_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="Name of the camera device" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$CAMERA_BATTERY$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Camera battery level" />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$CAMERA_SENSOR_TEMP$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="Camera sensor temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DOME_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of the dome device" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DOME_IS_PARKED$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="True/False regarding parked state" />
+
+                                <TextBox
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DOME_IS_HOME$$" />
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Text="True/False regarding homed state" />
+
+                                <TextBox
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DOME_SHUTTER$$" />
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="Disposition of the shutter" />
+
+                                <TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DOME_AZ_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    Text="Dome pointing azimuth, in degrees" />
+
+                                <TextBox
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FWHEEL_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Filter wheel device name" />
+
+                                <TextBox
+                                    Grid.Row="10"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FWHEEL_FILTER_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="10"
+                                    Grid.Column="1"
+                                    Text="Name of the current filter" />
+
+                                <TextBox
+                                    Grid.Row="11"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FWHEEL_FILTER_POS$$" />
+                                <TextBlock
+                                    Grid.Row="11"
+                                    Grid.Column="1"
+                                    Text="Position number of the current filter. 0-indexed" />
+
+                                <TextBox
+                                    Grid.Row="12"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FLAT_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="12"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Flat field device name" />
+
+                                <TextBox
+                                    Grid.Row="13"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FLAT_COVER_STATUS$$" />
+                                <TextBlock
+                                    Grid.Row="13"
+                                    Grid.Column="1"
+                                    Text="Flat field cover state" />
+
+                                <TextBox
+                                    Grid.Row="14"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FLAT_LAMP_STATUS$$" />
+                                <TextBlock
+                                    Grid.Row="14"
+                                    Grid.Column="1"
+                                    Text="Flat field lamp state" />
+
+                                <TextBox
+                                    Grid.Row="15"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FOCUSER_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="15"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of focuser device" />
+
+                                <TextBox
+                                    Grid.Row="16"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FOCUSER_POSITION$$" />
+                                <TextBlock
+                                    Grid.Row="16"
+                                    Grid.Column="1"
+                                    Text="Current step number" />
+
+                                <TextBox
+                                    Grid.Row="17"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FOCUSER_TEMP$$" />
+                                <TextBlock
+                                    Grid.Row="17"
+                                    Grid.Column="1"
+                                    Text="Focuser measured temperature" />
+
+                                <TextBox
+                                    Grid.Row="18"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="18"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of rotator device" />
+
+                                <TextBox
+                                    Grid.Row="19"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_ANGLE$$" />
+                                <TextBlock
+                                    Grid.Row="19"
+                                    Grid.Column="1"
+                                    Text="Current mechanical angle of the rotator, degrees" />
+
+                                <TextBox
+                                    Grid.Row="20"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_SKY_ANGLE$$" />
+                                <TextBlock
+                                    Grid.Row="20"
+                                    Grid.Column="1"
+                                    Text="Current angle of the rotator in the night sky, degrees" />
+
+                                <TextBox
+                                    Grid.Row="21"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ROTATOR_IS_SYNCED$$" />
+                                <TextBlock
+                                    Grid.Row="21"
+                                    Grid.Column="1"
+                                    Text="True/False if rotator is synced" />
+
+                                <TextBox
+                                    Grid.Row="22"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$SAFETY_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="22"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of safety monitor device" />
+
+                                <TextBox
+                                    Grid.Row="23"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$SAFETY_IS_SAFE$$" />
+                                <TextBlock
+                                    Grid.Row="23"
+                                    Grid.Column="1"
+                                    Text="True/False regarding safety state" />
+
+                                <TextBox
+                                    Grid.Row="24"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="24"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of mount device" />
+
+                                <TextBox
+                                    Grid.Row="25"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_POINTING_STATE$$" />
+                                <TextBlock
+                                    Grid.Row="25"
+                                    Grid.Column="1"
+                                    Text="Current pointing state (aka side of pier)" />
+
+                                <TextBox
+                                    Grid.Row="26"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_RA$$" />
+                                <TextBlock
+                                    Grid.Row="26"
+                                    Grid.Column="1"
+                                    Text="Current RA, in H:M:S" />
+
+                                <TextBox
+                                    Grid.Row="27"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_RA_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="27"
+                                    Grid.Column="1"
+                                    Text="Current RA, degrees" />
+
+                                <TextBox
+                                    Grid.Row="28"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_DEC$$" />
+                                <TextBlock
+                                    Grid.Row="28"
+                                    Grid.Column="1"
+                                    Text="Current declination, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="29"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_DEC_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="29"
+                                    Grid.Column="1"
+                                    Text="Current declination, degrees" />
+
+                                <TextBox
+                                    Grid.Row="30"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_IS_PARKED$$" />
+                                <TextBlock
+                                    Grid.Row="30"
+                                    Grid.Column="1"
+                                    Text="True/Fase regarding parked state" />
+
+                                <TextBox
+                                    Grid.Row="31"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_IS_HOME$$" />
+                                <TextBlock
+                                    Grid.Row="31"
+                                    Grid.Column="1"
+                                    Text="True/False regarding homed state" />
+
+                                <TextBox
+                                    Grid.Row="32"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_ALT$$" />
+                                <TextBlock
+                                    Grid.Row="32"
+                                    Grid.Column="1"
+                                    Text="Current pointing altitude, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="33"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_ALT_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="33"
+                                    Grid.Column="1"
+                                    Text="Current pointing altitude, degrees" />
+
+                                <TextBox
+                                    Grid.Row="34"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_AZ$$" />
+                                <TextBlock
+                                    Grid.Row="34"
+                                    Grid.Column="1"
+                                    Text="Current pointing azimuth, in D:M:S" />
+
+                                <TextBox
+                                    Grid.Row="35"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_AZ_DECIMAL$$" />
+                                <TextBlock
+                                    Grid.Row="35"
+                                    Grid.Column="1"
+                                    Text="Current pointing azimuth, degrees" />
+
+                                <TextBox
+                                    Grid.Row="36"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$MOUNT_TTF$$" />
+                                <TextBlock
+                                    Grid.Row="36"
+                                    Grid.Column="1"
+                                    Text="Time until flip, in H:M:S" />
+
+                                <TextBox
+                                    Grid.Row="37"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="37"
+                                    Grid.Column="1"
+                                    Margin="0,8,0,0"
+                                    Text="Name of weather device" />
+
+                                <TextBox
+                                    Grid.Row="38"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_CLOUD_COVER$$" />
+                                <TextBlock
+                                    Grid.Row="38"
+                                    Grid.Column="1"
+                                    Text="Cloud cover, in %" />
+
+                                <TextBox
+                                    Grid.Row="39"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_DEWPOINT$$" />
+                                <TextBlock
+                                    Grid.Row="39"
+                                    Grid.Column="1"
+                                    Text="Dewpoint, in C" />
+
+                                <TextBox
+                                    Grid.Row="40"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_HUMIDITY$$" />
+                                <TextBlock
+                                    Grid.Row="40"
+                                    Grid.Column="1"
+                                    Text="Relative humidity, in %" />
+
+                                <TextBox
+                                    Grid.Row="41"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_PRESSURE$$" />
+                                <TextBlock
+                                    Grid.Row="41"
+                                    Grid.Column="1"
+                                    Text="Air pressure, in hectopascals (hPa)" />
+
+                                <TextBox
+                                    Grid.Row="42"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_RAINRATE$$" />
+                                <TextBlock
+                                    Grid.Row="42"
+                                    Grid.Column="1"
+                                    Text="Rain rate, in mm/hour" />
+
+                                <TextBox
+                                    Grid.Row="43"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_SKYBRT$$" />
+                                <TextBlock
+                                    Grid.Row="43"
+                                    Grid.Column="1"
+                                    Text="Sky brightness, in lux" />
+
+                                <TextBox
+                                    Grid.Row="44"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_SKYQUAL$$" />
+                                <TextBlock
+                                    Grid.Row="44"
+                                    Grid.Column="1"
+                                    Text="Sky quality, in magnitudes per square arc second" />
+
+                                <TextBox
+                                    Grid.Row="45"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_SKYTEMP$$" />
+                                <TextBlock
+                                    Grid.Row="45"
+                                    Grid.Column="1"
+                                    Text="Sky temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="46"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_STARFWHM$$" />
+                                <TextBlock
+                                    Grid.Row="46"
+                                    Grid.Column="1"
+                                    Text="Star FHWM, in arcseconds" />
+
+                                <TextBox
+                                    Grid.Row="47"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_AMBTEMP$$" />
+                                <TextBlock
+                                    Grid.Row="47"
+                                    Grid.Column="1"
+                                    Text="Ambient air temperature, in C" />
+
+                                <TextBox
+                                    Grid.Row="48"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_WINDDIR$$" />
+                                <TextBlock
+                                    Grid.Row="48"
+                                    Grid.Column="1"
+                                    Text="Wind direction, in degrees" />
+
+                                <TextBox
+                                    Grid.Row="49"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_WINDGUST$$" />
+                                <TextBlock
+                                    Grid.Row="49"
+                                    Grid.Column="1"
+                                    Text="Wind gust, in m/s" />
+
+                                <TextBox
+                                    Grid.Row="50"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$WX_WINDSPD$$" />
+                                <TextBlock
+                                    Grid.Row="50"
+                                    Grid.Column="1"
+                                    Text="Wind speed, in m/s" />
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,10,0,5"
+                                    FontSize="16"
+                                    Text="System info"
+                                    TextDecorations="Underline" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$SYSTEM_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="The name of the computer" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$USER_NAME$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="The name of the user running N.I.N.A." />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$NINA_VERSION$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="The version of N.I.N.A." />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$GS_VERSION$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="The version of Ground Station" />
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Failure tokens">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FAILED_ITEM$$" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="The name of the failed instruction" />
+
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FAILED_ITEM_DESC$$" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="A description of the failed instruction" />
+
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FAILED_ITEM_CATEGORY$$" />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="The category name that the failed instruction belongs to" />
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FAILED_ATTEMPTS$$" />
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="The number of failed attempts" />
+
+                                <TextBox
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$FAILED_INSTR_SET$$" />
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="The name of the container that contained the failed instruction" />
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$ERROR_LIST$$" />
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="A comma-separated list of failure reasons. Blank if the reasons are unknown" />
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Service-specific Tokens">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$DESCRIPTION$$" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="Inserts the instruction's description text. Available with the Send HTTP Request instruction." />
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DataTemplate>
+</ResourceDictionary>

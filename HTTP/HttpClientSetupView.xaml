@@ -1,9 +1,10 @@
 ﻿<!--
-    Copyright © 2023 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+-->
 <UserControl
     x:Class="DaleGhent.NINA.GroundStation.HTTP.HttpClientSetupView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,14 +15,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    d:DataContext="{d:DesignInstance Type=local:HttpClientSetup}"
     Name="UC"
     d:DesignHeight="400"
     d:DesignWidth="500"
     mc:Ignorable="d">
-
-    <UserControl.Resources>
-        <ResourceDictionary Source="../Resources/Resources.xaml" />
-    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -30,7 +28,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -105,7 +105,11 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
-            Text="Type" />
+            Text="Content Type">
+            <TextBlock.ToolTip>
+                <TextBlock Text="The MIME type of the data being sent. Usually this is &apos;text/plain&apos; for plain text, or &apos;application/json&apos; for JSON payloads. The HTTP server may reject or mishandle the request if this is incorrectly specified." />
+            </TextBlock.ToolTip>
+        </TextBlock>
         <TextBox
             Grid.Row="3"
             Grid.Column="1"
@@ -146,8 +150,70 @@
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto" />
 
-        <Button
+        <Expander
             Grid.Row="5"
+            Grid.ColumnSpan="2"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            IsExpanded="{Binding ShowAuthDetails}"
+            Header="HTTP Authentication" FontSize="12">
+
+            <Grid
+                Margin="10,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,2,0,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="Username" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    MinWidth="200"
+                    MaxWidth="200"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalScrollBarVisibility="Auto"
+                    MaxLines="1"
+                    Text="{Binding HttpAuthUsername}"
+                    TextWrapping="NoWrap" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,2,0,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="Password" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="200"
+                    MaxWidth="200"
+                    Margin="10,2,10,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalScrollBarVisibility="Auto"
+                    MaxLines="1"
+                    Text="{Binding HttpAuthPassword}"
+                    TextWrapping="NoWrap" />
+            </Grid>
+        </Expander>
+
+        <Button
+            Grid.Row="6"
             Grid.ColumnSpan="2"
             Width="150"
             Margin="10,10,10,10"

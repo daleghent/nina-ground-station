@@ -26,4 +26,3 @@ Help for this plugin may be found in the **#plugin-discussions** channel on the 
 * Most services require an Internet connection in order to function
 * I do not provide in-depth technical support or training for the services themselves
 * Ground Station is provided 'as is' under the terms of the [Mozilla Public License 2.0](https://github.com/daleghent/nina-plugins/blob/main/LICENSE.txt)
-* Source code for this plugin is available in my NINA plugins [source code repository](https://github.com/daleghent/nina-plugins)")

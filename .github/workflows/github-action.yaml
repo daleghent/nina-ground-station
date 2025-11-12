@@ -1,0 +1,160 @@
+# This is a sample github action to build and release your plugin using a github action
+# It will run when pushing a new tag - the tag name must be your plugin version number (e.g. "1.0.0.0")
+# Replace and adjust the areas that are commented below
+# Place it into the workflow folder of your repository at .github/workflows
+
+# The action can also automatically publish your manifest
+# Fork the manifest repo from here https://github.com/isbeorn/nina.plugin.manifests and also name it "nina.plugin.manifests"
+# Additionally create a personal access token with write permissions to this fork and add it to your plugin repository secrets with key name "PAT"
+name: Build and Release
+
+# Every time a new tag with the typical assembly format is pushed this will run. e.g. tag name "1.0.0.0"
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+env:
+  # Adjust this to your plugin title
+  PLUGIN_NAME: "Ground Station"
+  # Your solution name
+  PLUGIN_SLN_NAME: "Ground Station"
+  # The name of the resulting dll file
+  PLUGIN_DLL_NAME: "DaleGhent.NINA.GroundStation"
+  # The relative path to your manifest folder inside the manifest repository
+  PLUGIN_MANIFEST_PATH: "g/Ground Station/3.0.0"
+  # Should this be in the beta plugin channel?
+  PLUGIN_IS_BETA: true
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # In case you need more sub folders add these here
+      - name: Prepare folders
+        run: |
+          mkdir packages
+          mkdir "packages/${{ env.PLUGIN_NAME }}"
+
+      - name: Build .NET Assemblies
+        run: |
+          dotnet restore
+          dotnet build "${{ env.PLUGIN_SLN_NAME }}.sln" -c Release -p:PostBuildEvent= -p:Version=${{ github.ref_name }} -o ./bin/Release
+
+
+      # Add all necessary files that the plugin needs to the packages folder - basically all items that are normally in your post build event on your local builds
+      - name: Prepare package
+        run: |
+          Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.dll" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -Force
+          Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.pdb" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.pdb" -Force          
+          Copy-Item "bin/Release/runtimes\win\lib\net8.0\System.Speech.dll" "packages/${{ env.PLUGIN_NAME }}/System.Speech.dll" -Force
+          Copy-Item "bin/Release/MailKit.dll" "packages/${{ env.PLUGIN_NAME }}/MailKit.dll" -Force
+          Copy-Item "bin/Release/MimeKit.dll" "packages/${{ env.PLUGIN_NAME }}/MimeKit.dll" -Force
+          Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/${{ env.PLUGIN_NAME }}/BouncyCastle.Cryptography.dll" -Force
+          Copy-Item "bin/Release/Telegram.Bot.dll" "packages/${{ env.PLUGIN_NAME }}/Telegram.Bot.dll" -Force
+          Copy-Item "bin/Release/MQTTnet.dll" "packages/${{ env.PLUGIN_NAME }}/MQTTnet.dll" -Force
+          Copy-Item "bin/Release/NetCoreAudio.dll" "packages/${{ env.PLUGIN_NAME }}/NetCoreAudio.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Core.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Core.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Rest.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Rest.dll" -Force
+          Copy-Item "bin/Release/Discord.Net.Webhook.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Webhook.dll" -Force
+          Copy-Item "bin/Release/SlackNet.dll" "packages/${{ env.PLUGIN_NAME }}/SlackNet.dll" -Force
+          Copy-Item "bin/Release/ntfy.dll" "packages/${{ env.PLUGIN_NAME }}/ntfy.dll" -Force
+          Copy-Item "bin/Release/NetTools.dll" "packages/${{ env.PLUGIN_NAME }}/NetTools.dll" -Force
+          Copy-Item "bin/Release/NetTools.Crypto.dll" "packages/${{ env.PLUGIN_NAME }}/NetTools.Crypto.dll" -Force
+          Copy-Item "bin/Release/RestSharp.dll" "packages/${{ env.PLUGIN_NAME }}/RestSharp.dll" -Force
+          Copy-Item "bin/Release/RestSharp.Serializers.NewtonsoftJson.dll" "packages/${{ env.PLUGIN_NAME }}/RestSharp.Serializers.NewtonsoftJson.dll" -Force
+
+      - name: Create Plugin archives and manifests
+        run: |
+          $BETA_FLAG = ""
+          if ($env:PLUGIN_IS_BETA -eq "true") {
+            $BETA_FLAG = "-beta"
+          }
+          curl -LO https://raw.githubusercontent.com/isbeorn/nina.plugin.manifests/refs/heads/main/tools/CreateManifest.ps1?raw=true
+          pwsh CreateManifest.ps1 -file "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" $BETA_FLAG -installerUrl "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.zip" -createArchive -includeAll -appendVersionToArchive
+          Rename-Item -Path "manifest.json" -NewName "${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.manifest.json"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: |
+            ./${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.zip
+            ./${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.manifest.json
+      
+      - name: Upload manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-manifest
+          path: ${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.manifest.json
+
+  check-repo-exists:
+    runs-on: ubuntu-latest
+    needs: build-and-release
+    outputs:
+      exists: ${{ steps.check.outputs.exists }}
+    steps:
+      - name: Check if repo exists
+        id: check
+        run: |
+          REPO="nina.plugin.manifests"
+          OWNER="${{ github.repository_owner }}"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://api.github.com/repos/$OWNER/$REPO)
+          if [ "$STATUS" -eq 200 ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+  publish-manifest:
+    runs-on: ubuntu-latest
+    needs: [check-repo-exists, build-and-release]
+    if: needs.check-repo-exists.outputs.exists == 'true'
+    steps:
+      - name: Download manifest artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-manifest
+
+      - name: Sanitize PLUGIN_NAME
+        run: echo "PLUGIN_NAME_SANITIZED=${PLUGIN_NAME//[[:space:]]/}" >> $GITHUB_ENV
+
+      - name: Clone manifest
+        run: |
+          git clone https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository_owner }}/nina.plugin.manifests.git
+          cd nina.plugin.manifests
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${{ env.PLUGIN_NAME_SANITIZED }}/${{ github.ref_name }}"
+
+      - name: Copy manifest file
+        run: |
+          cp "./${{ env.PLUGIN_DLL_NAME }}.${{ github.ref_name }}.manifest.json" "./nina.plugin.manifests/manifests/${{ env.PLUGIN_MANIFEST_PATH }}/manifest.${{ github.ref_name }}.json"
+          cd nina.plugin.manifests
+          git add .
+          git commit -m "Add manifest for release ${{ github.ref_name }}"
+          git push origin "${{ env.PLUGIN_NAME_SANITIZED }}/${{ github.ref_name }}"
+
+      - name: Create pull request
+        shell: bash
+        run: |
+          echo "${{ secrets.PAT }}" | gh auth login --with-token
+          gh pr create \
+            --title "Add manifest for ${{ env.PLUGIN_NAME }} ${{ github.ref_name }}" \
+            --body "Automatically generated manifest for release ${{ github.ref_name }}" \
+            --head ${{ github.repository_owner }}:${{ env.PLUGIN_NAME_SANITIZED }}/${{ github.ref_name }} \
+            --base main \
+            --repo isbeorn/nina.plugin.manifests

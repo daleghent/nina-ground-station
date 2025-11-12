@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,10 +10,14 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using DaleGhent.NINA.GroundStation.PushoverClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
+using NINA.Core.Utility;
+using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
@@ -33,7 +37,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SendToPushover : SequenceItem, IValidatable {
+    public partial class SendToPushover : SequenceItem, IValidatable {
         private readonly PushoverClient.PushoverClient pushover;
         private string title = string.Empty;
         private string message = string.Empty;
@@ -53,6 +57,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private IWindowService windowService;
 
         [ImportingConstructor]
         public SendToPushover(ICameraMediator cameraMediator,
@@ -86,15 +91,15 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
             pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
-            Priority = Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultNotificationPriority);
+            NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultNotificationSound;
+            Priority = GroundStation.GroundStationConfig.PushoverDefaultNotificationPriority;
         }
 
         public SendToPushover() {
             pushover = new PushoverClient.PushoverClient();
 
-            NotificationSound = Enum.Parse<NotificationSound>(Properties.Settings.Default.PushoverDefaultNotificationSound);
-            Priority = Enum.Parse<Priority>(Properties.Settings.Default.PushoverDefaultNotificationPriority);
+            NotificationSound = GroundStation.GroundStationConfig.PushoverDefaultNotificationSound;
+            Priority = GroundStation.GroundStationConfig.PushoverDefaultNotificationPriority;
         }
 
         public SendToPushover(SendToPushover copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -117,6 +122,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             set {
                 title = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -126,6 +133,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             set {
                 message = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(MessagePreview));
+                Validate();
             }
         }
 
@@ -150,23 +159,43 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         public static Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
         public static NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
+        public string MessagePreview {
+            get {
+                string text = string.Empty;
+                byte mesgPreviewLen = 50;
+
+                if (!string.IsNullOrEmpty(title)) {
+                    text = title;
+                } else if (!string.IsNullOrEmpty(message)) {
+                    var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
+                    text = message[..count];
+
+                    if (message.Length > mesgPreviewLen) {
+                        text += "...";
+                    }
+                }
+
+                return text;
+            }
+        }
+
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var title = Utilities.Utilities.ResolveTokens(Title, this, metadata);
             var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
-            await pushover.PushMessage(title, message, Priority, NotificationSound, ct);
+            await PushoverClient.PushoverClient.PushMessage(title, message, Priority, NotificationSound, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(pushover.ValidateSettings());
+            var i = new List<string>(PushoverClient.PushoverClient.ValidateSettings());
 
-            if (string.IsNullOrEmpty(Title) || string.IsNullOrWhiteSpace(Title)) {
+            if (string.IsNullOrEmpty(Title)) {
                 i.Add("Pushover message title is missing");
             }
 
-            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+            if (string.IsNullOrEmpty(Message)) {
                 i.Add("Pushover message body is missing");
             }
 
@@ -184,11 +213,59 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 Message = Message,
                 Priority = Priority,
                 NotificationSound = NotificationSound,
+
             };
         }
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Title: {title}";
         }
+
+        public IWindowService WindowService {
+            get {
+                windowService ??= new WindowService();
+                return windowService;
+            }
+
+            set => windowService = value;
+        }
+
+        // This attribute will auto generate a RelayCommand for the method. It is called <methodname>Command -> OpenConfigurationWindowCommand. The class has to be marked as partial for it to work.
+        [RelayCommand]
+        private async Task OpenConfigurationWindow(object o) {
+            var conf = new SendToPushoverSetup() {
+                Title = title,
+                Message = message,
+                Priority = priority,
+                NotificationSound = notificationSound
+            };
+
+            await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
+
+            Title = conf.Title;
+            Message = conf.Message;
+            Priority = conf.Priority;
+            NotificationSound = conf.NotificationSound;
+        }
+    }
+
+    public partial class SendToPushoverSetup : BaseINPC {
+        [ObservableProperty]
+        private string title;
+
+        [ObservableProperty]
+        private string message;
+
+        [ObservableProperty]
+        private Priority priority;
+
+        [ObservableProperty]
+        private NotificationSound notificationSound;
+
+        [ObservableProperty]
+        private Priority[] priorities = SendToPushover.Priorities;
+
+        [ObservableProperty]
+        private NotificationSound[] notificationSounds = SendToPushover.NotificationSounds;
     }
 }

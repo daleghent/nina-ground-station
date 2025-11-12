@@ -1,4 +1,16 @@
-﻿using System.Reflection;
+﻿#region "copyright"
+
+/*
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/
+*/
+
+#endregion "copyright"
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // [MANDATORY] The following GUID is used as a unique identifier of the plugin
@@ -6,8 +18,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("2.4.1.0")]
-[assembly: AssemblyFileVersion("2.4.1.0")]
+[assembly: AssemblyVersion("3.0.0.116")]
+[assembly: AssemblyFileVersion("3.0.0.116")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
@@ -20,10 +32,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Dale Ghent")]
 // The product name that this plugin is part of
 [assembly: AssemblyProduct("Ground Station")]
-[assembly: AssemblyCopyright("Copyright © 2021-2024 Dale Ghent and contributors")]
+[assembly: AssemblyCopyright("Copyright © 2021-2025 Dale Ghent and contributors")]
 
 // The minimum Version of N.I.N.A. that this plugin is compatible with
-[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.0.0.3001")]
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.2.0.1002")]
 
 // The license your plugin code is using
 [assembly: AssemblyMetadata("License", "MPL-2.0")]
@@ -41,7 +53,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Tags", "notifications,alerts,ifttt,email,pushover,mqtt")]
 
 //[Optional] A link that will show a log of all changes in between your plugin's versions
-[assembly: AssemblyMetadata("ChangelogURL", "https://github.com/daleghent/nina-ground-station/blob/main/CHANGELOG.md")]
+[assembly: AssemblyMetadata("ChangelogURL", "https://github.com/daleghent/nina-ground-station/blob/gs3/CHANGELOG.md")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://daleghent.github.io/nina-plugins/assets/images/ground-station-logo1.png")]
@@ -61,6 +73,9 @@ The provided instructions and triggers can be broken down in to two general cate
 
 * Pushover — Simple and reliable desktop and iOS/Android push messaging. Pushover charges a one-time $5 per-device fee to support its service
 * Telegram — Utilize the [Telegram bot API](https://core.telegram.org/bots/api) to send messages a Telegram channel
+* ntfy.sh — A simple, no-frills notification service that can send messages to a variety of platforms
+* Discord — Send messages to Discord channels using a webhook URL
+* Slack — Send messages to Slack channels via OAuth2 token authentication
 * Email — Who doesn't love plain old email? Plain SMTP with user auth and SSL/TLS support
 * HTTP - Send a generic HTTP GET or POST request to a URL
 * IFTTT Webhooks — If This Then That. An easy to use configurable webhooks-based gateway to control a wide variety of messaging platforms and IoT devices. Taking full advantage requires an IFTTT Pro account

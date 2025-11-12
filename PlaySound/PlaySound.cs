@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org> and contributors
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,7 +11,6 @@
 #endregion "copyright"
 
 using CommunityToolkit.Mvvm.Input;
-using NetCoreAudio;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Core.Utility;
@@ -28,7 +27,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
 
     [ExportMetadata("Name", "Play Sound")]
     [ExportMetadata("Description", "Plays the specified audio file")]
-    [ExportMetadata("Icon", "PlaySoundSVG")]
+    [ExportMetadata("Icon", "PlaySound_SVG")]
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
@@ -38,7 +37,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
 
         [ImportingConstructor]
         public PlaySound() {
-            SoundFile = Properties.Settings.Default.PlaySoundDefaultFile;
+            SoundFile = GroundStation.GroundStationConfig.PlaySoundDefaultFile;
 
             Validate();
         }
@@ -77,27 +76,22 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
         public string SoundFileShort => Path.GetFileName(soundFile);
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var player = new Player();
+            var playSoundCommon = new PlaySoundCommon() {
+                SoundFile = soundFile,
+                WaitUntilFinished = waitUntilFinished,
+            };
 
-            if (waitUntilFinished) {
-                await player.Play(soundFile);
-
-                do {
-                    await Task.Delay(250, ct);
-                } while (player.Playing);
-            } else {
-                await player.Play(soundFile);
-            }
+            await playSoundCommon.PlaySound(ct);
 
             return;
         }
 
-        public IList<string> Issues { get; set; } = new List<string>();
+        public IList<string> Issues { get; set; } = [];
 
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(soundFile) || string.IsNullOrWhiteSpace(soundFile)) {
+            if (string.IsNullOrEmpty(soundFile)) {
                 i.Add("Sound file has not been specified");
             } else {
                 if (!File.Exists(soundFile)) {

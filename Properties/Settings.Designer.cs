@@ -12,7 +12,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -277,7 +277,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("/nina")]
         public string MqttDefaultTopic {
             get {
                 return ((string)(this["MqttDefaultTopic"]));
@@ -436,7 +436,7 @@ namespace DaleGhent.NINA.GroundStation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("/nina/lastwill")]
         public string MqttLwtTopic {
             get {
                 return ((string)(this["MqttLwtTopic"]));
@@ -552,6 +552,106 @@ namespace DaleGhent.NINA.GroundStation.Properties {
             }
             set {
                 this["PlaySoundDefaultFailureFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\n**Reasons:** $$ERRO" +
+            "R_LIST$$")]
+        public string DiscordWebhookFailureMessage {
+            get {
+                return ((string)(this["DiscordWebhookFailureMessage"]));
+            }
+            set {
+                this["DiscordWebhookFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("It\'s full of stars!")]
+        public string TtsTestMessage {
+            get {
+                return ((string)(this["TtsTestMessage"]));
+            }
+            set {
+                this["TtsTestMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection GroundStationMigratedProfiles {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["GroundStationMigratedProfiles"]));
+            }
+            set {
+                this["GroundStationMigratedProfiles"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\n*Reasons:* $$ERROR_" +
+            "LIST$$")]
+        public string SlackFailureMessage {
+            get {
+                return ((string)(this["SlackFailureMessage"]));
+            }
+            set {
+                this["SlackFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string NtfyShFailureTitle {
+            get {
+                return ((string)(this["NtfyShFailureTitle"]));
+            }
+            set {
+                this["NtfyShFailureTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("$$FAILED_ITEM$$ failed after $$FAILED_ATTEMPTS$$ attempts!\r\n\r\nReasons: $$ERROR_LI" +
+            "ST$$")]
+        public string NtfyShFailureMessage {
+            get {
+                return ((string)(this["NtfyShFailureMessage"]));
+            }
+            set {
+                this["NtfyShFailureMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("exclamation")]
+        public string NtfyShFailureTags {
+            get {
+                return ((string)(this["NtfyShFailureTags"]));
+            }
+            set {
+                this["NtfyShFailureTags"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failure running $$FAILED_ITEM$$")]
+        public string DiscordWebhookFailureTitle {
+            get {
+                return ((string)(this["DiscordWebhookFailureTitle"]));
+            }
+            set {
+                this["DiscordWebhookFailureTitle"] = value;
             }
         }
     }

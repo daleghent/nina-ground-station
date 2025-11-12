@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,6 +10,8 @@
 
 #endregion "copyright"
 
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
@@ -26,8 +28,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using static DaleGhent.NINA.GroundStation.HTTP.HttpClient;
 
 namespace DaleGhent.NINA.GroundStation.HTTP {
@@ -43,6 +43,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         private string httpUri = string.Empty;
         private string httpPostBody = string.Empty;
         private string httpClientDescription = string.Empty;
+        private string httpAuthUsername = string.Empty;
+        private string httpAuthPassword = string.Empty;
         private string httpPostContentType = "text/plain";
 
         private readonly ICameraMediator cameraMediator;
@@ -157,6 +159,24 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             }
         }
 
+        [JsonProperty]
+        public string HttpAuthUsername {
+            get => httpAuthUsername;
+            set {
+                httpAuthUsername = value.Trim();
+                RaisePropertyChanged();
+            }
+        }
+
+        [JsonProperty]
+        public string HttpAuthPassword {
+            get => httpAuthPassword;
+            set {
+                httpAuthPassword = value.Trim();
+                RaisePropertyChanged();
+            }
+        }
+
         public string HttpClientInstructionToolTip {
             get {
                 string text = "Not configured";
@@ -174,16 +194,29 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            const string descriptionToken = @"$$DESCRIPTION$$";
             var client = new System.Net.Http.HttpClient();
             var response = new HttpResponseMessage();
-            var resolvedUri = Utilities.Utilities.ResolveTokens(httpUri, this, metadata, true);
+
+            var resolvedUri = httpUri.Replace(descriptionToken, Utilities.Utilities.DoUrlEncode(true, httpClientDescription));
+            resolvedUri = Utilities.Utilities.ResolveTokens(resolvedUri, this, metadata, true);
+
             client.DefaultRequestHeaders.ExpectContinue = false;
+
+            if (!string.IsNullOrEmpty(HttpAuthUsername)) {
+                var credentialBytes = System.Text.Encoding.ASCII.GetBytes($"{HttpAuthUsername}:{HttpAuthPassword}");
+                var authToken = Convert.ToBase64String(credentialBytes);
+
+                client.DefaultRequestHeaders.Remove("Authorization");
+                client.DefaultRequestHeaders.Add("Authorization", $"Basic {authToken}");
+            }
 
             try {
                 if (HttpMethod == HttpMethodEnum.GET) {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
-                    var body = Utilities.Utilities.ResolveTokens(httpPostBody, this, metadata);
+                    var body = httpPostBody.Replace(descriptionToken, httpClientDescription);
+                    body = Utilities.Utilities.ResolveTokens(body, this, metadata: metadata);
                     HttpContent httpContent = new StringContent(body);
 
                     if (!string.IsNullOrEmpty(httpPostContentType)) {
@@ -191,7 +224,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                         httpContent.Headers.Add("Content-Type", httpPostContentType);
                     }
 
-                    Logger.Debug($"Sending {HttpMethod} {HttpUri} ({HttpPostContentType}), Reqest body:{Environment.NewLine}{body}");
+                    Logger.Debug($"Sending {HttpMethod} {HttpUri} ({HttpPostContentType}):{Environment.NewLine}Resolved URI: {resolvedUri}{Environment.NewLine}Reqest body:{Environment.NewLine}{body}");
                     response = await client.PostAsync(resolvedUri, httpContent, ct);
                 } else {
                     throw new SequenceEntityFailedException($"Unsupported HTTP method {HttpMethod}");
@@ -224,7 +257,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
         public bool Validate() {
             var i = new List<string>();
 
-            if (string.IsNullOrEmpty(HttpUri) || string.IsNullOrWhiteSpace(HttpUri)) {
+            if (string.IsNullOrEmpty(HttpUri)) {
                 i.Add("URL is missing");
                 goto end;
             }
@@ -249,6 +282,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpPostBody = HttpPostBody,
                 HttpPostContentType = HttpPostContentType,
                 HttpClientDescription = HttpClientDescription,
+                HttpAuthUsername = HttpAuthUsername,
+                HttpAuthPassword = HttpAuthPassword,
             };
         }
 
@@ -274,15 +309,20 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpPostContentType = httpPostContentType,
                 HttpPostBody = httpPostBody,
                 HttpClientDescription = httpClientDescription,
+                HttpAuthUsername = httpAuthUsername,
+                HttpAuthPassword = httpAuthPassword,
+                ShowAuthDetails = !string.IsNullOrEmpty(httpAuthUsername),
             };
 
-            await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+            await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
 
             HttpMethod = conf.HttpMethod;
             HttpUri = conf.HttpUri;
             HttpPostContentType = conf.HttpPostContentType;
             HttpPostBody = conf.HttpPostBody;
             HttpClientDescription = conf.HttpClientDescription;
+            HttpAuthUsername = conf.HttpAuthUsername;
+            HttpAuthPassword = conf.HttpAuthPassword;
         }
     }
 
@@ -303,5 +343,14 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
         [ObservableProperty]
         private string httpClientDescription;
+
+        [ObservableProperty]
+        private string httpAuthUsername;
+
+        [ObservableProperty]
+        private string httpAuthPassword;
+
+        [ObservableProperty]
+        private bool showAuthDetails;
     }
 }

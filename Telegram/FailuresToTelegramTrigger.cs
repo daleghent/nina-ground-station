@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -26,7 +26,6 @@ using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,11 +88,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(WorkerFn);
             telegram = new TelegramCommon();
-
-            TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
         }
 
         public FailuresToTelegramTrigger(FailuresToTelegramTrigger copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -114,8 +110,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
             queueWorker.Start();
         }
 
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.Stop();
         }
 
         public void Dispose() {
@@ -123,7 +119,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -131,7 +127,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
@@ -176,7 +172,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
 
-            var message = Utilities.Utilities.ResolveTokens(TelegramFailureBodyText, item.Entity, metadata);
+            var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TelegramFailureBodyText, item.Entity, metadata);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
             Logger.Info($"{this.Name}: Sending {message}");
@@ -187,7 +183,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await telegram.SendTelegram(message, true, newCts.Token);
+                        await TelegramCommon.SendTelegram(message, false, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -211,7 +207,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(telegram.ValidateSettings());
+            var i = new List<string>(TelegramCommon.ValidateSettings());
 
             if (i != Issues) {
                 Issues = i;
@@ -228,16 +224,6 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}";
-        }
-
-        private string TelegramFailureBodyText { get; set; }
-
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(TelegramFailureBodyText):
-                    TelegramFailureBodyText = Properties.Settings.Default.TelegramFailureBodyText;
-                    break;
-            }
         }
     }
 }

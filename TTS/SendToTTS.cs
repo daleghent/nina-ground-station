@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org> and contributors
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -115,19 +115,21 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var text = Utilities.Utilities.ResolveTokens(Message, this, metadata);
 
-            await TTS.Speak(text, ct);
+            var tts = new TextToSpeech();
+            await tts.Speak(text, ct);
         }
 
         public IList<string> Issues { get; set; } = new List<string>();
 
         public bool Validate() {
             var i = new List<string>();
+            using var tts = new TextToSpeech();
 
-            if (string.IsNullOrEmpty(Message) || string.IsNullOrWhiteSpace(Message)) {
+            if (string.IsNullOrEmpty(Message)) {
                 i.Add("TTS message is missing");
             }
 
-            if (!TTS.HasVoice()) {
+            if (!tts.HasVoice()) {
                 i.Add("No Text-To-Speech voices found");
             }
 

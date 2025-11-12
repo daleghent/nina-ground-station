@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -37,19 +37,18 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToMqttTrigger : SequenceTrigger, IValidatable, IDisposable {
-        private readonly MqttCommon mqtt;
         private string topic;
         private int qos = 0;
+        private bool retain = true;
 
         private ISequenceRootContainer failureHook;
         private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
         [ImportingConstructor]
         public FailuresToMqttTrigger() {
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-            mqtt = new MqttCommon();
-            Topic = Properties.Settings.Default.MqttDefaultTopic;
-            QoS = Properties.Settings.Default.MqttDefaultFailureQoSLevel;
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(WorkerFn);
+            Topic = GroundStation.GroundStationConfig.MqttDefaultTopic;
+            QoS = GroundStation.GroundStationConfig.MqttDefaultFailureQoSLevel;
         }
 
         public FailuresToMqttTrigger(FailuresToMqttTrigger copyMe) : this() {
@@ -74,12 +73,21 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             }
         }
 
+        [JsonProperty]
+        public bool Retain {
+            get => retain;
+            set {
+                retain = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override void Initialize() {
             queueWorker.Start();
         }
 
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.Stop();
         }
 
         public void Dispose() {
@@ -87,7 +95,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -95,7 +103,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
@@ -149,8 +157,8 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 attempts = failedItem.Attempts,
                 date_local = now.ToString("o"),
                 date_utc = now.ToUniversalTime().ToString("o"),
-                date_unix = Utilities.Utilities.UnixEpoch(),
-                target_info = new List<TargetInfo>(),
+                date_unix = Utilities.Utilities.UnixEpoch(now),
+                target_info = [],
                 error_list = failedItem.Reasons,
             };
 
@@ -171,7 +179,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
                 try {
                     var newCts = new CancellationTokenSource();
                     using (token.Register(() => newCts.CancelAfter(TimeSpan.FromSeconds(Utilities.Utilities.cancelTimeout)))) {
-                        await mqtt.PublishMessage(Topic, payload, QoS, newCts.Token);
+                        await MqttCommon.PublishMessage(Topic, payload, QoS, Retain, newCts.Token);
                         break;
                     }
                 } catch (Exception ex) {
@@ -197,7 +205,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
 
         public bool Validate() {
-            var i = new List<string>(mqtt.ValidateSettings());
+            var i = new List<string>(MqttCommon.ValidateSettings());
 
             if (string.IsNullOrEmpty(Topic)) {
                 i.Add("A topic is not defined");
@@ -215,11 +223,12 @@ namespace DaleGhent.NINA.GroundStation.FailuresToMqttTrigger {
             return new FailuresToMqttTrigger(this) {
                 Topic = Topic,
                 QoS = QoS,
+                Retain = Retain,
             };
         }
 
         public override string ToString() {
-            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}";
+            return $"Category: {Category}, Item: {Name}, Topic: {Topic}, QoS: {QoS}, Retain: {Retain}";
         }
 
         private class PreviousItem {

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -18,8 +18,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
     public class HttpUtils {
 
         public static string UrlTokenEncode(byte[] input) {
-            if (input == null)
-                throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
+
             if (input.Length < 1)
                 return string.Empty;
 
@@ -46,7 +46,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             base64Chars[endPos] = (char)('0' + base64Str.Length - endPos); // Store a char at the end, to indicate how many padding chars are needed
 
             ////////////////////////////////////////////////////////
-            // Step 3: Copy in the other chars. Transform the "+" to "-", and "/" to "_"
+            // Step 4: Copy in the other chars. Transform the "+" to "-", and "/" to "_"
             for (int iter = 0; iter < endPos; iter++) {
                 char c = base64Str[iter];
 
@@ -73,12 +73,11 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         public static byte[] UrlTokenDecode(string input) {
-            if (input == null)
-                throw new ArgumentNullException(nameof(input));
+            ArgumentNullException.ThrowIfNull(input);
 
             int len = input.Length;
             if (len < 1)
-                return Array.Empty<byte>();
+                return [];
 
             ///////////////////////////////////////////////////////////////////
             // Step 1: Calculate the number of padding chars to append to this string.

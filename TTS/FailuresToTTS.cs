@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright Dale Ghent <daleg@elemental.org> and contributors
+    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -24,7 +24,6 @@ using NINA.Sequencer.Utility;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +37,6 @@ namespace DaleGhent.NINA.GroundStation.TTS {
     [Export(typeof(ISequenceTrigger))]
     [JsonObject(MemberSerialization.OptIn)]
     public class FailuresToTTS : SequenceTrigger, IValidatable, IDisposable {
-        private readonly TTS tts;
         private ISequenceRootContainer failureHook;
         private readonly BackgroundQueueWorker<SequenceEntityFailureEventArgs> queueWorker;
 
@@ -86,12 +84,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 guiderMediator, rotatorMediator, safetyMonitorMediator, switchMediator,
                 telescopeMediator, weatherDataMediator);
 
-            tts = new TTS();
-            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(1000, WorkerFn);
-
-            TTSFailureMessage = Properties.Settings.Default.TTSFailureMessage;
-
-            Properties.Settings.Default.PropertyChanged += SettingsChanged;
+            queueWorker = new BackgroundQueueWorker<SequenceEntityFailureEventArgs>(WorkerFn);
         }
 
         public FailuresToTTS(FailuresToTTS copyMe) : this(cameraMediator: copyMe.cameraMediator,
@@ -113,22 +106,12 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             };
         }
 
-        private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "TTSFailureMessage":
-                    TTSFailureMessage = Properties.Settings.Default.TTSFailureMessage;
-                    break;
-            }
-        }
-
-        private string TTSFailureMessage { get; set; }
-
         public override void Initialize() {
             queueWorker.Start();
         }
 
-        public override void Teardown() {
-            queueWorker.Stop();
+        public async override void Teardown() {
+            await queueWorker.Stop();
         }
 
         public void Dispose() {
@@ -136,7 +119,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             GC.SuppressFinalize(this);
         }
 
-        public override void AfterParentChanged() {
+        public async override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -144,7 +127,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                queueWorker.Stop();
+                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
                 // Make sure to register the event handler as "SequenceBlockInitialized" is already done
                 failureHook = root;
@@ -188,11 +171,12 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         private async Task WorkerFn(SequenceEntityFailureEventArgs item, CancellationToken token) {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
-            var text = Utilities.Utilities.ResolveTokens(TTSFailureMessage, item.Entity, metadata);
+            var text = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TTSFailureMessage, item.Entity, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
 
-            Logger.Info($"{this.Name}: Speaking \"{text}\"");
-            await TTS.Speak(text, token);
+            Logger.Info($"{Name}: Speaking \"{text}\"");
+            using var tts = new TextToSpeech();
+            await tts.Speak(text, token);
         }
 
         public override Task Execute(ISequenceContainer context, IProgress<ApplicationStatus> progress, CancellationToken ct) {
@@ -211,8 +195,9 @@ namespace DaleGhent.NINA.GroundStation.TTS {
 
         public bool Validate() {
             var i = new List<string>();
+            using var tts = new TextToSpeech();
 
-            if (!TTS.HasVoice()) {
+            if (!tts.HasVoice()) {
                 i.Add("No Text-To-Speech voices found");
             }
 
