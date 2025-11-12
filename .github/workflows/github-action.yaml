@@ -27,7 +27,7 @@ env:
   # The relative path to your manifest folder inside the manifest repository
   PLUGIN_MANIFEST_PATH: "g/Ground Station/3.0.0"
   # Should this be in the beta plugin channel?
-  PLUGIN_IS_BETA: true
+  PLUGIN_IS_BETA: false
 
 jobs:
   build-and-release:

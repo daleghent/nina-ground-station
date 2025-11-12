@@ -1,6 +1,6 @@
 ﻿# Ground Station
 
-## 3.0.0 - 2024-X-X
+## 3.0.0.117 - 2025-11-12
 * Minimum supported NINA version is now 3.2.
 * **Major change**: Plugin configuration is now per-profile instead of being single global settings that apply to all profiles. This permits you to have profile-specific settings. Your former global settings will now act as the _default_ settings for Ground Station when a new profile is created. Your pre-3.0 settings will be migrated into each profile whenever that profile is loaded.
 * **New:** Discord webhook support. Send messages and failure notifications to a channel on a Discord server via its webhook URL. The messages are formatted within an embed or as a regular message with some level of customization possible.

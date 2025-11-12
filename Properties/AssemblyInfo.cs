@@ -18,8 +18,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.0.0.116")]
-[assembly: AssemblyFileVersion("3.0.0.116")]
+[assembly: AssemblyVersion("3.0.0.117")]
+[assembly: AssemblyFileVersion("3.0.0.117")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
@@ -53,7 +53,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("Tags", "notifications,alerts,ifttt,email,pushover,mqtt")]
 
 //[Optional] A link that will show a log of all changes in between your plugin's versions
-[assembly: AssemblyMetadata("ChangelogURL", "https://github.com/daleghent/nina-ground-station/blob/gs3/CHANGELOG.md")]
+[assembly: AssemblyMetadata("ChangelogURL", "https://github.com/daleghent/nina-ground-station/blob/main/CHANGELOG.md")]
 
 //[Optional] The url to a featured logo that will be displayed in the plugin list next to the name
 [assembly: AssemblyMetadata("FeaturedImageURL", "https://daleghent.github.io/nina-plugins/assets/images/ground-station-logo1.png")]
