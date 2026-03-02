@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Webhook" Version="3.18.0" />
     <PackageReference Include="MailKit">
-      <Version>4.14.1</Version>
+      <Version>4.15.0</Version>
       <IncludeAssets></IncludeAssets>
     </PackageReference>
     <PackageReference Include="MQTTnet">
