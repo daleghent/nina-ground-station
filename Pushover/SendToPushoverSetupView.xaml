@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2024-2026 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,6 +13,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:logic="clr-namespace:NINA.Sequencer.Logic;assembly=NINA.Sequencer"
+    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Utilities"
     xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     Name="UC"
     d:DataContext="{d:DesignInstance Type=local:SendToPushover}"
@@ -37,7 +39,15 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="Title" />
+            <!--
             <TextBox
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="10,10,10,2"
+                Text="{Binding Title, UpdateSourceTrigger=LostFocus}"
+                HorizontalScrollBarVisibility="Auto" />
+            -->
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="10,10,10,2"
@@ -51,7 +61,22 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
+            <!--
             <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Height="250"
+                Margin="10,10,10,2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                AcceptsReturn="True"
+                AcceptsTab="True"
+                Text="{Binding Message, UpdateSourceTrigger=LostFocus}"
+                TextWrapping="Wrap"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto" />
+            -->
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="1"
                 Grid.Column="1"
                 Height="250"

@@ -19,6 +19,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -57,6 +58,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
+        private readonly ISymbolBroker symbolBroker;
         private IWindowService windowService;
 
         [ImportingConstructor]
@@ -70,7 +72,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -112,7 +115,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                                                             safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                             switchMediator: copyMe.switchMediator,
                                                             telescopeMediator: copyMe.telescopeMediator,
-                                                            weatherDataMediator: copyMe.weatherDataMediator) {
+                                                            weatherDataMediator: copyMe.weatherDataMediator,
+                                                            symbolBroker: copyMe.symbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -156,8 +160,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             }
         }
 
-        public static Priority[] Priorities => Enum.GetValues(typeof(Priority)).Cast<Priority>().ToArray();
-        public static NotificationSound[] NotificationSounds => Enum.GetValues(typeof(NotificationSound)).Cast<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
+        public static Priority[] Priorities => Enum.GetValues<Priority>();
+        public static NotificationSound[] NotificationSounds => Enum.GetValues<NotificationSound>().Where(p => p != NotificationSound.NotSet).ToArray();
 
         public string MessagePreview {
             get {
@@ -220,6 +224,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         public override string ToString() {
             return $"Category: {Category}, Item: {Name}, Title: {title}";
         }
+
+        public ISymbolBroker SymbolBroker => symbolBroker;
 
         public IWindowService WindowService {
             get {
