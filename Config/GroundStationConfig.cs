@@ -870,7 +870,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         public string NtfyShUser {
-            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShUser)), string.Empty);
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(NtfyShUser), string.Empty));
             set {
                 pluginOptionsAccessor.SetValueString(nameof(NtfyShUser), Security.Encrypt(value.Trim()));
                 RaisePropertyChanged();
@@ -878,7 +878,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         public string NtfyShPassword {
-            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShPassword)), string.Empty);
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(NtfyShPassword), string.Empty));
             set {
                 pluginOptionsAccessor.SetValueString(nameof(NtfyShPassword), Security.Encrypt(value.Trim()));
                 RaisePropertyChanged();
@@ -886,7 +886,7 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         public string NtfyShToken {
-            get => pluginOptionsAccessor.GetValueString(Security.Decrypt(nameof(NtfyShToken)), string.Empty);
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(NtfyShToken), string.Empty));
             set {
                 pluginOptionsAccessor.SetValueString(nameof(NtfyShToken), Security.Encrypt(value.Trim()));
                 RaisePropertyChanged();
