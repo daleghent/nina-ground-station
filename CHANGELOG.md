@@ -1,5 +1,14 @@
 ﻿# Ground Station
 
+## X.X.X - YYYY-MM-DD
+* **New:** Discord session threads (opt-in). When enabled, Discord messages are posted into a per-session thread named from a configurable template. In normal text channels a Discord bot token is used to find, reopen, create, and reconcile the session's thread; in forum and media channels the webhook's native thread support is used. Reconciliation removes duplicate seed messages and stale threads left behind by interrupted sessions, and only ever acts on seed messages and threads that Ground Station created.
+* **New:** `$$SESSIONDATE$$`, `$$SESSIONDATETIME$$`, and `$$FORMAT_SESSIONDATETIME <format>$$` message tokens. A session spans a configurable rollover time (default 16:00 local) so that an imaging night shares one session date.
+* **New:** `$$TSPROJECTNAME$$` and `$$TSTARGETNAME$$` message tokens for Target Scheduler project and target names. Substituted as plain text so names that contain `{braces}` are not re-evaluated as sequencer expressions. If Target Scheduler is not installed or is not running, both tokens resolve to `----`.
+* **New:** The **Send to Discord Webhook** instruction can bypass the session thread on a per-instruction basis ("Post directly to channel").
+* **New:** Test buttons for the Discord failure and image webhooks.
+* **New:** When a failure is sent to a Discord session thread in a text channel, that thread's starter message is marked with a leading ❌ so failed sessions are identifiable at a glance.
+* **New:** A **Delete Old Threads** button in the Discord options. Discord's own thread UI cannot tell Ground Station session threads from human or other-bot threads, cannot bulk-delete only those threads together with their parent-channel starter messages, and cannot leave direct-to-channel traffic untouched. This tool deletes only Ground Station–created session threads older than a configurable number of days, including the top-level channel messages that anchor them. Messages posted directly to the channel are kept. A progress dialog shows each thread as it is deleted, the estimated time remaining, and allows cancellation.
+
 ## 3.2.0.0 - 2026-08-10
 * Fixed Ntfy.sh credential storage issue that prevented authentication from occurring with that service.
 * The Play Sound instruction and trigger audio file processing was completely overhauled:

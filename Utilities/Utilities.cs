@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace DaleGhent.NINA.GroundStation.Utilities {
@@ -28,7 +29,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
         internal const int cancelTimeout = 10; // in seconds
 
-        internal static string ResolveTokens(string text, ISequenceEntity sequenceItem = null, IMetadata metadata = null, bool urlEncode = false) {
+        internal static string ResolveTokens(string text, ISequenceEntity sequenceItem = null, IMetadata metadata = null, bool urlEncode = false, DateTime? nowOverride = null) {
             IDeepSkyObject target = null;
             CultureInfo culture = CultureInfo.InvariantCulture;
 
@@ -40,8 +41,9 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 target = FindDsoInfo(sequenceItem.Parent);
             }
 
-            var datetime = DateTime.Now;
+            var datetime = nowOverride ?? DateTime.Now;
             var datetimeUtc = datetime.ToUniversalTime();
+            var sessionDateTime = SessionDateTime(datetime);
 
             text = !string.IsNullOrEmpty(target?.Name)
                 ? text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, target.Name))
@@ -70,9 +72,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             text = text.Replace(@"$$INSTRUCTION_SET$$",
                 string.IsNullOrEmpty(sequenceItem?.Parent?.Name) ? DoUrlEncode(urlEncode, "----") : DoUrlEncode(urlEncode, sequenceItem.Parent.Name));
 
+            text = ResolveTsTokens(text, sequenceItem, urlEncode);
+
             text = text.Replace(@"$$DATE$$", DoUrlEncode(urlEncode, datetime.ToString("d")));
             text = text.Replace(@"$$TIME$$", DoUrlEncode(urlEncode, datetime.ToString("T")));
             text = text.Replace(@"$$DATETIME$$", DoUrlEncode(urlEncode, datetime.ToString("G")));
+            text = text.Replace(@"$$SESSIONDATE$$", DoUrlEncode(urlEncode, sessionDateTime.ToString("d")));
+            text = text.Replace(@"$$SESSIONDATETIME$$", DoUrlEncode(urlEncode, sessionDateTime.ToString("G")));
 
             text = text.Replace(@"$$DATE_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("d")));
             text = text.Replace(@"$$TIME_UTC$$", DoUrlEncode(urlEncode, datetimeUtc.ToString("T")));
@@ -80,6 +86,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             text = text.Replace(@"$$UNIX_EPOCH$$", UnixEpoch(datetime).ToString());
 
             text = ParseFormattedDateTime(text, datetime, urlEncode);
+            text = ParseFormattedSessionDateTime(text, sessionDateTime, urlEncode);
 
             text = text.Replace(@"$$SYSTEM_NAME$$", DoUrlEncode(urlEncode, Environment.MachineName));
             text = text.Replace(@"$$USER_NAME$$", DoUrlEncode(urlEncode, Environment.UserName));
@@ -318,6 +325,103 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return text;
         }
 
+        private static string ResolveTsTokens(string text, ISequenceEntity sequenceItem, bool urlEncode) {
+            if (string.IsNullOrEmpty(text) ||
+                (!text.Contains(@"$$TSPROJECTNAME$$", StringComparison.Ordinal) &&
+                 !text.Contains(@"$$TSTARGETNAME$$", StringComparison.Ordinal))) {
+                return text;
+            }
+
+            TryFindTsNames(sequenceItem, out var projectName, out var targetName);
+
+            text = string.IsNullOrEmpty(projectName)
+                ? text.Replace(@"$$TSPROJECTNAME$$", DoUrlEncode(urlEncode, "----"))
+                : text.Replace(@"$$TSPROJECTNAME$$", DoUrlEncode(urlEncode, projectName));
+
+            text = string.IsNullOrEmpty(targetName)
+                ? text.Replace(@"$$TSTARGETNAME$$", DoUrlEncode(urlEncode, "----"))
+                : text.Replace(@"$$TSTARGETNAME$$", DoUrlEncode(urlEncode, targetName));
+
+            return text;
+        }
+
+        internal static bool TryFindTsNames(ISequenceEntity sequenceItem, out string projectName, out string targetName) {
+            projectName = null;
+            targetName = null;
+
+            ISequenceContainer container = sequenceItem as ISequenceContainer ?? sequenceItem?.Parent;
+            while (container != null) {
+                if (TryReadTsNames(container, out var foundProject, out var foundTarget)) {
+                    projectName ??= foundProject;
+                    targetName ??= foundTarget;
+                    if (!string.IsNullOrEmpty(projectName) && !string.IsNullOrEmpty(targetName)) {
+                        return true;
+                    }
+                }
+
+                container = container.Parent;
+            }
+
+            return !string.IsNullOrEmpty(projectName) || !string.IsNullOrEmpty(targetName);
+        }
+
+        internal static bool TryReadTsNames(object source, out string projectName, out string targetName) {
+            projectName = null;
+            targetName = null;
+            if (source == null) {
+                return false;
+            }
+
+            try {
+                var planTarget = GetMember(GetMember(source, "plan"), "PlanTarget");
+                projectName = GetMember(GetMember(planTarget, "Project"), "Name") as string;
+                targetName = GetMember(planTarget, "Name") as string;
+
+                if (string.IsNullOrEmpty(projectName) || string.IsNullOrEmpty(targetName)) {
+                    TrySplitProjectTargetDisplay(GetMember(source, "ProjectTargetDisplay") as string, out var displayProject, out var displayTarget);
+                    projectName = string.IsNullOrEmpty(projectName) ? displayProject : projectName;
+                    targetName = string.IsNullOrEmpty(targetName) ? displayTarget : targetName;
+                }
+            } catch {
+                return false;
+            }
+
+            return !string.IsNullOrEmpty(projectName) || !string.IsNullOrEmpty(targetName);
+        }
+
+        internal static bool TrySplitProjectTargetDisplay(string display, out string projectName, out string targetName) {
+            projectName = null;
+            targetName = null;
+            if (string.IsNullOrEmpty(display)) {
+                return false;
+            }
+
+            const string separator = " / ";
+            var index = display.LastIndexOf(separator, StringComparison.Ordinal);
+            if (index <= 0 || index + separator.Length >= display.Length) {
+                return false;
+            }
+
+            projectName = display.Substring(0, index);
+            targetName = display.Substring(index + separator.Length);
+            return !string.IsNullOrEmpty(projectName) && !string.IsNullOrEmpty(targetName);
+        }
+
+        private static object GetMember(object source, string name) {
+            if (source == null || string.IsNullOrEmpty(name)) {
+                return null;
+            }
+
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase;
+            var type = source.GetType();
+            var property = type.GetProperty(name, flags);
+            if (property != null) {
+                return property.GetValue(source);
+            }
+
+            return type.GetField(name, flags)?.GetValue(source);
+        }
+
         public static IDeepSkyObject FindDsoInfo(ISequenceContainer container) {
             IDeepSkyObject target = null;
             ISequenceContainer acontainer = container;
@@ -340,6 +444,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             return (long)dateTime.ToUniversalTime().Subtract(DateTime.UnixEpoch).TotalSeconds;
         }
 
+        internal static DateTime SessionDateTime(DateTime dateTime, TimeSpan? rolloverTimeOverride = null) {
+            var rolloverTime = rolloverTimeOverride
+                ?? GroundStation.GroundStationConfig?.SessionRolloverTimeSpan
+                ?? TimeSpan.FromHours(16);
+            return dateTime.TimeOfDay < rolloverTime ? dateTime.AddDays(-1) : dateTime;
+        }
+
         private static string ParseFormattedDateTime(string text, DateTime datetime, bool urlEncode) {
             string pattern = @"\${2}FORMAT_DATETIME(?<isUTC>_UTC)?\s+(?<specifier>.*?)\${2}";
 
@@ -350,6 +461,22 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                     text = dateTimeMatch.Groups["isUTC"].Success
                         ? dateRegex.Replace(text, DoUrlEncode(urlEncode, datetime.ToUniversalTime().ToString(dateTimeMatch.Groups["specifier"].Value)))
                         : dateRegex.Replace(text, DoUrlEncode(urlEncode, datetime.ToString(dateTimeMatch.Groups["specifier"].Value)));
+                } catch {
+                    text = dateRegex.Replace(text, DoUrlEncode(urlEncode, "[Invalid DateTime format]"));
+                }
+            }
+
+            return text;
+        }
+
+        private static string ParseFormattedSessionDateTime(string text, DateTime datetime, bool urlEncode) {
+            const string pattern = @"\${2}FORMAT_SESSIONDATETIME\s+(?<specifier>.*?)\${2}";
+
+            foreach (Match dateTimeMatch in Regex.Matches(text, pattern).Cast<Match>()) {
+                var dateRegex = new Regex(Regex.Escape(dateTimeMatch.Value));
+
+                try {
+                    text = dateRegex.Replace(text, DoUrlEncode(urlEncode, datetime.ToString(dateTimeMatch.Groups["specifier"].Value)));
                 } catch {
                     text = dateRegex.Replace(text, DoUrlEncode(urlEncode, "[Invalid DateTime format]"));
                 }

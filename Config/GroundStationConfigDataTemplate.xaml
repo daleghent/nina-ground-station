@@ -496,54 +496,66 @@
             </TabItem>
 
             <TabItem Name="Discord" Header="Discord">
-                <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <TextBlock Margin="0,0,0,5" VerticalAlignment="Center">
-                        <Hyperlink NavigateUri="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" RequestNavigate="Hyperlink_RequestNavigate">Discord webhook help</Hyperlink>
-                    </TextBlock>
+                <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                    <TabItem Name="Discord_General" Header="General">
+                        <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                            <TextBlock Margin="0,0,0,5" VerticalAlignment="Center">
+                                <Hyperlink NavigateUri="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" RequestNavigate="Hyperlink_RequestNavigate">Discord webhook help</Hyperlink>
+                            </TextBlock>
 
-                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>Webhook URL</TextBlock.Text>
-                            <TextBlock.ToolTip>The default webhook URL you wish to send messages to</TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            Width="400"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Text="{Binding DiscordWebhookDefaultUrl}" />
-                    </StackPanel>
+                            <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Webhook URL</TextBlock.Text>
+                                    <TextBlock.ToolTip>The default webhook URL you wish to send messages to</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DiscordWebhookDefaultUrl}" />
+                            </StackPanel>
 
-                    <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
-                        <TextBlock
-                            Width="110"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center">
-                            <TextBlock.Text>Bot name</TextBlock.Text>
-                        </TextBlock>
-                        <TextBox
-                            Width="200"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Text="{Binding DiscordWebhookDefaultBotName}" />
-                    </StackPanel>
+                            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Bot name</TextBlock.Text>
+                                </TextBlock>
+                                <TextBox
+                                    Width="200"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DiscordWebhookDefaultBotName}" />
+                            </StackPanel>
 
-                    <ninactrl:AsyncProcessButton
-                        Width="515"
-                        Height="25"
-                        Margin="0,0,0,5"
-                        HorizontalAlignment="Left"
-                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                        ButtonText="Send Test Message"
-                        Command="{Binding DiscordWebhookTestCommand}"
-                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+                            <ninactrl:AsyncProcessButton
+                                Width="515"
+                                Height="25"
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Left"
+                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                ButtonText="Send Test Message"
+                                Command="{Binding DiscordWebhookTestCommand}"
+                                LoadingImageBrush="{StaticResource PrimaryBrush}" />
 
-                    <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
+                            <TabControl Margin="0,10,0,0" TabStripPlacement="Top">
                         <TabItem Name="Discord_FailureMessage" Header="Failure Message">
                             <GroupBox Margin="0,10,0,5" Header="Failure message template">
                                 <StackPanel Orientation="Vertical">
+                                    <ninactrl:AsyncProcessButton
+                                        Width="515"
+                                        Height="25"
+                                        Margin="0,0,0,10"
+                                        HorizontalAlignment="Left"
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                        ButtonText="Send Failure Test Message"
+                                        Command="{Binding DiscordFailureWebhookTestCommand}"
+                                        LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
                                     <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
                                         <TextBlock
                                             Width="110"
@@ -595,6 +607,16 @@
 
                         <TabItem Name="Discord_ImageEvent" Header="Image Message">
                             <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                                <ninactrl:AsyncProcessButton
+                                    Width="515"
+                                    Height="25"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Left"
+                                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                    ButtonText="Send Image Test Message"
+                                    Command="{Binding DiscordImageWebhookTestCommand}"
+                                    LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
                                 <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                                     <TextBlock
                                         Width="110"
@@ -696,8 +718,163 @@
                             </StackPanel>
                         </TabItem>
 
-                    </TabControl>
-                </StackPanel>
+                            </TabControl>
+                        </StackPanel>
+                    </TabItem>
+
+                    <TabItem Name="Discord_Threads" Header="Threads">
+                        <StackPanel Margin="0,10,0,5" Orientation="Vertical">
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Session threads</TextBlock.Text>
+                                    <TextBlock.ToolTip>Post Discord messages into a per-session thread instead of directly into the channel. Off by default; existing behavior is unchanged until enabled.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding DiscordUseSessionThreads, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Post to channel</TextBlock.Text>
+                                    <TextBlock.ToolTip>Send the test message to the webhook's parent channel instead of the session thread. Same as the Send to Discord instruction's "Post directly to channel" option.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <CheckBox
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    IsChecked="{Binding DiscordTestPostToChannel, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <ninactrl:AsyncProcessButton
+                                Width="515"
+                                Height="25"
+                                Margin="0,0,0,15"
+                                HorizontalAlignment="Left"
+                                ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                ButtonText="Send Test Message"
+                                Command="{Binding DiscordThreadRoutingTestCommand}"
+                                LoadingImageBrush="{StaticResource PrimaryBrush}" />
+
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Bot token</TextBlock.Text>
+                                    <TextBlock.ToolTip>Required only when the webhook points to a normal text channel and Ground Station must create public threads for you.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DiscordBotToken, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top">
+                                    <TextBlock.Text>Bot setup</TextBlock.Text>
+                                </TextBlock>
+                                <Border
+                                    Width="400"
+                                    Padding="10"
+                                    Background="{DynamicResource SecondaryBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock FontWeight="SemiBold" Text="Bot setup for text-channel threads" />
+                                        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap">
+                                            Ground Station can manage session threads in a normal Discord text channel if you provide a bot token. Leave this blank when your webhook points to a forum or media channel.
+                                        </TextBlock>
+                                        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Text="1. Open the Discord Developer Portal and create an application." />
+                                        <TextBlock TextWrapping="Wrap" Text="2. On the Bot page, add a bot user, copy its token, and paste it here." />
+                                        <TextBlock TextWrapping="Wrap" Text="3. On that same Bot page, enable Message Content Intent so Discord returns parent-channel seed message text to the bot API." />
+                                        <TextBlock TextWrapping="Wrap" Text="4. Invite the bot to your server: on the OAuth2 page, use the URL Generator with the 'bot' scope, open the generated link, and pick your server. Then give the bot access to the parent text channel with these permissions: View Channel, Read Message History, Create Public Threads, Manage Threads, and Manage Messages." />
+                                        <TextBlock TextWrapping="Wrap" Text="5. Keep using the same webhook URL for message delivery. The webhook posts the visible messages; the bot is only used for thread lookup, creation, reopening, and cleanup. Cleanup only ever removes seed messages and threads that Ground Station itself created." />
+                                        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Text="Note: with no bot token, forum and media channels create one new thread per message; a bot token is required for a single shared session thread." />
+                                        <TextBlock Margin="0,6,0,0">
+                                            <Hyperlink NavigateUri="https://discord.com/developers/applications" RequestNavigate="Hyperlink_RequestNavigate">Open Discord Developer Portal</Hyperlink>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Thread name</TextBlock.Text>
+                                    <TextBlock.ToolTip>A template for Discord session thread names. Supports date/time tokens and $$SESSIONDATE$$ / $$SESSIONDATETIME$$.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="400"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DiscordThreadNameTemplate}" />
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Session rollover</TextBlock.Text>
+                                    <TextBlock.ToolTip>Local time of day at which a new session begins. Drives the $$SESSIONDATE$$, $$SESSIONDATETIME$$, and $$FORMAT_SESSIONDATETIME$$ tokens for all Ground Station services, and therefore the Discord session thread name. Example: 16:00 starts a new session at 4 PM.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding SessionRolloverTime}" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Width="510"
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Left"
+                                TextWrapping="Wrap"
+                                Text="Discord's thread UI cannot tell Ground Station session threads from other threads, cannot bulk-delete only those threads together with their parent-channel starter messages, and cannot leave messages posted directly to the channel untouched. Delete Old Threads removes only Ground Station–created session threads." />
+
+                            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="110"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                                    <TextBlock.Text>Thread cleanup</TextBlock.Text>
+                                    <TextBlock.ToolTip>Permanently deletes session threads that Ground Station created this many days ago or earlier, including the top-level messages that anchor them and every message inside them. Messages posted directly to the channel are kept, as is anything posted by a person. Requires a bot token.</TextBlock.ToolTip>
+                                </TextBlock>
+                                <TextBox
+                                    Width="50"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding DiscordThreadCleanupAgeDays}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="days old or older" />
+                                <ninactrl:AsyncProcessButton
+                                    Width="180"
+                                    Height="25"
+                                    Margin="15,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                    ButtonText="Delete Old Threads"
+                                    Command="{Binding DiscordDeleteOldThreadsCommand}"
+                                    LoadingImageBrush="{StaticResource PrimaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
             </TabItem>
 
             <TabItem Name="Slack" Header="Slack">
@@ -2124,6 +2301,8 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
                                 </Grid.RowDefinitions>
 
                                 <TextBlock
@@ -2238,6 +2417,36 @@
                                     Grid.Row="7"
                                     Grid.Column="1"
                                     Text="The name of the enclosing instruction set" />
+
+                                <TextBox
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TSPROJECTNAME$$" />
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    Text="Target Scheduler project name when a TS container is running. Otherwise ----" />
+
+                                <TextBox
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsReadOnly="True"
+                                    util:SelectTextOnFocus.Active="True"
+                                    Text="$$TSTARGETNAME$$" />
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Text="Target Scheduler target name when a TS container is running. Otherwise ----" />
                             </Grid>
 
                             <Grid Margin="0,10,0,0">

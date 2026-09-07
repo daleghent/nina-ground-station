@@ -122,6 +122,27 @@
             </Grid>
         </GroupBox>
 
+        <Border Margin="10,10,10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock FontWeight="SemiBold" Text="Post directly to channel" />
+                    <TextBlock TextWrapping="Wrap">
+                        Send this message straight to the webhook's parent channel and bypass the session thread. Only applies when session threads are enabled in Ground Station options.
+                    </TextBlock>
+                </StackPanel>
+
+                <CheckBox
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding BypassSessionThread, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+        </Border>
+
         <StackPanel
             Margin="10,10,10,10"
             HorizontalAlignment="Center"

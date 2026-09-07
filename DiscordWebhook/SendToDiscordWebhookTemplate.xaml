@@ -36,6 +36,13 @@
                             Text="Configure" />
                     </Button>
 
+                    <CheckBox
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,0"
+                        Content="Post to channel"
+                        IsChecked="{Binding BypassSessionThread, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ToolTip="Send this message to the parent channel instead of the session thread" />
+
                     <TextBlock
                         VerticalAlignment="Center"
                         Margin="10,0,0,0"

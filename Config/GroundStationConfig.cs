@@ -25,17 +25,21 @@ using Newtonsoft.Json;
 using NINA.Core.Enum;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Image.Interfaces;
 using NINA.Profile;
 using NINA.Profile.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using MyMessageBox = NINA.Core.MyMessageBox.MyMessageBox;
 using Settings = DaleGhent.NINA.GroundStation.Properties.Settings;
 
 namespace DaleGhent.NINA.GroundStation.Config {
@@ -603,6 +607,73 @@ namespace DaleGhent.NINA.GroundStation.Config {
             }
         }
 
+        public string DiscordBotToken {
+            get => Security.Decrypt(pluginOptionsAccessor.GetValueString(nameof(DiscordBotToken), string.Empty));
+            set {
+                var normalizedValue = value?.Trim() ?? string.Empty;
+                pluginOptionsAccessor.SetValueString(nameof(DiscordBotToken), Security.Encrypt(normalizedValue));
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool DiscordUseSessionThreads {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(DiscordUseSessionThreads), false);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(DiscordUseSessionThreads), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool DiscordTestPostToChannel {
+            get => pluginOptionsAccessor.GetValueBoolean(nameof(DiscordTestPostToChannel), false);
+            set {
+                pluginOptionsAccessor.SetValueBoolean(nameof(DiscordTestPostToChannel), value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string DiscordThreadNameTemplate {
+            get => pluginOptionsAccessor.GetValueString(nameof(DiscordThreadNameTemplate), "$$FORMAT_SESSIONDATETIME yyyy-MM-dd$$");
+            set {
+                var template = string.IsNullOrWhiteSpace(value) ? "$$FORMAT_SESSIONDATETIME yyyy-MM-dd$$" : value.Trim();
+                pluginOptionsAccessor.SetValueString(nameof(DiscordThreadNameTemplate), template);
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SessionRolloverTime {
+            get => pluginOptionsAccessor.GetValueString(nameof(SessionRolloverTime), "16:00");
+            set {
+                if (!TimeSpan.TryParse(value, out var parsed)) {
+                    parsed = TimeSpan.FromHours(16);
+                }
+
+                pluginOptionsAccessor.SetValueString(nameof(SessionRolloverTime), parsed.ToString(@"hh\:mm"));
+                RaisePropertyChanged();
+            }
+        }
+
+        public TimeSpan SessionRolloverTimeSpan {
+            get {
+                if (!TimeSpan.TryParse(SessionRolloverTime, out var parsed)) {
+                    parsed = TimeSpan.FromHours(16);
+                }
+
+                return parsed;
+            }
+        }
+
+        public int DiscordThreadCleanupAgeDays {
+            get => pluginOptionsAccessor.GetValueInt32(nameof(DiscordThreadCleanupAgeDays), 30);
+            set {
+                if (value < 1) {
+                    value = 1; // Cleanup may only ever target threads at least one day old
+                }
+                pluginOptionsAccessor.SetValueInt32(nameof(DiscordThreadCleanupAgeDays), value);
+                RaisePropertyChanged();
+            }
+        }
+
         public string DiscordWebhookFailureTitle {
             get => pluginOptionsAccessor.GetValueString(nameof(DiscordWebhookFailureTitle), Settings.Default.DiscordWebhookFailureTitle);
             set {
@@ -1118,25 +1189,156 @@ namespace DaleGhent.NINA.GroundStation.Config {
         }
 
         [RelayCommand]
-        private static async Task<bool> DiscordWebhookTest(object arg) {
+        private async Task<bool> DiscordWebhookTest(object arg) {
+            return await SendDiscordWebhookTest(bypassSessionThread: false);
+        }
+
+        [RelayCommand]
+        private async Task<bool> DiscordThreadRoutingTest(object arg) {
+            return await SendDiscordWebhookTest(bypassSessionThread: DiscordTestPostToChannel);
+        }
+
+        private static async Task<bool> SendDiscordWebhookTest(bool bypassSessionThread) {
             var embed = new EmbedBuilder() {
-                Title = "Test message title",
-                Description = "This is a test message description",
+                Title = bypassSessionThread ? "Channel test message" : "Test message title",
+                Description = bypassSessionThread
+                    ? "This test was posted directly to the parent channel, not the session thread."
+                    : "This is a test message description",
             }.Build();
 
             var embeds = new List<Embed>() { embed };
 
             try {
                 var send = new DiscordWebhook.DiscordWebhookCommon();
-                await send.SendDiscordWebhook("A test message:", embeds);
+                await send.SendDiscordWebhook(
+                    bypassSessionThread ? "A channel test message:" : "A test message:",
+                    embeds,
+                    bypassSessionThread: bypassSessionThread);
+            } catch (DiscordWebhook.DiscordApiException) {
+                return false;
             } catch (Exception ex) {
                 Notification.ShowExternalError($"Failed to send message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
                 return false;
             }
 
+            Notification.ShowSuccess(bypassSessionThread
+                ? "Discord webhook message sent to the parent channel"
+                : "Discord webhook message sent");
             return true;
         }
 
+        [RelayCommand]
+        private static async Task<bool> DiscordFailureWebhookTest(object arg) {
+            var edgeColor = GroundStation.GroundStationConfig.DiscordFailureMessageEdgeColor;
+            var embed = new EmbedBuilder() {
+                Title = "Failure test message",
+                Description = "This is a Discord failure test message.",
+                Color = new Discord.Color(edgeColor.R, edgeColor.G, edgeColor.B),
+            }.Build();
+
+            var embeds = new List<Embed>() { embed };
+
+            try {
+                var send = new DiscordWebhook.DiscordWebhookCommon();
+                await send.SendDiscordWebhook("A failure test message:", embeds, isFailure: true);
+            } catch (DiscordWebhook.DiscordApiException) {
+                return false;
+            } catch (Exception ex) {
+                Notification.ShowExternalError($"Failed to send failure test message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
+                return false;
+            }
+
+            Notification.ShowSuccess("Discord failure webhook message sent");
+            return true;
+        }
+
+        [RelayCommand]
+        private static async Task<bool> DiscordImageWebhookTest(object arg) {
+            var imageData = CreateDiscordTestImageData();
+            var fileName = $"ground-station-discord-test.{imageData.ImageFileExtension}";
+            var edgeColor = GroundStation.GroundStationConfig.DiscordImageEdgeColor;
+
+            var embed = new EmbedBuilder() {
+                Title = "Ground Station image test",
+                Description = "This is a Discord image test message.",
+                Color = new Discord.Color(edgeColor.R, edgeColor.G, edgeColor.B),
+                Author = new EmbedAuthorBuilder() {
+                    Name = GroundStation.GroundStationConfig.DiscordImagePostTitle,
+                },
+                Timestamp = DateTimeOffset.Now,
+            };
+
+            embed.WithImageUrl($"attachment://{fileName}");
+
+            var embeds = new List<Embed>() { embed.Build() };
+
+            using (imageData.Bitmap) {
+                try {
+                    var send = new DiscordWebhook.DiscordWebhookCommon();
+                    await send.SendDiscordImage(imageData, fileName, embeds);
+                } catch (DiscordWebhook.DiscordApiException) {
+                    return false;
+                } catch (Exception ex) {
+                    Notification.ShowExternalError($"Failed to send image test message to Discord Webhook:{Environment.NewLine}{ex.Message}", "Discord Webhook Error");
+                    return false;
+                }
+            }
+
+            Notification.ShowSuccess("Discord image webhook message sent");
+            return true;
+        }
+
+        [RelayCommand]
+        private static async Task<bool> DiscordDeleteOldThreads(object arg) {
+            var minimumAgeDays = GroundStation.GroundStationConfig.DiscordThreadCleanupAgeDays;
+            var confirmation = MyMessageBox.Show(
+                $"This permanently deletes every Discord session thread that Ground Station created {minimumAgeDays} or more days ago, including all of the messages inside those threads. Messages posted directly to the channel are kept.{Environment.NewLine}{Environment.NewLine}Delete the old threads now?",
+                "Delete old Discord session threads",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxResult.No);
+
+            if (confirmation != System.Windows.MessageBoxResult.Yes) {
+                return false;
+            }
+
+            using var vm = new DiscordWebhook.DiscordThreadCleanupVM();
+            var dialog = new DiscordWebhook.DiscordThreadCleanupDialog() {
+                DataContext = vm,
+                Owner = System.Windows.Application.Current?.MainWindow,
+            };
+
+            // Progress<T> is created on the UI thread, so reports marshal back to it automatically.
+            var progress = new Progress<DiscordWebhook.ThreadCleanupProgress>(vm.ReportProgress);
+            var cleanupTask = RunCleanup();
+
+            // The modal dialog pumps the dispatcher, so progress and completion updates
+            // keep flowing to the window while it is open.
+            dialog.ShowDialog();
+            return await cleanupTask;
+
+            async Task<bool> RunCleanup() {
+                try {
+                    var cleanup = new DiscordWebhook.DiscordThreadCleanup();
+                    var deletedThreadCount = await Task.Run(() => cleanup.DeleteOldSessionThreads(minimumAgeDays, progress, vm.CancellationToken));
+                    vm.Complete(null);
+                    Notification.ShowSuccess(deletedThreadCount == 0
+                        ? "No Discord session threads were old enough to delete"
+                        : $"Deleted {deletedThreadCount} old Discord session thread{(deletedThreadCount == 1 ? string.Empty : "s")}");
+                    return true;
+                } catch (OperationCanceledException) {
+                    vm.Complete("Canceled.");
+                    return false;
+                } catch (DiscordWebhook.DiscordApiException ex) {
+                    // The Discord API layer has already shown the error notification.
+                    vm.Complete($"Failed: {ex.Message}");
+                    return false;
+                } catch (Exception ex) {
+                    vm.Complete($"Failed: {ex.Message}");
+                    Notification.ShowExternalError($"Failed to delete old Discord session threads:{Environment.NewLine}{ex.Message}", "Discord Error");
+                    return false;
+                }
+            }
+        }
 
         [RelayCommand]
         private async Task<bool> PlaySoundTest(object arg) {
@@ -1248,6 +1450,50 @@ namespace DaleGhent.NINA.GroundStation.Config {
 
         private static string DefaultImageTypes() {
             return string.Join(',', [ImageTypesEnum.SNAPSHOT.ToString(), ImageTypesEnum.LIGHT.ToString()]);
+        }
+
+        private static ImageData CreateDiscordTestImageData() {
+            const int width = 640;
+            const int height = 360;
+            const int bytesPerPixel = 4;
+            var stride = width * bytesPerPixel;
+            var pixels = new byte[height * stride];
+
+            for (var y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    var offset = y * stride + (x * bytesPerPixel);
+
+                    var blue = (byte)(32 + ((x * 160) / Math.Max(1, width - 1)));
+                    var green = (byte)(24 + ((y * 120) / Math.Max(1, height - 1)));
+                    var red = (byte)(48 + (((x + y) * 96) / Math.Max(1, width + height - 2)));
+
+                    if ((x / 24 + y / 24) % 2 == 0) {
+                        blue = (byte)Math.Min(255, blue + 18);
+                        green = (byte)Math.Min(255, green + 10);
+                    }
+
+                    pixels[offset] = blue;
+                    pixels[offset + 1] = green;
+                    pixels[offset + 2] = red;
+                    pixels[offset + 3] = 255;
+                }
+            }
+
+            var bitmapSource = BitmapSource.Create(width, height, 96, 96, PixelFormats.Bgra32, null, pixels, stride);
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+            var stream = new MemoryStream();
+            encoder.Save(stream);
+            stream.Position = 0;
+
+            return new ImageData() {
+                Bitmap = stream,
+                ImageFormat = ImageFormatEnum.PNG,
+                ImageMimeType = "image/png",
+                ImageFileExtension = "png",
+                ImagePath = "Ground Station Discord Image Test.png",
+            };
         }
 
         private void ProfileService_ProfileChanged(object sender, EventArgs e) {

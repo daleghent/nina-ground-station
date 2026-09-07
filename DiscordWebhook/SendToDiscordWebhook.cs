@@ -41,6 +41,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         private string embedTitle = string.Empty;
         private string embedText = string.Empty;
         private System.Windows.Media.Color embedEdgeColor;
+        private bool bypassSessionThread = false;
         private bool showEmbed = false;
 
         private readonly ICameraMediator cameraMediator;
@@ -150,6 +151,15 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             }
         }
 
+        [JsonProperty]
+        public bool BypassSessionThread {
+            get => bypassSessionThread;
+            set {
+                bypassSessionThread = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool ShowEmbed {
             get => showEmbed;
             set {
@@ -190,9 +200,9 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(embedText, this, metadata));
                 var embeds = new List<Embed>() { embed.Build() };
 
-                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, embeds);
+                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, embeds, bypassSessionThread: BypassSessionThread);
             } else {
-                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage);
+                await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, bypassSessionThread: BypassSessionThread);
             }
         }
 
@@ -219,6 +229,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 EmbedTitle = EmbedTitle,
                 EmbedText = EmbedText,
                 EmbedEdgeColor = EmbedEdgeColor,
+                BypassSessionThread = BypassSessionThread,
             };
         }
 
@@ -243,6 +254,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 EmbedTitle = embedTitle,
                 EmbedText = embedText,
                 EmbedEdgeColor = embedEdgeColor,
+                BypassSessionThread = bypassSessionThread,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -251,6 +263,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             EmbedTitle = conf.EmbedTitle;
             EmbedText = conf.EmbedText;
             EmbedEdgeColor = conf.EmbedEdgeColor;
+            BypassSessionThread = conf.BypassSessionThread;
         }
     }
 
@@ -266,5 +279,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
         [ObservableProperty]
         private System.Windows.Media.Color embedEdgeColor;
+
+        [ObservableProperty]
+        private bool bypassSessionThread;
     }
 }
