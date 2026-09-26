@@ -18,8 +18,8 @@ using System.Runtime.InteropServices;
 
 // [MANDATORY] The assembly versioning
 //Should be incremented for each new release build of a plugin
-[assembly: AssemblyVersion("3.3.0.100")]
-[assembly: AssemblyFileVersion("3.3.0.100")]
+[assembly: AssemblyVersion("3.3.0.1058")]
+[assembly: AssemblyFileVersion("3.3.0.1058")]
 
 // [MANDATORY] The name of your plugin
 [assembly: AssemblyTitle("Ground Station")]
@@ -86,7 +86,7 @@ The provided instructions and triggers can be broken down in to two general cate
 # Audio service #
 
 * TTS - Annunciate a message using text-to-speech
-* Play Sound - Plays a sound file (WAV, MP3, AIFF)
+* Play Sound - Plays a sound file (WAV, MP3, AIFF, FLAC, OGG, WMA, AAC, M4A, M4V)
 
 Information about your session or any failures may be inserted into the messages by the use of tokens. These tokens are described on the **Message Token Help** tab.
 

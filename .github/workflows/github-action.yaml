@@ -59,7 +59,14 @@ jobs:
           Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/${{ env.PLUGIN_NAME }}/BouncyCastle.Cryptography.dll" -Force
           Copy-Item "bin/Release/Telegram.Bot.dll" "packages/${{ env.PLUGIN_NAME }}/Telegram.Bot.dll" -Force
           Copy-Item "bin/Release/MQTTnet.dll" "packages/${{ env.PLUGIN_NAME }}/MQTTnet.dll" -Force
-          Copy-Item "bin/Release/NetCoreAudio.dll" "packages/${{ env.PLUGIN_NAME }}/NetCoreAudio.dll" -Force
+          Copy-Item "bin/Release/NAudio.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.dll" -Force
+          Copy-Item "bin/Release/NAudio.Asio.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.Asio.dll" -Force
+          Copy-Item "bin/Release/NAudio.Core.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.Core.dll" -Force
+          Copy-Item "bin/Release/NAudio.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.dll" -Force
+          Copy-Item "bin/Release/NAudio.Midi.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.Midi.dll" -Force
+          Copy-Item "bin/Release/NAudio.Wasapi.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.Wasapi.dll" -Force
+          Copy-Item "bin/Release/NAudio.WinForms.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.WinForms.dll" -Force
+          Copy-Item "bin/Release/NAudio.WinMM.dll" "packages/${{ env.PLUGIN_NAME }}/NAudio.WinMM.dll" -Force
           Copy-Item "bin/Release/Discord.Net.Core.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Core.dll" -Force
           Copy-Item "bin/Release/Discord.Net.Rest.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Rest.dll" -Force
           Copy-Item "bin/Release/Discord.Net.Webhook.dll" "packages/${{ env.PLUGIN_NAME }}/Discord.Net.Webhook.dll" -Force

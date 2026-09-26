@@ -18,6 +18,7 @@ using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading;
@@ -31,7 +32,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
     [ExportMetadata("Category", "Ground Station")]
     [Export(typeof(ISequenceItem))]
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class PlaySound : SequenceItem, IValidatable {
+    public partial class PlaySound : SequenceItem, IValidatable, INotifyPropertyChanged {
         private string soundFile = string.Empty;
         private bool waitUntilFinished = true;
 
@@ -44,6 +45,7 @@ namespace DaleGhent.NINA.GroundStation.PlaySound {
 
         public PlaySound(PlaySound copyMe) : this() {
             CopyMetaData(copyMe);
+            SoundFile = GroundStation.GroundStationConfig.PlaySoundDefaultFile;
         }
 
         public override object Clone() {

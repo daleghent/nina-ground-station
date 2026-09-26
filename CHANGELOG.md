@@ -1,8 +1,15 @@
 ﻿# Ground Station
 
+## 3.2.0.0 - 2026-08-10
+* Fixed Ntfy.sh credential storage issue that prevented authentication from occurring with that service.
+* The Play Sound instruction and trigger audio file processing was completely overhauled:
+  - In addition to the existing WAV, AIFF, and MP3 support, the following audio file formats are now supported: FLAC, OGG, WMA, AAC, and M4A/M4V.
+  - The Test buttons for the default audio files on the Sounds configuration tab can now cancel test playback if pressed while the audio is playing.
+  - Users should no longer experience occasional file permissions issues when sound files are played.
+
 ## 3.1.0.117 - 2026-07-30
 * Addressed rare case where a semaphore race would prevent a failure message from being sent
-* Added the abilitt to set the MQTT retention flag for both regular and failure/LW&T messages
+* Added the ability to set the MQTT retention flag for both regular and failure/LW&T messages
 
 ## 3.0.0.117 - 2025-11-12
 * Minimum supported NINA version is now 3.2.

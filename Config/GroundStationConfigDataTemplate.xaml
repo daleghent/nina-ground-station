@@ -12,6 +12,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Config"
     xmlns:util="clr-namespace:DaleGhent.NINA.GroundStation.Utilities"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:ntfysh="clr-namespace:DaleGhent.NINA.GroundStation.NtfySh"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
@@ -1757,6 +1758,7 @@
 
                         <Button
                             Width="25"
+                            Height="25"
                             Margin="5,3,0,3"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -1766,16 +1768,20 @@
                             </Button.Content>
                         </Button>
 
-                        <Button
-                            Width="35"
+                        <ninactrl:CancellableButton
+                            Width="50"
+                            Height="25"
                             Margin="5,3,0,3"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Command="{Binding PlaySoundTestCommand}">
-                            <Button.Content>
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
-                            </Button.Content>
-                        </Button>
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ButtonText="Test"
+                            Command="{Binding PlaySoundTestCommand}"
+                            CancelCommand="{Binding StopSoundTestCommand}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelToolTip="{ns:Loc LblCancel}">
+                        </ninactrl:CancellableButton>
                     </StackPanel>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -1798,6 +1804,7 @@
 
                         <Button
                             Width="25"
+                            Height="25"
                             Margin="5,3,0,3"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -1807,16 +1814,20 @@
                             </Button.Content>
                         </Button>
 
-                        <Button
-                            Width="35"
+                        <ninactrl:CancellableButton
+                            Width="50"
+                            Height="25"
                             Margin="5,3,0,3"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Command="{Binding PlayFailureSoundTestCommand}">
-                            <Button.Content>
-                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="Test" />
-                            </Button.Content>
-                        </Button>
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ButtonText="Test"
+                            Command="{Binding PlayFailureSoundTestCommand}"
+                            CancelCommand="{Binding StopFailureSoundTestCommand}"
+                            CancelButtonImage="{StaticResource CancelSVG}"
+                            CancelToolTip="{ns:Loc LblCancel}">
+                        </ninactrl:CancellableButton>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -2287,7 +2298,7 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
-                                    <!--  51  -->
+                                   <!--  51  -->
                                 </Grid.RowDefinitions>
 
                                 <TextBlock
