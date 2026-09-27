@@ -19,6 +19,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -70,7 +71,8 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -84,6 +86,7 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -107,7 +110,8 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                                                                     safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                                     switchMediator: copyMe.switchMediator,
                                                                     telescopeMediator: copyMe.telescopeMediator,
-                                                                    weatherDataMediator: copyMe.weatherDataMediator) {
+                                                                    weatherDataMediator: copyMe.weatherDataMediator,
+                                                                    symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -161,9 +165,9 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var dict = new Dictionary<string, string> {
-                { "value1", Utilities.Utilities.ResolveTokens(Value1, this, metadata) },
-                { "value2", Utilities.Utilities.ResolveTokens(Value2, this, metadata) },
-                { "value3", Utilities.Utilities.ResolveTokens(Value3, this, metadata) }
+                { "value1", Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Value1, this, metadata), SymbolBroker, this) },
+                { "value2", Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Value2, this, metadata), SymbolBroker, this) },
+                { "value3", Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Value3, this, metadata), SymbolBroker, this) }
             };
 
             await IftttCommon.SendIftttWebhook(JsonConvert.SerializeObject(dict), EventName, ct);
@@ -216,6 +220,8 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
                 Value1 = this.Value1,
                 Value2 = this.Value2,
                 Value3 = this.Value3,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -239,5 +245,11 @@ namespace DaleGhent.NINA.GroundStation.SendToIftttWebhook {
 
         [ObservableProperty]
         private string value3;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }
