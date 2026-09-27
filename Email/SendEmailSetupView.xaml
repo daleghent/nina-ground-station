@@ -9,6 +9,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToEmail"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -18,17 +19,22 @@
     d:DataContext="{d:DesignInstance Type=local:SendToEmail}"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" MinWidth="600">
-        <Grid>
+    <Grid MinWidth="600">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"  />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Label
@@ -38,12 +44,17 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="Recipient(s)" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="10,10,10,2"
-                Text="{Binding Recipient, UpdateSourceTrigger=LostFocus}"
-                HorizontalScrollBarVisibility="Auto" />
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                HorizontalScrollBarVisibility="Auto"
+                SequenceContext="{Binding SequenceContext}"
+                SymbolBroker="{Binding SymbolBroker}"
+                TextWrapping="NoWrap"
+                Text="{Binding Recipient, UpdateSourceTrigger=LostFocus}" />
 
             <Label
                 Grid.Row="1"
@@ -52,12 +63,17 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="Subject" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="10,10,10,2"
-                Text="{Binding Subject, UpdateSourceTrigger=LostFocus}"
-                HorizontalScrollBarVisibility="Auto" />
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                HorizontalScrollBarVisibility="Auto"
+                SequenceContext="{Binding SequenceContext}"
+                SymbolBroker="{Binding SymbolBroker}"
+                TextWrapping="NoWrap"
+                Text="{Binding Subject, UpdateSourceTrigger=LostFocus}" />
 
             <Label
                 Grid.Row="2"
@@ -66,22 +82,25 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="2"
                 Grid.Column="1"
-                Height="250"
+                MinHeight="250"
                 Margin="10,10,10,2"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
+                VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 AcceptsTab="True"
+                HorizontalScrollBarVisibility="Auto"
+                SequenceContext="{Binding SequenceContext}"
+                SymbolBroker="{Binding SymbolBroker}"
                 Text="{Binding Body, UpdateSourceTrigger=LostFocus}"
                 TextWrapping="Wrap"
-                HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto" />
         </Grid>
 
         <StackPanel
+            Grid.Row="1"
             Margin="10,10,10,10"
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom"
@@ -101,5 +120,5 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

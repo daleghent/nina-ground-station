@@ -20,6 +20,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -69,7 +70,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                         ISafetyMonitorMediator safetyMonitorMediator,
                         ISwitchMediator switchMediator,
                         ITelescopeMediator telescopeMediator,
-                        IWeatherDataMediator weatherDataMediator) {
+                        IWeatherDataMediator weatherDataMediator,
+                        ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -83,6 +85,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -108,7 +111,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                                                     safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                     switchMediator: copyMe.switchMediator,
                                                     telescopeMediator: copyMe.telescopeMediator,
-                                                    weatherDataMediator: copyMe.weatherDataMediator) {
+                                                    weatherDataMediator: copyMe.weatherDataMediator,
+                                                    symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -166,10 +170,11 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 }
 
                 if (!string.IsNullOrEmpty(subject)) {
-                    var count = subject.Length > mesgPreviewLen ? mesgPreviewLen : subject.Length;
-                    text += $"; Subject: {subject[..count]}";
+                    var previewSubject = Utilities.ExpressionUtilities.Expand(subject, SymbolBroker, this);
+                    var count = previewSubject.Length > mesgPreviewLen ? mesgPreviewLen : previewSubject.Length;
+                    text += $"; Subject: {previewSubject[..count]}";
 
-                    if (subject.Length > mesgPreviewLen) {
+                    if (previewSubject.Length > mesgPreviewLen) {
                         text += "...";
                     }
                 } else {
@@ -184,8 +189,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(GroundStation.GroundStationConfig.SmtpFromAddress));
             message.To.AddRange(InternetAddressList.Parse(Recipient));
-            message.Subject = Utilities.Utilities.ResolveTokens(Subject, this, metadata);
-            message.Body = new TextPart("plain") { Text = Utilities.Utilities.ResolveTokens(Body, this, metadata) };
+            message.Subject = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Subject, this, metadata), SymbolBroker, this);
+            message.Body = new TextPart("plain") { Text = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Body, this, metadata), SymbolBroker, this) };
 
             await EmailCommon.SendEmail(message, ct);
         }
@@ -247,6 +252,8 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 Recipient = this.Recipient,
                 Subject = this.Subject,
                 Body = this.Body,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -266,5 +273,11 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
 
         [ObservableProperty]
         private string body;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }
