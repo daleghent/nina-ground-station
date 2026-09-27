@@ -15,7 +15,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
-    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
+    xmlns:gslogic="clr-namespace:DaleGhent.NINA.GroundStation.Controls"
     d:DataContext="{d:DesignInstance Type=local:HttpClientSetup}"
     Name="UC"
     d:DesignHeight="400"

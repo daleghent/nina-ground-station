@@ -14,7 +14,7 @@
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
     xmlns:logic="clr-namespace:NINA.Sequencer.Logic;assembly=NINA.Sequencer"
-    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
+    xmlns:gslogic="clr-namespace:DaleGhent.NINA.GroundStation.Controls"
     xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     Name="UC"
     d:DataContext="{d:DesignInstance Type=local:SendToPushover}"

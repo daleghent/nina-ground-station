@@ -3,17 +3,16 @@
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/
--->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/-->
 <ResourceDictionary
     x:Class="DaleGhent.NINA.GroundStation.HTTP.HttpClientTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.HTTP"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
-    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
-    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary">
     <localconverters:EmptyStringToNoDescription x:Key="EmptyStringToNoDescription" />
     <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
@@ -25,23 +24,21 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <Button
-                        VerticalAlignment="Center"
-                        Command="{Binding OpenConfigurationWindowCommand}">
+                    <Button VerticalAlignment="Center" Command="{Binding OpenConfigurationWindowCommand}">
                         <TextBlock
                             Margin="5,2,5,2"
-                            VerticalAlignment="Center"
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Text="Parameters" />
                     </Button>
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
-                        TextWrapping="Wrap"
+                        VerticalAlignment="Center"
                         FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
                         Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToNoDescription}}"
-                        ToolTip="{Binding HttpClientInstructionToolTip}"/>
+                        TextWrapping="Wrap"
+                        ToolTip="{Binding HttpClientInstructionToolTip}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
@@ -53,11 +50,11 @@
                 <TextBlock VerticalAlignment="Center" Text="Send HTTP Request" />
 
                 <TextBlock
-                    VerticalAlignment="Center"
                     Margin="5,0,0,0"
-                    TextWrapping="NoWrap"
+                    VerticalAlignment="Center"
                     FontStyle="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                    Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToNoDescription}}" />
+                    Text="{Binding HttpClientDescription, Converter={StaticResource EmptyStringToNoDescription}}"
+                    TextWrapping="NoWrap" />
             </StackPanel>
         </mini:MiniSequenceItem>
     </DataTemplate>

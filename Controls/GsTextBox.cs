@@ -13,7 +13,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DaleGhent.GroundStation.Controls {
+namespace DaleGhent.NINA.GroundStation.Controls {
 
     /// <summary>
     /// A <see cref="TextBox"/> that does not let its content dictate its desired width when it is in

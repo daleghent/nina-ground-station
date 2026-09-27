@@ -22,7 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace DaleGhent.GroundStation.Controls {
+namespace DaleGhent.NINA.GroundStation.Controls {
     public partial class GsExprTextBoxControl : UserControl {
         public GsExprTextBoxControl() {
             InitializeComponent();
