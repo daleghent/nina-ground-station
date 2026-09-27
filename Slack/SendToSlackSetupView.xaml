@@ -9,6 +9,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Slack"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -17,7 +18,7 @@
     d:DataContext="{d:DesignInstance Type=local:SendToSlack}"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" MinWidth="600">
+    <StackPanel MinWidth="600" Orientation="Vertical">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -26,7 +27,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"  />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Label
@@ -41,8 +42,8 @@
                 Grid.Column="1"
                 MinWidth="100"
                 Margin="10,10,10,2"
-                IsSynchronizedWithCurrentItem="True"
                 DisplayMemberPath="Name"
+                IsSynchronizedWithCurrentItem="True"
                 ItemsSource="{Binding Channels}"
                 SelectedValue="{Binding Channel}" />
 
@@ -53,18 +54,20 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="1"
                 Grid.Column="1"
-                Height="250"
+                MinHeight="250"
                 Margin="10,10,10,2"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
+                VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 AcceptsTab="True"
-                Text="{Binding Message, UpdateSourceTrigger=LostFocus}"
-                TextWrapping="Wrap"
                 HorizontalScrollBarVisibility="Auto"
+                SequenceContext="{Binding SequenceContext}"
+                SymbolBroker="{Binding SymbolBroker}"
+                Text="{Binding Message}"
+                TextWrapping="Wrap"
                 VerticalScrollBarVisibility="Auto" />
         </Grid>
         <StackPanel
