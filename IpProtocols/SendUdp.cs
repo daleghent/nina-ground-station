@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -77,7 +78,8 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -90,6 +92,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator, domeMediator,
                 filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -112,7 +115,8 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                                                 safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                 switchMediator: copyMe.switchMediator,
                                                 telescopeMediator: copyMe.telescopeMediator,
-                                                weatherDataMediator: copyMe.weatherDataMediator) {
+                                                weatherDataMediator: copyMe.weatherDataMediator,
+                                                symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -228,7 +232,7 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                 byte[] sendbuf;
 
                 if (payloadType == (short)IpCommon.PayloadType.ASCII) {
-                    var payload = Utilities.Utilities.ResolveTokens(Payload, this, metadata);
+                    var payload = Utilities.ExpressionUtilities.ExpandWithEscapes(Utilities.Utilities.ResolveTokens(Payload, this, metadata), SymbolBroker, this);
 
                     if (lineTermination == (short)IpCommon.LineTermination.CR) {
                         payload = payload.Replace(Environment.NewLine, "\r");
@@ -389,6 +393,8 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
                 Payload = payload,
                 PayloadType = payloadType,
                 LineTermination = lineTermination,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -425,5 +431,11 @@ namespace DaleGhent.NINA.GroundStation.IpProtocols {
 
         [ObservableProperty]
         private LineTermination[] lineTerminations = SendUdp.LineTerminations;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }
