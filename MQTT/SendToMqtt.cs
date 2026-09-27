@@ -19,6 +19,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -68,7 +69,8 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -82,6 +84,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -107,7 +110,8 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                                                     safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                     switchMediator: copyMe.switchMediator,
                                                     telescopeMediator: copyMe.telescopeMediator,
-                                                    weatherDataMediator: copyMe.weatherDataMediator) {
+                                                    weatherDataMediator: copyMe.weatherDataMediator,
+                                                    symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -162,10 +166,11 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 byte mesgPreviewLen = 50;
 
                 if (!string.IsNullOrEmpty(payload)) {
-                    var count = payload.Length > mesgPreviewLen ? mesgPreviewLen : payload.Length;
-                    text = payload[..count];
+                    var previewPayload = Utilities.ExpressionUtilities.ExpandWithEscapes(payload, SymbolBroker, this);
+                    var count = previewPayload.Length > mesgPreviewLen ? mesgPreviewLen : previewPayload.Length;
+                    text = previewPayload[..count];
 
-                    if (payload.Length > mesgPreviewLen) {
+                    if (previewPayload.Length > mesgPreviewLen) {
                         text += "...";
                     }
                 }
@@ -175,10 +180,11 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var payload = Utilities.Utilities.ResolveTokens(Payload, this, metadata);
+            var payload = Utilities.ExpressionUtilities.ExpandWithEscapes(Utilities.Utilities.ResolveTokens(Payload, this, metadata), SymbolBroker, this);
+            var topic = Utilities.ExpressionUtilities.Expand(Topic, SymbolBroker, this);
 
             Logger.Trace($"{this}: {payload}");
-            await MqttCommon.PublishMessage(Topic, payload, QoS, Retain, ct);
+            await MqttCommon.PublishMessage(topic, payload, QoS, Retain, ct);
         }
 
         public IList<string> Issues { get; set; } = new ObservableCollection<string>();
@@ -227,7 +233,9 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 Topic = this.Topic,
                 Payload = this.Payload,
                 QoS = this.QoS,
-                Retain = this.Retain
+                Retain = this.Retain,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -254,6 +262,12 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
 
         [ObservableProperty]
         private IList<string> qoSLevels = MqttCommon.QoSLevels;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 
 }
