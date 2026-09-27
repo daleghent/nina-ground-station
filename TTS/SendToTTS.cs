@@ -14,6 +14,7 @@ using DaleGhent.NINA.GroundStation.MetadataClient;
 using Newtonsoft.Json;
 using NINA.Core.Model;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -60,7 +61,8 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                         ISafetyMonitorMediator safetyMonitorMediator,
                         ISwitchMediator switchMediator,
                         ITelescopeMediator telescopeMediator,
-                        IWeatherDataMediator weatherDataMediator) {
+                        IWeatherDataMediator weatherDataMediator,
+                        ISymbolBroker symbolBroker) {
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -73,6 +75,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -93,7 +96,8 @@ namespace DaleGhent.NINA.GroundStation.TTS {
                                                 safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                 switchMediator: copyMe.switchMediator,
                                                 telescopeMediator: copyMe.telescopeMediator,
-                                                weatherDataMediator: copyMe.weatherDataMediator) {
+                                                weatherDataMediator: copyMe.weatherDataMediator,
+                                                symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -113,7 +117,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var text = Utilities.Utilities.ResolveTokens(Message, this, metadata);
+            var text = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Message, this, metadata), SymbolBroker, this);
 
             var tts = new TextToSpeech();
             await tts.Speak(text, ct);
