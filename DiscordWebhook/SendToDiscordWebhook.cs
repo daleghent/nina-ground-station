@@ -19,6 +19,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility.WindowService;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -70,7 +71,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                         ISafetyMonitorMediator safetyMonitorMediator,
                         ISwitchMediator switchMediator,
                         ITelescopeMediator telescopeMediator,
-                        IWeatherDataMediator weatherDataMediator) {
+                        IWeatherDataMediator weatherDataMediator,
+                        ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -84,6 +86,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator, domeMediator, filterWheelMediator,
                 flatDeviceMediator, focuserMediator, guiderMediator, rotatorMediator,
@@ -106,7 +109,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                                                     safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                     switchMediator: copyMe.switchMediator,
                                                     telescopeMediator: copyMe.telescopeMediator,
-                                                    weatherDataMediator: copyMe.weatherDataMediator) {
+                                                    weatherDataMediator: copyMe.weatherDataMediator,
+                                                    symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -163,13 +167,16 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 string text = string.Empty;
                 byte mesgPreviewLen = 50;
 
-                if (!string.IsNullOrEmpty(embedTitle)) {
-                    text = embedTitle;
-                } else if (!string.IsNullOrEmpty(message)) {
-                    var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
-                    text = message[..count];
+                var previewTitle = Utilities.ExpressionUtilities.Expand(embedTitle, SymbolBroker, this);
+                var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
 
-                    if (message.Length > mesgPreviewLen) {
+                if (!string.IsNullOrEmpty(previewTitle)) {
+                    text = previewTitle;
+                } else if (!string.IsNullOrEmpty(previewMessage)) {
+                    var count = previewMessage.Length > mesgPreviewLen ? mesgPreviewLen : previewMessage.Length;
+                    text = previewMessage[..count];
+
+                    if (previewMessage.Length > mesgPreviewLen) {
                         text += "...";
                     }
                 }
@@ -179,7 +186,7 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var resolvedMessage = Utilities.Utilities.ResolveTokens(message, this, metadata);
+            var resolvedMessage = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(message, this, metadata), SymbolBroker, this);
 
             if (!string.IsNullOrEmpty(embedTitle) && !string.IsNullOrEmpty(embedText)) {
                 var embed = new EmbedBuilder {
@@ -187,7 +194,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                     Timestamp = DateTimeOffset.UtcNow,
                 };
 
-                embed.AddField(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), Utilities.Utilities.ResolveTokens(embedText, this, metadata));
+                embed.AddField(Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(embedTitle, this, metadata), SymbolBroker, this),
+                               Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(embedText, this, metadata), SymbolBroker, this));
                 var embeds = new List<Embed>() { embed.Build() };
 
                 await discordWebhookCommon.SendDiscordWebhook(resolvedMessage, embeds);
@@ -243,6 +251,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 EmbedTitle = embedTitle,
                 EmbedText = embedText,
                 EmbedEdgeColor = embedEdgeColor,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -266,5 +276,11 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
 
         [ObservableProperty]
         private System.Windows.Media.Color embedEdgeColor;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }
