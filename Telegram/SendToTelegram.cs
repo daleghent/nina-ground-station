@@ -19,6 +19,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -67,7 +68,8 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
             this.guiderMediator = guiderMediator;
@@ -80,6 +82,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -103,7 +106,8 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
                                                             safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                             switchMediator: copyMe.switchMediator,
                                                             telescopeMediator: copyMe.telescopeMediator,
-                                                            weatherDataMediator: copyMe.weatherDataMediator) {
+                                                            weatherDataMediator: copyMe.weatherDataMediator,
+                                                            symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -137,10 +141,11 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
                 byte mesgPreviewLen = 50;
 
                 if (!string.IsNullOrEmpty(message)) {
-                    var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
-                    text = message[..count];
+                    var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
+                    var count = previewMessage.Length > mesgPreviewLen ? mesgPreviewLen : previewMessage.Length;
+                    text = previewMessage[..count];
 
-                    if (message.Length > mesgPreviewLen) {
+                    if (previewMessage.Length > mesgPreviewLen) {
                         text += "...";
                     }
                 }
@@ -150,7 +155,7 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
+            var message = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Message, this, metadata), SymbolBroker, this);
 
             await TelegramCommon.SendTelegram(message, DoNotNotify, ct);
         }
@@ -198,6 +203,8 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
             var conf = new SendToTelegramSetup() {
                 Message = message,
                 DoNotNotify = doNotNotify,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -213,6 +220,12 @@ namespace DaleGhent.NINA.GroundStation.SendToTelegram {
 
         [ObservableProperty]
         private bool doNotNotify;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
 
     }
 
