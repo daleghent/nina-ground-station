@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -73,7 +74,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                              ISafetyMonitorMediator safetyMonitorMediator,
                              ISwitchMediator switchMediator,
                              ITelescopeMediator telescopeMediator,
-                             IWeatherDataMediator weatherDataMediator) {
+                             IWeatherDataMediator weatherDataMediator,
+                             ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -87,6 +89,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -106,7 +109,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                                                 safetyMonitorMediator: copyMe.safetyMonitorMediator,
                                                 switchMediator: copyMe.switchMediator,
                                                 telescopeMediator: copyMe.telescopeMediator,
-                                                weatherDataMediator: copyMe.weatherDataMediator) {
+                                                weatherDataMediator: copyMe.weatherDataMediator,
+                                                symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -199,7 +203,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
             var response = new HttpResponseMessage();
 
             var resolvedUri = httpUri.Replace(descriptionToken, Utilities.Utilities.DoUrlEncode(true, httpClientDescription));
-            resolvedUri = Utilities.Utilities.ResolveTokens(resolvedUri, this, metadata, true);
+            resolvedUri = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(resolvedUri, this, metadata, true), SymbolBroker, this);
 
             client.DefaultRequestHeaders.ExpectContinue = false;
 
@@ -216,7 +220,7 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                     response = await client.GetAsync(resolvedUri, ct);
                 } else if (HttpMethod == HttpMethodEnum.POST) {
                     var body = httpPostBody.Replace(descriptionToken, httpClientDescription);
-                    body = Utilities.Utilities.ResolveTokens(body, this, metadata: metadata);
+                    body = Utilities.ExpressionUtilities.ExpandWithEscapes(Utilities.Utilities.ResolveTokens(body, this, metadata: metadata), SymbolBroker, this);
                     HttpContent httpContent = new StringContent(body);
 
                     if (!string.IsNullOrEmpty(httpPostContentType)) {
@@ -312,6 +316,8 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
                 HttpAuthUsername = httpAuthUsername,
                 HttpAuthPassword = httpAuthPassword,
                 ShowAuthDetails = !string.IsNullOrEmpty(httpAuthUsername),
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, "HTTP Request Parameters", System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -352,5 +358,11 @@ namespace DaleGhent.NINA.GroundStation.HTTP {
 
         [ObservableProperty]
         private bool showAuthDetails;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }

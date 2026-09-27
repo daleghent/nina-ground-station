@@ -15,6 +15,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
     xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core"
+    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
     d:DataContext="{d:DesignInstance Type=local:HttpClientSetup}"
     Name="UC"
     d:DesignHeight="400"
@@ -27,7 +28,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
 
@@ -36,7 +37,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <TextBlock
@@ -46,18 +47,16 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Text="Description" />
-        <TextBox
+        <gslogic:GsTextBox
             Grid.Row="0"
             Grid.Column="1"
             MinWidth="200"
-            MaxWidth="200"
             Margin="10,8,10,20"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
-            HorizontalScrollBarVisibility="Auto"
+            HorizontalContentAlignment="Left"
             MaxLines="1"
-            Text="{Binding HttpClientDescription}"
-            TextWrapping="NoWrap" />
+            Text="{Binding HttpClientDescription}" />
 
         <TextBlock
             Grid.Row="1"
@@ -84,17 +83,17 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Text="URL" />
-        <TextBox
+        <gslogic:GsExprTextBoxControl
             Grid.Row="2"
             Grid.Column="1"
-            MinWidth="500"
-            MaxWidth="500"
+            MinWidth="200"
             Margin="10,2,10,2"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
             HorizontalScrollBarVisibility="Auto"
-            MaxLines="1"
             Text="{Binding HttpUri}"
+            SymbolBroker="{Binding SymbolBroker}"
+            SequenceContext="{Binding SequenceContext}"
             TextAlignment="Left"
             TextWrapping="NoWrap" />
 
@@ -110,19 +109,17 @@
                 <TextBlock Text="The MIME type of the data being sent. Usually this is &apos;text/plain&apos; for plain text, or &apos;application/json&apos; for JSON payloads. The HTTP server may reject or mishandle the request if this is incorrectly specified." />
             </TextBlock.ToolTip>
         </TextBlock>
-        <TextBox
+        <gslogic:GsTextBox
             Grid.Row="3"
             Grid.Column="1"
             MinWidth="200"
-            MaxWidth="200"
             Margin="10,2,10,2"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
-            HorizontalScrollBarVisibility="Auto"
+            HorizontalContentAlignment="Left"
             MaxLines="1"
             Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
-            Text="{Binding HttpPostContentType}"
-            TextWrapping="NoWrap" />
+            Text="{Binding HttpPostContentType}" />
 
         <TextBlock
             Grid.Row="4"
@@ -132,20 +129,20 @@
             VerticalAlignment="Top"
             Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
             Text="Body" />
-        <TextBox
+        <gslogic:GsExprTextBoxControl
             Grid.Row="4"
             Grid.Column="1"
-            MinWidth="500"
-            MaxWidth="500"
-            MinHeight="400"
-            MaxHeight="400"
+            MinWidth="200"
+            MinHeight="250"
             Margin="10,2,10,2"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             AcceptsReturn="True"
             AcceptsTab="True"
             Visibility="{Binding HttpMethod, Converter={StaticResource HttpMethodEnumPostToVisibilityCollapsed}}"
             Text="{Binding HttpPostBody}"
+            SymbolBroker="{Binding SymbolBroker}"
+            SequenceContext="{Binding SequenceContext}"
             TextWrapping="NoWrap"
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto" />
@@ -154,7 +151,7 @@
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="10,10,10,10"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
             IsExpanded="{Binding ShowAuthDetails}"
             Header="HTTP Authentication" FontSize="12">
@@ -168,7 +165,7 @@
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Grid.Row="0"
@@ -177,18 +174,16 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Text="Username" />
-                <TextBox
+                <gslogic:GsTextBox
                     Grid.Row="0"
                     Grid.Column="1"
                     MinWidth="200"
-                    MaxWidth="200"
                     Margin="10,2,10,2"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
-                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalContentAlignment="Left"
                     MaxLines="1"
-                    Text="{Binding HttpAuthUsername}"
-                    TextWrapping="NoWrap" />
+                    Text="{Binding HttpAuthUsername}" />
 
                 <TextBlock
                     Grid.Row="1"
@@ -197,18 +192,16 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Text="Password" />
-                <TextBox
+                <gslogic:GsTextBox
                     Grid.Row="1"
                     Grid.Column="1"
                     MinWidth="200"
-                    MaxWidth="200"
                     Margin="10,2,10,2"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
-                    HorizontalScrollBarVisibility="Auto"
+                    HorizontalContentAlignment="Left"
                     MaxLines="1"
-                    Text="{Binding HttpAuthPassword}"
-                    TextWrapping="NoWrap" />
+                    Text="{Binding HttpAuthPassword}" />
             </Grid>
         </Expander>
 
