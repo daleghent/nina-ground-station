@@ -18,6 +18,7 @@ using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Core.Utility.WindowService;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using NINA.Sequencer.Validations;
 using System;
@@ -67,7 +68,8 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
                         ISafetyMonitorMediator safetyMonitorMediator,
                         ISwitchMediator switchMediator,
                         ITelescopeMediator telescopeMediator,
-                        IWeatherDataMediator weatherDataMediator) {
+                        IWeatherDataMediator weatherDataMediator,
+                        ISymbolBroker symbolBroker) {
 
             this.cameraMediator = cameraMediator;
             this.domeMediator = domeMediator;
@@ -81,6 +83,7 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator, domeMediator, filterWheelMediator,
                 flatDeviceMediator, focuserMediator, guiderMediator, rotatorMediator,
@@ -98,7 +101,8 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
             safetyMonitorMediator: copyMe.safetyMonitorMediator,
             switchMediator: copyMe.switchMediator,
             telescopeMediator: copyMe.telescopeMediator,
-            weatherDataMediator: copyMe.weatherDataMediator) {
+            weatherDataMediator: copyMe.weatherDataMediator,
+            symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -142,9 +146,9 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var resolvedTitle = Utilities.Utilities.ResolveTokens(title, this, metadata);
-            var resolvedMessage = Utilities.Utilities.ResolveTokens(message, this, metadata);
-            var resolvedTags = Utilities.Utilities.ResolveTokens(tags, this, metadata);
+            var resolvedTitle = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(title, this, metadata), SymbolBroker, this);
+            var resolvedMessage = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(message, this, metadata), SymbolBroker, this);
+            var resolvedTags = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(tags, this, metadata), SymbolBroker, this);
 
             try {
                 var ntfySh = new NtfySh {
@@ -210,6 +214,8 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
                 Message = message,
                 Tags = tags,
                 Priority = priority,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this,
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -233,5 +239,11 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
 
         [ObservableProperty]
         public NtfyShPriorityLevels priority;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }

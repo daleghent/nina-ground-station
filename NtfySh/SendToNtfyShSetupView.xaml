@@ -9,6 +9,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gslogic="clr-namespace:DaleGhent.GroundStation.Controls"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.NtfySh"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
@@ -40,15 +41,16 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Content="Title" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="10,2,10,2"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 HorizontalScrollBarVisibility="Auto"
-                MaxLines="1"
-                Text="{Binding Title, UpdateSourceTrigger=LostFocus}"
+                Text="{Binding Title}"
+                SymbolBroker="{Binding SymbolBroker}"
+                SequenceContext="{Binding SequenceContext}"
                 TextWrapping="NoWrap" />
 
             <Label
@@ -58,16 +60,18 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Content="{ns:Loc LblMessage}" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="1"
                 Grid.Column="1"
-                Height="250"
+                MinHeight="250"
                 Margin="10,10,10,2"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
+                VerticalAlignment="Stretch"
                 AcceptsReturn="True"
                 AcceptsTab="True"
-                Text="{Binding Message, UpdateSourceTrigger=LostFocus}"
+                Text="{Binding Message}"
+                SymbolBroker="{Binding SymbolBroker}"
+                SequenceContext="{Binding SequenceContext}"
                 TextWrapping="Wrap"
                 HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto" />
@@ -79,15 +83,16 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Content="Tags" />
-            <TextBox
+            <gslogic:GsExprTextBoxControl
                 Grid.Row="2"
                 Grid.Column="1"
                 Margin="10,2,10,2"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 HorizontalScrollBarVisibility="Auto"
-                MaxLines="1"
-                Text="{Binding Tags, UpdateSourceTrigger=LostFocus}"
+                Text="{Binding Tags}"
+                SymbolBroker="{Binding SymbolBroker}"
+                SequenceContext="{Binding SequenceContext}"
                 TextWrapping="NoWrap" />
 
             <Label
