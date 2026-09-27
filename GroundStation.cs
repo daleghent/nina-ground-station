@@ -15,11 +15,13 @@ using DaleGhent.NINA.GroundStation.DiscordWebhook;
 using DaleGhent.NINA.GroundStation.Images;
 using DaleGhent.NINA.GroundStation.Mqtt;
 using DaleGhent.NINA.GroundStation.Slack;
+using DaleGhent.NINA.GroundStation.Utilities;
 using NINA.Core.Utility;
 using NINA.Image.Interfaces;
 using NINA.Plugin.Interfaces;
 using NINA.Plugin;
 using NINA.Profile.Interfaces;
+using NINA.Sequencer.Logic;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -37,7 +39,7 @@ namespace DaleGhent.NINA.GroundStation {
 
 
         [ImportingConstructor]
-        public GroundStation(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory) {
+        public GroundStation(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory, ISymbolBroker symbolBroker) {
             if (Properties.Settings.Default.UpgradeSettings) {
                 Properties.Settings.Default.Upgrade();
                 Properties.Settings.Default.UpgradeSettings = false;
@@ -47,6 +49,10 @@ namespace DaleGhent.NINA.GroundStation {
             this.profileService = profileService;
             this.imageSaveMediator = imageSaveMediator;
             this.imageDataFactory = imageDataFactory;
+
+            // The plugin options page has no sequence item to obtain a broker from, so seed the
+            // shared fallback here to make expression previews and autocompletion available there.
+            ExpressionUtilities.GlobalSymbolBroker = symbolBroker;
 
             GroundStationConfig ??= new GroundStationConfig(profileService);
             imageEventHandler = new ImageEventHandler(this.profileService, this.imageSaveMediator, this.imageDataFactory);

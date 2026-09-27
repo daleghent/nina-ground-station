@@ -70,14 +70,6 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             DependencyProperty.Register(nameof(HorizontalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(GsExprTextBoxControl),
                 new PropertyMetadata(ScrollBarVisibility.Auto));
 
-        public static new readonly DependencyProperty VerticalAlignmentProperty =
-            DependencyProperty.Register(nameof(VerticalAlignment), typeof(VerticalAlignment), typeof(GsExprTextBoxControl),
-                new PropertyMetadata(VerticalAlignment.Top));
-
-        public static new readonly DependencyProperty HorizontalAlignmentProperty =
-            DependencyProperty.Register(nameof(HorizontalAlignment), typeof(HorizontalAlignment), typeof(GsExprTextBoxControl),
-                new PropertyMetadata(HorizontalAlignment.Stretch));
-
         public string Text {
             get => (string)GetValue(TextProperty);
             set => SetValue(TextProperty, value);
@@ -133,16 +125,6 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             set => SetValue(HorizontalScrollBarVisibilityProperty, value);
         }
 
-        public new VerticalAlignment VerticalAlignment {
-            get => (VerticalAlignment)GetValue(VerticalAlignmentProperty);
-            set => SetValue(VerticalAlignmentProperty, value);
-        }
-
-        public new HorizontalAlignment HorizontalAlignment {
-            get => (HorizontalAlignment)GetValue(HorizontalAlignmentProperty);
-            set => SetValue(HorizontalAlignmentProperty, value);
-        }
-
         private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var control = (GsExprTextBoxControl)d;
             control.UpdateProcessedText();
@@ -150,11 +132,26 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
         private static void OnSymbolContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var control = (GsExprTextBoxControl)d;
+
+            if (e.NewValue is ISymbolBroker broker) {
+                ExpressionUtilities.GlobalSymbolBroker = broker;
+            }
+
             control.UpdateProcessedText();
         }
 
-        private ISymbolBroker EffectiveSymbolBroker
-            => SymbolBroker ?? (DataContext as ISequenceItem)?.SymbolBroker;
+        private ISymbolBroker EffectiveSymbolBroker {
+            get {
+                var broker = SymbolBroker ?? (DataContext as ISequenceItem)?.SymbolBroker;
+
+                if (broker != null) {
+                    ExpressionUtilities.GlobalSymbolBroker = broker;
+                    return broker;
+                }
+
+                return ExpressionUtilities.GlobalSymbolBroker;
+            }
+        }
 
         private ISequenceItem EffectiveSequenceContext
             => SequenceContext ?? DataContext as ISequenceItem;

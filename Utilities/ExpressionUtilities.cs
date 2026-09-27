@@ -43,6 +43,19 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         private const string OpenBracePlaceholder = "\uE000GS_LBRACE\uE000";
         private const string CloseBracePlaceholder = "\uE000GS_RBRACE\uE000";
 
+        private static volatile ISymbolBroker globalSymbolBroker;
+
+        /// <summary>
+        /// The most recently observed symbol broker. User interface that has no sequence context of
+        /// its own, such as the plugin options page, falls back to this so that expression previews
+        /// and autocompletion remain available there. May be null until a sequence item that carries
+        /// a broker has been displayed.
+        /// </summary>
+        internal static ISymbolBroker GlobalSymbolBroker {
+            get => globalSymbolBroker;
+            set => globalSymbolBroker = value;
+        }
+
         /// <summary>
         /// Expands any symbol expressions contained in <paramref name="text"/>. Returns the original
         /// text unaltered if there is no symbol context available or if expansion fails.
