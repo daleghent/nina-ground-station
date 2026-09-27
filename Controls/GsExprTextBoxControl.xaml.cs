@@ -297,7 +297,34 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
             SelectInList(symbols.Count > 0 ? PART_SymbolsList : PART_FunctionsList, 0);
 
+            PositionPopupAtCaret();
+
             PART_CompletionPopup.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Anchors the completion popup to the caret rather than the bottom edge of the text box.
+        /// The rectangle returned by <see cref="TextBoxBase"/> is already expressed in the coordinate
+        /// space of the placement target, so it can be used as-is. If the geometry is not yet
+        /// available the rectangle is cleared, which falls back to placement against the full control.
+        /// </summary>
+        private void PositionPopupAtCaret() {
+            var text = PART_TextBox.Text ?? string.Empty;
+            var caret = Math.Clamp(PART_TextBox.CaretIndex, 0, text.Length);
+
+            var rect = PART_TextBox.GetRectFromCharacterIndex(caret);
+
+            PART_CompletionPopup.PlacementRectangle = IsValidCaretRect(rect) ? rect : Rect.Empty;
+        }
+
+        private static bool IsValidCaretRect(Rect rect) {
+            if (rect.IsEmpty) {
+                return false;
+            }
+
+            return !double.IsNaN(rect.X) && !double.IsInfinity(rect.X)
+                && !double.IsNaN(rect.Y) && !double.IsInfinity(rect.Y)
+                && !double.IsNaN(rect.Height) && !double.IsInfinity(rect.Height);
         }
 
         private static void SetSectionVisibility(UIElement header, UIElement list, bool visible) {
@@ -334,6 +361,7 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
         private void HideCompletions() {
             PART_CompletionPopup.IsOpen = false;
+            PART_CompletionPopup.PlacementRectangle = Rect.Empty;
 
             PART_SymbolsList.SelectedIndex = -1;
             PART_FunctionsList.SelectedIndex = -1;

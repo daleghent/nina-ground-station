@@ -62,6 +62,12 @@
                             <Setter Property="VerticalContentAlignment" Value="Top" />
                             <Setter Property="MinHeight" Value="35" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding ProcessedText, ElementName=root}" Value="{x:Null}">
+                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ProcessedText, ElementName=root}" Value="">
+                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </gslogic:GsTextBox.Style>
@@ -72,6 +78,8 @@
             AllowsTransparency="False"
             Placement="Bottom"
             PlacementTarget="{Binding ElementName=PART_TextBox}"
+            HorizontalOffset="0"
+            VerticalOffset="2"
             StaysOpen="False"
             Focusable="False">
             <Border
