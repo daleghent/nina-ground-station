@@ -3,34 +3,39 @@
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/
--->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/-->
 <ResourceDictionary
     x:Class="DaleGhent.NINA.GroundStation.Config.GroundStationConfigDataTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.Config"
-    xmlns:util="clr-namespace:DaleGhent.NINA.GroundStation.Utilities"
-    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
-    xmlns:ntfysh="clr-namespace:DaleGhent.NINA.GroundStation.NtfySh"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
+    xmlns:ntfysh="clr-namespace:DaleGhent.NINA.GroundStation.NtfySh"
     xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:DaleGhent.NINA.GroundStation.Utilities"
     xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d">
 
     <DataTemplate x:Key="Ground_Station_Config">
         <TabControl
             Height="Auto"
-            d:DataContext="{d:DesignInstance local:GroundStationConfig, IsDesignTimeCreatable=False}"
+            d:DataContext="{d:DesignInstance local:GroundStationConfig,
+                                             IsDesignTimeCreatable=False}"
             TabStripPlacement="Top">
 
             <TabItem Name="Pushover" Header="Pushover">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="Website: " />
-                        <TextBlock><Hyperlink NavigateUri="https://pushover.net/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">pushover.net</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://pushover.net/"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                pushover.net
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
@@ -246,12 +251,22 @@
 
             <TabItem Name="Telegram" Header="Telegram">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="Website: " />
-                        <TextBlock><Hyperlink NavigateUri="https://telegram.org/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">telegram.org</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://telegram.org/"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                telegram.org
+                            </Hyperlink></TextBlock>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock><Hyperlink NavigateUri="https://core.telegram.org/bots" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Bot Help</Hyperlink></TextBlock>
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://core.telegram.org/bots"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                Bot Help
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -702,11 +717,21 @@
 
             <TabItem Name="Slack" Header="Slack">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/start/quickstart" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Slack Apps quickstart</Hyperlink></TextBlock>
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://api.slack.com/start/quickstart"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                Slack Apps quickstart
+                            </Hyperlink></TextBlock>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock><Hyperlink NavigateUri="https://api.slack.com/apps" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">Your Slack Apps</Hyperlink></TextBlock>
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://api.slack.com/apps"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                Your Slack Apps
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
@@ -739,9 +764,7 @@
                             VerticalAlignment="Top"
                             Text="Workspace" />
 
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{Binding SlackWorkspaceName}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SlackWorkspaceName}" />
                     </StackPanel>
 
                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
@@ -751,22 +774,16 @@
                             VerticalAlignment="Top"
                             Text="Bot/App name" />
 
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{Binding SlackBotName}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SlackBotName}" />
 
                         <TextBlock
                             Margin="5,0,0,0"
                             VerticalAlignment="Center"
                             Text="(" />
 
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{Binding SlackBotDisplayName}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding SlackBotDisplayName}" />
 
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text=")" />
+                        <TextBlock VerticalAlignment="Center" Text=")" />
                     </StackPanel>
 
                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
@@ -784,25 +801,23 @@
                                 VerticalAlignment="Center"
                                 Background="{StaticResource BackgroundBrush}"
                                 BorderBrush="{StaticResource BorderBrush}"
+                                DisplayMemberPath="Name"
                                 Foreground="{StaticResource PrimaryBrush}"
-                                SelectionMode="Single"
-                                SelectionChanged="SlackChannelsListBox_SelectionChanged"
                                 ItemsSource="{Binding SlackChannels}"
-                                DisplayMemberPath="Name" />
+                                SelectionChanged="SlackChannelsListBox_SelectionChanged"
+                                SelectionMode="Single" />
                         </ScrollViewer>
 
                         <StackPanel
-                            Visibility="{Binding SlackShowChannelInfo, Converter={StaticResource BooleanToVisibilityHiddenConverter}}"
-                            Orientation="Vertical" 
-                            VerticalAlignment="Top">
+                            VerticalAlignment="Top"
+                            Orientation="Vertical"
+                            Visibility="{Binding SlackShowChannelInfo, Converter={StaticResource BooleanToVisibilityHiddenConverter}}">
                             <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
                                 <Label
                                     Width="100"
                                     VerticalAlignment="Center"
                                     Content="ID:" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SlackSelectedChannelId}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding SlackSelectedChannelId}" />
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
@@ -810,9 +825,7 @@
                                     Width="100"
                                     VerticalAlignment="Center"
                                     Content="Private:" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SlackSelectedChannelIsPrivate}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding SlackSelectedChannelIsPrivate}" />
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
@@ -820,9 +833,7 @@
                                     Width="100"
                                     VerticalAlignment="Center"
                                     Content="Members:" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SlackSelectedChannelNumMembers}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding SlackSelectedChannelNumMembers}" />
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
@@ -830,9 +841,7 @@
                                     Width="100"
                                     VerticalAlignment="Center"
                                     Content="Created:" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Text="{Binding SlackSelectedChannelCreateDate}" />
+                                <TextBlock VerticalAlignment="Center" Text="{Binding SlackSelectedChannelCreateDate}" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -851,8 +860,8 @@
                                             HorizontalAlignment="Left"
                                             AcceptsReturn="True"
                                             AcceptsTab="True"
-                                            Text="{Binding SlackFailureMessage}"
                                             HorizontalScrollBarVisibility="Visible"
+                                            Text="{Binding SlackFailureMessage}"
                                             VerticalScrollBarVisibility="Visible" />
                                     </StackPanel>
                                 </StackPanel>
@@ -900,8 +909,8 @@
                                     </TextBlock>
                                     <ComboBox
                                         MinWidth="100"
-                                        VerticalAlignment="Center"
                                         Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
                                         DisplayMemberPath="Name"
                                         IsSynchronizedWithCurrentItem="True"
                                         ItemsSource="{Binding SlackChannels}"
@@ -922,10 +931,10 @@
                                         Background="{StaticResource TertiaryBackgroundBrush}"
                                         BorderBrush="{StaticResource BorderBrush}"
                                         Foreground="{StaticResource PrimaryBrush}"
-                                        ItemsSource="{Binding ImageTypes}"
                                         Initialized="SlackImageTypeListBox_Initialized"
-                                        SelectionChanged="SlackImageTypeListBox_SelectionChanged"
                                         IsSynchronizedWithCurrentItem="true"
+                                        ItemsSource="{Binding ImageTypes}"
+                                        SelectionChanged="SlackImageTypeListBox_SelectionChanged"
                                         SelectionMode="Multiple" />
                                 </StackPanel>
                             </StackPanel>
@@ -937,9 +946,14 @@
 
             <TabItem Name="ntfy" Header="ntfy">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="Website: " />
-                        <TextBlock><Hyperlink NavigateUri="https://ntfy.sh" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">ntfy.sh</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://ntfy.sh"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                ntfy.sh
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
@@ -987,10 +1001,10 @@
                             Text="{Binding NtfyShUrl}" />
                     </StackPanel>
 
-                    <GroupBox Header="Authentication" Margin="0,10,0,0">
+                    <GroupBox Margin="0,10,0,0" Header="Authentication">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Margin="0,5,0,5" Text="Authentication is optional. It is required if your ntfy service is protected with a username and password or an access token. If all three items are configured here, access token overrides username and password authentication." />
-                            
+
                             <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                                 <TextBlock
                                     Width="110"
@@ -1111,7 +1125,7 @@
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type ntfysh:NtfyShPriorityLevels}}}"
-                                    SelectedItem="{Binding NtfyShFailurePriority}"/>
+                                    SelectedItem="{Binding NtfyShFailurePriority}" />
                             </StackPanel>
 
                         </StackPanel>
@@ -1122,9 +1136,14 @@
 
             <TabItem Name="IFTTT_Webhooks" Header="IFTTT Webhooks">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="Website: " />
-                        <TextBlock><Hyperlink NavigateUri="https://ifttt.com/maker_webhooks" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">ifttt.com/maker_webhooks</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://ifttt.com/maker_webhooks"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                ifttt.com/maker_webhooks
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
@@ -1206,9 +1225,14 @@
 
             <TabItem Name="MQTT" Header="MQTT">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="Website: " />
-                        <TextBlock><Hyperlink NavigateUri="https://mqtt.org/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">mqtt.org</Hyperlink></TextBlock>
+                        <TextBlock><Hyperlink
+                                NavigateUri="https://mqtt.org/"
+                                RequestNavigate="Hyperlink_RequestNavigate"
+                                TextDecorations="None">
+                                mqtt.org
+                            </Hyperlink></TextBlock>
                     </StackPanel>
 
                     <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
@@ -1557,8 +1581,8 @@
                                     <CheckBox
                                         Margin="5,0,0,0"
                                         VerticalAlignment="Center"
-                                        IsEnabled="{Binding MqttImagePubIsConfigured}"
-                                        IsChecked="{Binding MqttImagePubliserEnabled, UpdateSourceTrigger=PropertyChanged}" />
+                                        IsChecked="{Binding MqttImagePubliserEnabled, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="{Binding MqttImagePubIsConfigured}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
@@ -1636,7 +1660,7 @@
                                             IsChecked="{Binding MqttImagePublisherRetain}" />
                                     </StackPanel>
                                 </StackPanel>
-                                
+
                                 <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
                                     <TextBlock
                                         Width="110"
@@ -1667,7 +1691,10 @@
             <TabItem Name="TTS" Header="Text-to-Speech">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
                     <TextBlock Margin="0,0,0,5" VerticalAlignment="Center">
-                        <Hyperlink NavigateUri="ms-settings:speech" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None">
+                        <Hyperlink
+                            NavigateUri="ms-settings:speech"
+                            RequestNavigate="Hyperlink_RequestNavigate"
+                            TextDecorations="None">
                             <Run Text="Windows Text-to-speech settings" />
                         </Hyperlink>
                     </TextBlock>
@@ -1777,11 +1804,10 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             ButtonText="Test"
-                            Command="{Binding PlaySoundTestCommand}"
-                            CancelCommand="{Binding StopSoundTestCommand}"
                             CancelButtonImage="{StaticResource CancelSVG}"
-                            CancelToolTip="{ns:Loc LblCancel}">
-                        </ninactrl:CancellableButton>
+                            CancelCommand="{Binding StopSoundTestCommand}"
+                            CancelToolTip="{ns:Loc LblCancel}"
+                            Command="{Binding PlaySoundTestCommand}" />
                     </StackPanel>
 
                     <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
@@ -1823,18 +1849,17 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             ButtonText="Test"
-                            Command="{Binding PlayFailureSoundTestCommand}"
-                            CancelCommand="{Binding StopFailureSoundTestCommand}"
                             CancelButtonImage="{StaticResource CancelSVG}"
-                            CancelToolTip="{ns:Loc LblCancel}">
-                        </ninactrl:CancellableButton>
+                            CancelCommand="{Binding StopFailureSoundTestCommand}"
+                            CancelToolTip="{ns:Loc LblCancel}"
+                            Command="{Binding PlayFailureSoundTestCommand}" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>
 
             <TabItem Name="Image_Service" Header="Image Service">
                 <StackPanel Margin="0,10,0,5" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <TextBlock Text="NOTE: These settings apply to the images sent by all of the services which support doing so." />
                     </StackPanel>
 
@@ -1855,8 +1880,7 @@
                             SelectedIndex="{Binding ImageServiceFormat, Mode=TwoWay}" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,5"
-                        Orientation="Horizontal">
+                    <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
                         <StackPanel.Style>
                             <Style TargetType="{x:Type StackPanel}">
                                 <Style.Triggers>
@@ -1970,10 +1994,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATE$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -1985,10 +2009,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TIME$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -2000,10 +2024,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATETIME$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -2015,10 +2039,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATE_UTC$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -2030,10 +2054,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TIME_UTC$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -2045,10 +2069,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DATETIME_UTC$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -2060,10 +2084,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$UNIX_EPOCH$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -2075,9 +2099,9 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
-                                    util:SelectTextOnFocus.Active="True"
                                     IsReadOnly="True">
                                     $$FORMAT_DATETIME format$$
                                 </TextBox>
@@ -2093,9 +2117,9 @@
                                     Margin="0,5,0,0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
-                                    util:SelectTextOnFocus.Active="True"
                                     IsReadOnly="True">
                                     $$FORMAT_DATETIME_UTC format$$
                                 </TextBox>
@@ -2139,10 +2163,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -2154,10 +2178,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_RA$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -2169,10 +2193,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_DEC$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -2184,10 +2208,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_RA_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -2199,10 +2223,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_DEC_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -2214,10 +2238,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$TARGET_EPOCH$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -2229,10 +2253,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$INSTRUCTION_SET$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -2298,7 +2322,7 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                     <RowDefinition />
-                                   <!--  51  -->
+                                    <!--  51  -->
                                 </Grid.RowDefinitions>
 
                                 <TextBlock
@@ -2313,10 +2337,10 @@
                                     Grid.Row="1"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -2327,10 +2351,10 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_BATTERY$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -2341,10 +2365,10 @@
                                     Grid.Row="3"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$CAMERA_SENSOR_TEMP$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -2356,10 +2380,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_NAME$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -2371,10 +2395,10 @@
                                     Grid.Row="5"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_IS_PARKED$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -2385,10 +2409,10 @@
                                     Grid.Row="6"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_IS_HOME$$" />
                                 <TextBlock
                                     Grid.Row="6"
@@ -2399,10 +2423,10 @@
                                     Grid.Row="7"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_SHUTTER$$" />
                                 <TextBlock
                                     Grid.Row="7"
@@ -2413,10 +2437,10 @@
                                     Grid.Row="8"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DOME_AZ_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="8"
@@ -2428,10 +2452,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_NAME$$" />
                                 <TextBlock
                                     Grid.Row="9"
@@ -2443,10 +2467,10 @@
                                     Grid.Row="10"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_FILTER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="10"
@@ -2457,10 +2481,10 @@
                                     Grid.Row="11"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FWHEEL_FILTER_POS$$" />
                                 <TextBlock
                                     Grid.Row="11"
@@ -2472,10 +2496,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_NAME$$" />
                                 <TextBlock
                                     Grid.Row="12"
@@ -2487,10 +2511,10 @@
                                     Grid.Row="13"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_COVER_STATUS$$" />
                                 <TextBlock
                                     Grid.Row="13"
@@ -2501,10 +2525,10 @@
                                     Grid.Row="14"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FLAT_LAMP_STATUS$$" />
                                 <TextBlock
                                     Grid.Row="14"
@@ -2516,10 +2540,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="15"
@@ -2531,10 +2555,10 @@
                                     Grid.Row="16"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_POSITION$$" />
                                 <TextBlock
                                     Grid.Row="16"
@@ -2545,10 +2569,10 @@
                                     Grid.Row="17"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FOCUSER_TEMP$$" />
                                 <TextBlock
                                     Grid.Row="17"
@@ -2560,10 +2584,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_NAME$$" />
                                 <TextBlock
                                     Grid.Row="18"
@@ -2575,10 +2599,10 @@
                                     Grid.Row="19"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_ANGLE$$" />
                                 <TextBlock
                                     Grid.Row="19"
@@ -2589,10 +2613,10 @@
                                     Grid.Row="20"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_SKY_ANGLE$$" />
                                 <TextBlock
                                     Grid.Row="20"
@@ -2603,10 +2627,10 @@
                                     Grid.Row="21"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ROTATOR_IS_SYNCED$$" />
                                 <TextBlock
                                     Grid.Row="21"
@@ -2618,10 +2642,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_NAME$$" />
                                 <TextBlock
                                     Grid.Row="22"
@@ -2633,10 +2657,10 @@
                                     Grid.Row="23"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SAFETY_IS_SAFE$$" />
                                 <TextBlock
                                     Grid.Row="23"
@@ -2648,10 +2672,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_NAME$$" />
                                 <TextBlock
                                     Grid.Row="24"
@@ -2663,10 +2687,10 @@
                                     Grid.Row="25"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_POINTING_STATE$$" />
                                 <TextBlock
                                     Grid.Row="25"
@@ -2677,10 +2701,10 @@
                                     Grid.Row="26"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA$$" />
                                 <TextBlock
                                     Grid.Row="26"
@@ -2691,10 +2715,10 @@
                                     Grid.Row="27"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_RA_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="27"
@@ -2705,10 +2729,10 @@
                                     Grid.Row="28"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC$$" />
                                 <TextBlock
                                     Grid.Row="28"
@@ -2719,10 +2743,10 @@
                                     Grid.Row="29"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_DEC_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="29"
@@ -2733,10 +2757,10 @@
                                     Grid.Row="30"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_PARKED$$" />
                                 <TextBlock
                                     Grid.Row="30"
@@ -2747,10 +2771,10 @@
                                     Grid.Row="31"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_IS_HOME$$" />
                                 <TextBlock
                                     Grid.Row="31"
@@ -2761,10 +2785,10 @@
                                     Grid.Row="32"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT$$" />
                                 <TextBlock
                                     Grid.Row="32"
@@ -2775,10 +2799,10 @@
                                     Grid.Row="33"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_ALT_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="33"
@@ -2789,10 +2813,10 @@
                                     Grid.Row="34"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ$$" />
                                 <TextBlock
                                     Grid.Row="34"
@@ -2803,10 +2827,10 @@
                                     Grid.Row="35"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_AZ_DECIMAL$$" />
                                 <TextBlock
                                     Grid.Row="35"
@@ -2817,10 +2841,10 @@
                                     Grid.Row="36"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$MOUNT_TTF$$" />
                                 <TextBlock
                                     Grid.Row="36"
@@ -2832,10 +2856,10 @@
                                     Grid.Column="0"
                                     Margin="0,8,0,0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_NAME$$" />
                                 <TextBlock
                                     Grid.Row="37"
@@ -2847,10 +2871,10 @@
                                     Grid.Row="38"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_CLOUD_COVER$$" />
                                 <TextBlock
                                     Grid.Row="38"
@@ -2861,10 +2885,10 @@
                                     Grid.Row="39"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_DEWPOINT$$" />
                                 <TextBlock
                                     Grid.Row="39"
@@ -2875,10 +2899,10 @@
                                     Grid.Row="40"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_HUMIDITY$$" />
                                 <TextBlock
                                     Grid.Row="40"
@@ -2889,10 +2913,10 @@
                                     Grid.Row="41"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_PRESSURE$$" />
                                 <TextBlock
                                     Grid.Row="41"
@@ -2903,10 +2927,10 @@
                                     Grid.Row="42"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_RAINRATE$$" />
                                 <TextBlock
                                     Grid.Row="42"
@@ -2917,10 +2941,10 @@
                                     Grid.Row="43"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYBRT$$" />
                                 <TextBlock
                                     Grid.Row="43"
@@ -2931,10 +2955,10 @@
                                     Grid.Row="44"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYQUAL$$" />
                                 <TextBlock
                                     Grid.Row="44"
@@ -2945,10 +2969,10 @@
                                     Grid.Row="45"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_SKYTEMP$$" />
                                 <TextBlock
                                     Grid.Row="45"
@@ -2959,10 +2983,10 @@
                                     Grid.Row="46"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_STARFWHM$$" />
                                 <TextBlock
                                     Grid.Row="46"
@@ -2973,10 +2997,10 @@
                                     Grid.Row="47"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_AMBTEMP$$" />
                                 <TextBlock
                                     Grid.Row="47"
@@ -2987,10 +3011,10 @@
                                     Grid.Row="48"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDDIR$$" />
                                 <TextBlock
                                     Grid.Row="48"
@@ -3001,10 +3025,10 @@
                                     Grid.Row="49"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDGUST$$" />
                                 <TextBlock
                                     Grid.Row="49"
@@ -3015,10 +3039,10 @@
                                     Grid.Row="50"
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$WX_WINDSPD$$" />
                                 <TextBlock
                                     Grid.Row="50"
@@ -3053,10 +3077,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$SYSTEM_NAME$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -3068,10 +3092,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$USER_NAME$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -3083,10 +3107,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$NINA_VERSION$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -3098,10 +3122,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$GS_VERSION$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -3132,10 +3156,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM$$" />
                                 <TextBlock
                                     Grid.Row="0"
@@ -3147,10 +3171,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM_DESC$$" />
                                 <TextBlock
                                     Grid.Row="1"
@@ -3162,10 +3186,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ITEM_CATEGORY$$" />
                                 <TextBlock
                                     Grid.Row="2"
@@ -3177,10 +3201,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_ATTEMPTS$$" />
                                 <TextBlock
                                     Grid.Row="3"
@@ -3192,10 +3216,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$FAILED_INSTR_SET$$" />
                                 <TextBlock
                                     Grid.Row="4"
@@ -3207,10 +3231,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$ERROR_LIST$$" />
                                 <TextBlock
                                     Grid.Row="5"
@@ -3236,10 +3260,10 @@
                                     Grid.Column="0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    util:SelectTextOnFocus.Active="True"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     IsReadOnly="True"
-                                    util:SelectTextOnFocus.Active="True"
                                     Text="$$DESCRIPTION$$" />
                                 <TextBlock
                                     Grid.Row="0"
