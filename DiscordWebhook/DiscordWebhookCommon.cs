@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2021-2026 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,7 +14,6 @@ using DaleGhent.NINA.GroundStation.Images;
 using Discord;
 using Discord.Rest;
 using Discord.Webhook;
-using NINA.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

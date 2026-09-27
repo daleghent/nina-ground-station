@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2021-2026 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,8 +17,8 @@ using NINA.Profile.Interfaces;
 using NINA.WPF.Base.Interfaces.Mediator;
 using System;
 using System.IO;
-using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DaleGhent.NINA.GroundStation.Images {
     public class ImageEventHandler(IProfileService profileService, IImageSaveMediator imageSaveMediator, IImageDataFactory imageDataFactory) {

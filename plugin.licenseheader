@@ -3,7 +3,7 @@ extensions: .cs .cpp .h
 #region "copyright"
 
 /*
-    Copyright (c) %CurrentYear% Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2021-%CurrentYear% Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,7 +14,7 @@ extensions: .cs .cpp .h
 
 extensions:  .xml .xaml .config .xsd
 <!--
-    Copyright (c) %CurrentYear% Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2021-%CurrentYear% Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this

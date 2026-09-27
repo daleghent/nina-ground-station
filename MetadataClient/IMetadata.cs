@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright (c) 2024 Dale Ghent <daleg@elemental.org>
+    Copyright (c) 2021-2026 Dale Ghent <daleg@elemental.org>
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -21,8 +21,6 @@ using NINA.Equipment.Equipment.MySafetyMonitor;
 using NINA.Equipment.Equipment.MySwitch;
 using NINA.Equipment.Equipment.MyTelescope;
 using NINA.Equipment.Equipment.MyWeatherData;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace DaleGhent.NINA.GroundStation.MetadataClient {
