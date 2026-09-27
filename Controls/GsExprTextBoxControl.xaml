@@ -10,6 +10,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:gslogic="clr-namespace:DaleGhent.NINA.GroundStation.Controls"
+    xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     x:Name="root"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Center">
@@ -68,7 +69,7 @@
 
         <Popup
             x:Name="PART_CompletionPopup"
-            AllowsTransparency="True"
+            AllowsTransparency="False"
             Placement="Bottom"
             PlacementTarget="{Binding ElementName=PART_TextBox}"
             StaysOpen="False"
@@ -91,7 +92,7 @@
                             FontSize="11"
                             FontWeight="Bold"
                             Foreground="{DynamicResource SecondaryBrush}"
-                            Text="Symbols" />
+                            Text="{ns:Loc Lbl_SequenceCategory_Symbol}" />
                         <ListBox
                             x:Name="PART_SymbolsList"
                             Background="Transparent"
@@ -107,7 +108,7 @@
                             FontSize="11"
                             FontWeight="Bold"
                             Foreground="{DynamicResource SecondaryBrush}"
-                            Text="Functions" />
+                            Text="{ns:Loc Lbl_SymbolFunctions}" />
                         <ListBox
                             x:Name="PART_FunctionsList"
                             Background="Transparent"
