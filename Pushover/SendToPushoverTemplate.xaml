@@ -3,70 +3,67 @@
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/
--->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/-->
 <ResourceDictionary
     x:Class="DaleGhent.NINA.GroundStation.SendToPushover.SendToPushoverTemplate"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DaleGhent.NINA.GroundStation.SendToPushover"
+    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
-    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
-    xmlns:localconverters="clr-namespace:DaleGhent.NINA.GroundStation.Converters">
+    xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer">
     <localconverters:EmptyStringToNoContent x:Key="EmptyStringToNoContent" />
     <localconverters:EmptyStringToFontStyleItalic x:Key="EmptyStringToFontStyleItalic" />
 
     <DataTemplate DataType="{x:Type local:SendToPushoverSetup}">
         <local:SendToPushoverSetupView />
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type local:SendToPushover}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <Button
-                        VerticalAlignment="Center"
-                        Command="{Binding OpenConfigurationWindowCommand}">
+                    <Button VerticalAlignment="Center" Command="{Binding OpenConfigurationWindowCommand}">
                         <TextBlock
                             Margin="5,2,5,2"
-                            VerticalAlignment="Center"
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Text="Configure" />
                     </Button>
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
-                        TextWrapping="Wrap"
+                        VerticalAlignment="Center"
                         FontStyle="{Binding MessagePreview, Converter={StaticResource EmptyStringToFontStyleItalic}}"
-                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}" />
+                        Text="{Binding MessagePreview, Converter={StaticResource EmptyStringToNoContent}}"
+                        TextWrapping="Wrap" />
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
+                        VerticalAlignment="Center"
                         Text="|" />
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
+                        VerticalAlignment="Center"
                         Text="Priority:" />
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="5,0,0,0"
+                        VerticalAlignment="Center"
                         Text="{Binding Priority}" />
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
+                        VerticalAlignment="Center"
                         Text="|" />
 
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="10,0,0,0"
+                        VerticalAlignment="Center"
                         Text="Sound:" />
                     <TextBlock
-                        VerticalAlignment="Center"
                         Margin="5,0,0,0"
+                        VerticalAlignment="Center"
                         Text="{Binding NotificationSound}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>

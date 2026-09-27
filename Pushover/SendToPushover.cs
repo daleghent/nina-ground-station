@@ -58,7 +58,6 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         private readonly IWeatherDataMediator weatherDataMediator;
 
         private readonly IMetadata metadata;
-        private readonly ISymbolBroker symbolBroker;
         private IWindowService windowService;
 
         [ImportingConstructor]
@@ -86,6 +85,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             this.switchMediator = switchMediator;
             this.telescopeMediator = telescopeMediator;
             this.weatherDataMediator = weatherDataMediator;
+            SymbolBroker = symbolBroker;
 
             metadata = new Metadata(cameraMediator,
                 domeMediator, filterWheelMediator, flatDeviceMediator, focuserMediator,
@@ -116,7 +116,7 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                                                             switchMediator: copyMe.switchMediator,
                                                             telescopeMediator: copyMe.telescopeMediator,
                                                             weatherDataMediator: copyMe.weatherDataMediator,
-                                                            symbolBroker: copyMe.symbolBroker) {
+                                                            symbolBroker: copyMe.SymbolBroker) {
             CopyMetaData(copyMe);
         }
 
@@ -168,13 +168,16 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 string text = string.Empty;
                 byte mesgPreviewLen = 50;
 
-                if (!string.IsNullOrEmpty(title)) {
-                    text = title;
-                } else if (!string.IsNullOrEmpty(message)) {
-                    var count = message.Length > mesgPreviewLen ? mesgPreviewLen : message.Length;
-                    text = message[..count];
+                var previewTitle = Utilities.ExpressionUtilities.Expand(title, SymbolBroker, this);
+                var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
 
-                    if (message.Length > mesgPreviewLen) {
+                if (!string.IsNullOrEmpty(previewTitle)) {
+                    text = previewTitle;
+                } else if (!string.IsNullOrEmpty(previewMessage)) {
+                    var count = previewMessage.Length > mesgPreviewLen ? mesgPreviewLen : previewMessage.Length;
+                    text = previewMessage[..count];
+
+                    if (previewMessage.Length > mesgPreviewLen) {
                         text += "...";
                     }
                 }
@@ -184,8 +187,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
         }
 
         public override async Task Execute(IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var title = Utilities.Utilities.ResolveTokens(Title, this, metadata);
-            var message = Utilities.Utilities.ResolveTokens(Message, this, metadata);
+            var title = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Title, this, metadata), SymbolBroker, this);
+            var message = Utilities.ExpressionUtilities.Expand(Utilities.Utilities.ResolveTokens(Message, this, metadata), SymbolBroker, this);
 
             await PushoverClient.PushoverClient.PushMessage(title, message, Priority, NotificationSound, ct);
         }
@@ -225,8 +228,6 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
             return $"Category: {Category}, Item: {Name}, Title: {title}";
         }
 
-        public ISymbolBroker SymbolBroker => symbolBroker;
-
         public IWindowService WindowService {
             get {
                 windowService ??= new WindowService();
@@ -243,7 +244,9 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 Title = title,
                 Message = message,
                 Priority = priority,
-                NotificationSound = notificationSound
+                NotificationSound = notificationSound,
+                SymbolBroker = SymbolBroker,
+                SequenceContext = this
             };
 
             await WindowService.ShowDialog(conf, Name, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ThreeDBorderWindow);
@@ -273,5 +276,11 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
 
         [ObservableProperty]
         private NotificationSound[] notificationSounds = SendToPushover.NotificationSounds;
+
+        [ObservableProperty]
+        private ISymbolBroker symbolBroker;
+
+        [ObservableProperty]
+        private ISequenceItem sequenceContext;
     }
 }
