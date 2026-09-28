@@ -224,6 +224,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding PushoverFailureTitleText, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -241,6 +242,7 @@
                                     AcceptsReturn="True"
                                     AcceptsTab="True"
                                     HorizontalScrollBarVisibility="Visible"
+                                    AllowFailureTokens="True"
                                     Text="{Binding PushoverFailureBodyText, UpdateSourceTrigger=LostFocus}"
                                     VerticalScrollBarVisibility="Visible" />
                             </StackPanel>
@@ -330,6 +332,7 @@
                                     AcceptsReturn="True"
                                     AcceptsTab="True"
                                     HorizontalScrollBarVisibility="Visible"
+                                    AllowFailureTokens="True"
                                     Text="{Binding TelegramFailureBodyText, UpdateSourceTrigger=LostFocus}"
                                     VerticalScrollBarVisibility="Visible" />
                             </StackPanel>
@@ -484,6 +487,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding EmailFailureSubjectText, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -501,6 +505,7 @@
                                     AcceptsReturn="True"
                                     AcceptsTab="True"
                                     HorizontalScrollBarVisibility="Visible"
+                                    AllowFailureTokens="True"
                                     Text="{Binding EmailFailureBodyText, UpdateSourceTrigger=LostFocus}"
                                     VerticalScrollBarVisibility="Visible" />
                             </StackPanel>
@@ -569,6 +574,7 @@
                                             Width="400"
                                             Margin="5,0,0,0"
                                             VerticalAlignment="Center"
+                                            AllowFailureTokens="True"
                                             Text="{Binding DiscordWebhookFailureTitle, UpdateSourceTrigger=LostFocus}" />
                                     </StackPanel>
 
@@ -583,6 +589,7 @@
                                             AcceptsReturn="True"
                                             AcceptsTab="True"
                                             HorizontalScrollBarVisibility="Visible"
+                                            AllowFailureTokens="True"
                                             Text="{Binding DiscordWebhookFailureMessage, UpdateSourceTrigger=LostFocus}"
                                             VerticalScrollBarVisibility="Visible" />
                                     </StackPanel>
@@ -858,6 +865,7 @@
                                             AcceptsReturn="True"
                                             AcceptsTab="True"
                                             HorizontalScrollBarVisibility="Visible"
+                                            AllowFailureTokens="True"
                                             Text="{Binding SlackFailureMessage, UpdateSourceTrigger=LostFocus}"
                                             VerticalScrollBarVisibility="Visible" />
                                     </StackPanel>
@@ -1072,6 +1080,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding NtfyShFailureTitle, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -1089,6 +1098,7 @@
                                     AcceptsReturn="True"
                                     AcceptsTab="True"
                                     HorizontalScrollBarVisibility="Visible"
+                                    AllowFailureTokens="True"
                                     Text="{Binding NtfyShFailureMessage, UpdateSourceTrigger=LostFocus}"
                                     VerticalScrollBarVisibility="Visible" />
                             </StackPanel>
@@ -1104,6 +1114,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding NtfyShFailureTags, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -1170,6 +1181,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding IftttFailureValue1, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -1184,6 +1196,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding IftttFailureValue2, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -1198,6 +1211,7 @@
                                     Width="400"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center"
+                                    AllowFailureTokens="True"
                                     Text="{Binding IftttFailureValue3, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
 
@@ -1747,6 +1761,7 @@
                                     AcceptsReturn="True"
                                     AcceptsTab="True"
                                     HorizontalScrollBarVisibility="Visible"
+                                    AllowFailureTokens="True"
                                     Text="{Binding TTSFailureMessage, UpdateSourceTrigger=LostFocus}"
                                     VerticalScrollBarVisibility="Visible" />
                             </StackPanel>

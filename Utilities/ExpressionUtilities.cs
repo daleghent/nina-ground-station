@@ -26,6 +26,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
     internal enum CompletionKind {
         Symbol,
         Function,
+        Token,
     }
 
     /// <summary>
@@ -197,6 +198,24 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             }
 
             return [.. items
+                .GroupBy(i => (i.Kind, i.Name), CompletionItemKeyComparer.Instance)
+                .Select(g => g.First())
+                .OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase)];
+        }
+
+        /// <summary>
+        /// Returns Ground Station's own $$TOKEN$$ message tokens, for use in autocompletion. Names
+        /// are returned bare, without the surrounding <c>$$</c> delimiters, matching how the caret
+        /// context is detected in the text box.
+        /// </summary>
+        /// <param name="includeFailureTokens">
+        /// When false, tokens belonging to <see cref="TokenGroup.Failure"/> are omitted. These
+        /// tokens only resolve in the message templates used by the Failures To... triggers.
+        /// </param>
+        internal static IList<CompletionItem> GetTokenCompletions(bool includeFailureTokens = false) {
+            return [.. GsTokenRegistry.All
+                .Where(t => includeFailureTokens || t.Group != TokenGroup.Failure)
+                .Select(t => new CompletionItem(t.Name, CompletionKind.Token))
                 .GroupBy(i => (i.Kind, i.Name), CompletionItemKeyComparer.Instance)
                 .Select(g => g.First())
                 .OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase)];

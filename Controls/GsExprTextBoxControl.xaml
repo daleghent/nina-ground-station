@@ -12,6 +12,15 @@
     xmlns:gslogic="clr-namespace:DaleGhent.NINA.GroundStation.Controls"
     xmlns:ns="clr-namespace:NINA.Core.Locale;assembly=NINA.Core"
     x:Name="root">
+    <UserControl.Resources>
+        <!--
+            The items must not take focus: clicking one would otherwise pull keyboard focus out of
+            the text box, which closes the popup before the click can be committed.
+        -->
+        <Style x:Key="CompletionItemStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="Focusable" Value="False" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <gslogic:GsTextBox
             x:Name="PART_TextBox"
@@ -82,8 +91,10 @@
             <Border
                 Background="{DynamicResource BackgroundBrush}"
                 BorderBrush="{DynamicResource BorderBrush}"
-                BorderThickness="1">
+                BorderThickness="1"
+                PreviewMouseWheel="OnCompletionPopupPreviewMouseWheel">
                 <ScrollViewer
+                    x:Name="PART_CompletionScrollViewer"
                     MaxHeight="300"
                     HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto">
@@ -104,6 +115,7 @@
                             BorderThickness="0"
                             DisplayMemberPath="Name"
                             Focusable="False"
+                            ItemContainerStyle="{StaticResource CompletionItemStyle}"
                             Foreground="{DynamicResource PrimaryBrush}"
                             MouseUp="OnCompletionListMouseUp" />
                         <TextBlock
@@ -120,6 +132,24 @@
                             BorderThickness="0"
                             DisplayMemberPath="Name"
                             Focusable="False"
+                            ItemContainerStyle="{StaticResource CompletionItemStyle}"
+                            Foreground="{DynamicResource PrimaryBrush}"
+                            MouseUp="OnCompletionListMouseUp" />
+                        <TextBlock
+                            x:Name="PART_TokensHeader"
+                            Margin="5,5,5,2"
+                            Padding="0,3,0,0"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource SecondaryBrush}"
+                            Text="Ground Station tokens" />
+                        <ListBox
+                            x:Name="PART_TokensList"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            DisplayMemberPath="Name"
+                            Focusable="False"
+                            ItemContainerStyle="{StaticResource CompletionItemStyle}"
                             Foreground="{DynamicResource PrimaryBrush}"
                             MouseUp="OnCompletionListMouseUp" />
                     </StackPanel>

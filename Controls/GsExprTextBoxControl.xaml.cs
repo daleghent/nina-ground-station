@@ -19,6 +19,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace DaleGhent.NINA.GroundStation.Controls {
     public partial class GsExprTextBoxControl : UserControl {
@@ -45,6 +47,10 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         public static readonly DependencyProperty SequenceContextProperty =
             DependencyProperty.Register(nameof(SequenceContext), typeof(ISequenceItem), typeof(GsExprTextBoxControl),
                 new PropertyMetadata(null, OnSymbolContextChanged));
+
+        public static readonly DependencyProperty AllowFailureTokensProperty =
+            DependencyProperty.Register(nameof(AllowFailureTokens), typeof(bool), typeof(GsExprTextBoxControl),
+                new PropertyMetadata(false));
 
         public static readonly DependencyProperty AcceptsReturnProperty =
             DependencyProperty.Register(nameof(AcceptsReturn), typeof(bool), typeof(GsExprTextBoxControl),
@@ -93,6 +99,15 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         public ISequenceItem SequenceContext {
             get => (ISequenceItem)GetValue(SequenceContextProperty);
             set => SetValue(SequenceContextProperty, value);
+        }
+
+        /// <summary>
+        /// True when this text box edits a message template used by a Failures To... trigger. Only
+        /// then are the $$FAILED...$$ and $$ERROR_LIST$$ tokens offered in autocompletion.
+        /// </summary>
+        public bool AllowFailureTokens {
+            get => (bool)GetValue(AllowFailureTokensProperty);
+            set => SetValue(AllowFailureTokensProperty, value);
         }
 
         public bool AcceptsReturn {
@@ -166,6 +181,10 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         [GeneratedRegex(@"[A-Za-z_][A-Za-z0-9_\.]*$")]
         private static partial Regex CompletionTokenRegex();
 
+        // Matches the characters that may make up a $$TOKEN$$ name, anchored to the whole input.
+        [GeneratedRegex(@"^[A-Za-z0-9_]*$")]
+        private static partial Regex TokenPrefixRegex();
+
         private bool suppressCompletion;
 
         private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e) {
@@ -181,14 +200,62 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         }
 
         private void OnCompletionListMouseUp(object sender, MouseButtonEventArgs e) {
-            if (sender is not ListBox list || list.SelectedIndex < 0) {
+            if (sender is not ListBox list) {
                 return;
             }
 
-            // The click already moved the selection within the clicked list; clear the other one so
-            // that the commit picks up the intended entry.
-            SelectInList(list, list.SelectedIndex);
+            // The item containers are not focusable, so the click does not move the selection by
+            // itself. Resolve the clicked container and select it explicitly before committing.
+            var container = ItemContainerFrom(e.OriginalSource as DependencyObject, list);
+
+            if (container is null) {
+                return;
+            }
+
+            var index = list.ItemContainerGenerator.IndexFromContainer(container);
+
+            if (index < 0) {
+                return;
+            }
+
+            SelectInList(list, index);
             CommitCompletion();
+
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Walks up from the clicked element to the <see cref="ListBoxItem"/> that belongs to
+        /// <paramref name="list"/>, or null when the click did not land on an item.
+        /// </summary>
+        private static ListBoxItem ItemContainerFrom(DependencyObject source, ListBox list) {
+            while (source != null && source != list) {
+                if (source is ListBoxItem item) {
+                    return item;
+                }
+
+                source = source is Visual or Visual3D
+                    ? VisualTreeHelper.GetParent(source)
+                    : LogicalTreeHelper.GetParent(source);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Each section's ListBox has its own ScrollViewer, which swallows the wheel even though it
+        /// has nothing to scroll. Forward the wheel to the popup's outer ScrollViewer instead so
+        /// that a long completion list can be scrolled with the wheel.
+        /// </summary>
+        private void OnCompletionPopupPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            if (e.Handled || PART_CompletionScrollViewer is null) {
+                return;
+            }
+
+            PART_CompletionScrollViewer.ScrollToVerticalOffset(
+                PART_CompletionScrollViewer.VerticalOffset - e.Delta);
+
+            e.Handled = true;
         }
 
         private void OnTextBoxPreviewKeyDown(object sender, KeyEventArgs e) {
@@ -262,6 +329,13 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         }
 
         private void ShowCompletions(bool force = false) {
+            // Ground Station's own $$TOKEN$$ syntax and N.I.N.A.'s {Symbol} syntax are mutually
+            // exclusive at any given caret position, so only one of them is ever offered.
+            if (IsCaretInsideToken(out var tokenPrefix)) {
+                ShowTokenCompletions(tokenPrefix);
+                return;
+            }
+
             var broker = EffectiveSymbolBroker;
 
             if (broker == null || !IsCaretInsideExpression(out var prefix)) {
@@ -288,11 +362,42 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
             PART_SymbolsList.ItemsSource = symbols.Count > 0 ? symbols : null;
             PART_FunctionsList.ItemsSource = functions.Count > 0 ? functions : null;
+            PART_TokensList.ItemsSource = null;
 
             SetSectionVisibility(PART_SymbolsHeader, PART_SymbolsList, symbols.Count > 0);
             SetSectionVisibility(PART_FunctionsHeader, PART_FunctionsList, functions.Count > 0);
+            SetSectionVisibility(PART_TokensHeader, PART_TokensList, false);
 
             SelectInList(symbols.Count > 0 ? PART_SymbolsList : PART_FunctionsList, 0);
+
+            PositionPopupAtCaret();
+
+            PART_CompletionPopup.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Offers Ground Station's message tokens. Unlike the symbol popup, an empty prefix is
+        /// offered as well, so that typing the opening <c>$$</c> lists everything that is available.
+        /// </summary>
+        private void ShowTokenCompletions(string prefix) {
+            var matches = ExpressionUtilities.GetTokenCompletions(AllowFailureTokens)
+                .Where(i => i.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (matches.Count == 0) {
+                HideCompletions();
+                return;
+            }
+
+            PART_SymbolsList.ItemsSource = null;
+            PART_FunctionsList.ItemsSource = null;
+            PART_TokensList.ItemsSource = matches;
+
+            SetSectionVisibility(PART_SymbolsHeader, PART_SymbolsList, false);
+            SetSectionVisibility(PART_FunctionsHeader, PART_FunctionsList, false);
+            SetSectionVisibility(PART_TokensHeader, PART_TokensList, true);
+
+            SelectInList(PART_TokensList, 0);
 
             PositionPopupAtCaret();
 
@@ -335,8 +440,11 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         /// selection of the other list so that only a single entry is ever highlighted.
         /// </summary>
         private void SelectInList(ListBox list, int index) {
-            var other = ReferenceEquals(list, PART_SymbolsList) ? PART_FunctionsList : PART_SymbolsList;
-            other.SelectedIndex = -1;
+            foreach (var other in CompletionLists) {
+                if (!ReferenceEquals(other, list)) {
+                    other.SelectedIndex = -1;
+                }
+            }
 
             list.SelectedIndex = index;
 
@@ -345,25 +453,28 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             }
         }
 
+        /// <summary>
+        /// Every completion section, in display order.
+        /// </summary>
+        private ListBox[] CompletionLists => [PART_SymbolsList, PART_FunctionsList, PART_TokensList];
+
         private CompletionItem SelectedCompletion
-            => PART_SymbolsList.SelectedItem as CompletionItem ?? PART_FunctionsList.SelectedItem as CompletionItem;
+            => CompletionLists.Select(l => l.SelectedItem as CompletionItem).FirstOrDefault(i => i != null);
 
         /// <summary>
-        /// The visible sections in display order, used for selection traversal across both lists.
+        /// The visible sections in display order, used for selection traversal across the lists.
         /// </summary>
         private ListBox[] VisibleCompletionLists
-            => new[] { PART_SymbolsList, PART_FunctionsList }
-                .Where(l => l.Visibility == Visibility.Visible && l.Items.Count > 0)
-                .ToArray();
+            => [.. CompletionLists.Where(l => l.Visibility == Visibility.Visible && l.Items.Count > 0)];
 
         private void HideCompletions() {
             PART_CompletionPopup.IsOpen = false;
             PART_CompletionPopup.PlacementRectangle = Rect.Empty;
 
-            PART_SymbolsList.SelectedIndex = -1;
-            PART_FunctionsList.SelectedIndex = -1;
-            PART_SymbolsList.ItemsSource = null;
-            PART_FunctionsList.ItemsSource = null;
+            foreach (var list in CompletionLists) {
+                list.SelectedIndex = -1;
+                list.ItemsSource = null;
+            }
         }
 
         /// <summary>
@@ -393,9 +504,60 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             return true;
         }
 
+        /// <summary>
+        /// Determines whether the caret sits inside an unterminated <c>$$ $$</c> token and, if so,
+        /// returns the partial token name that precedes the caret. Because the delimiter is
+        /// symmetric, the caret is taken to be inside a token when an odd number of <c>$$</c> pairs
+        /// precedes it.
+        /// </summary>
+        private bool IsCaretInsideToken(out string prefix) {
+            prefix = string.Empty;
+
+            var caret = PART_TextBox.CaretIndex;
+            var text = PART_TextBox.Text ?? string.Empty;
+
+            if (caret < 2 || caret > text.Length) {
+                return false;
+            }
+
+            var head = text[..caret];
+
+            var delimiters = 0;
+            var open = -1;
+
+            for (var i = 0; i + 1 < head.Length;) {
+                if (head[i] == '$' && head[i + 1] == '$') {
+                    delimiters++;
+                    open = i;
+                    i += 2;
+                } else {
+                    i++;
+                }
+            }
+
+            if (delimiters % 2 == 0) {
+                return false;
+            }
+
+            var partial = head[(open + 2)..];
+
+            if (!TokenPrefixRegex().IsMatch(partial)) {
+                return false;
+            }
+
+            prefix = partial;
+
+            return true;
+        }
+
         private void CommitCompletion() {
             if (SelectedCompletion is not CompletionItem selected) {
                 HideCompletions();
+                return;
+            }
+
+            if (selected.Kind == CompletionKind.Token) {
+                CommitTokenCompletion(selected);
                 return;
             }
 
@@ -425,6 +587,45 @@ namespace DaleGhent.NINA.GroundStation.Controls {
                 insertion = selected.Name + closingBrace;
                 caretOffset = selected.Name.Length + 1;
             }
+
+            suppressCompletion = true;
+
+            try {
+                PART_TextBox.Text = string.Concat(text[..start], insertion, tail);
+                PART_TextBox.CaretIndex = start + caretOffset;
+            } finally {
+                suppressCompletion = false;
+            }
+
+            HideCompletions();
+        }
+
+        /// <summary>
+        /// Inserts a Ground Station message token, closing it with <c>$$</c>. Tokens that take an
+        /// argument insert a sample template instead of the bare name and park the caret on the
+        /// argument so that it can be typed over.
+        /// </summary>
+        private void CommitTokenCompletion(CompletionItem selected) {
+            if (!IsCaretInsideToken(out var prefix)) {
+                HideCompletions();
+                return;
+            }
+
+            var caret = PART_TextBox.CaretIndex;
+            var start = caret - prefix.Length;
+            var text = PART_TextBox.Text ?? string.Empty;
+            var tail = text[caret..];
+
+            GsTokenRegistry.TryGet(selected.Name, out var token);
+
+            var body = token?.CompletionTemplate ?? selected.Name;
+
+            // Always close the token. If the text immediately following the caret already terminates
+            // it, skip over that delimiter instead of inserting a duplicate one.
+            var existingDelimiter = tail.StartsWith("$$", StringComparison.Ordinal);
+            var insertion = existingDelimiter ? body : body + "$$";
+
+            var caretOffset = token?.CompletionCaretOffset ?? body.Length + 2;
 
             suppressCompletion = true;
 
