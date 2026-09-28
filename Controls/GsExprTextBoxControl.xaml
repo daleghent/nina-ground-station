@@ -22,21 +22,37 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <gslogic:GsTextBox
-            x:Name="PART_TextBox"
-            MinWidth="40"
-            Padding="5,0,5,0"
+        <Border
+            x:Name="PART_ExprBorder"
             HorizontalAlignment="Stretch"
-            HorizontalScrollBarVisibility="{Binding HorizontalScrollBarVisibility, ElementName=root}"
-            VerticalScrollBarVisibility="{Binding VerticalScrollBarVisibility, ElementName=root}"
-            AcceptsReturn="{Binding AcceptsReturn, ElementName=root}"
-            AcceptsTab="{Binding AcceptsTab, ElementName=root}"
-            Text="{Binding Text, ElementName=root, UpdateSourceTrigger=LostFocus}"
-            TextAlignment="{Binding TextAlignment, ElementName=root}"
-            TextWrapping="{Binding TextWrapping, ElementName=root}"
-            PreviewKeyDown="OnTextBoxPreviewKeyDown"
-            TextChanged="OnTextBoxTextChanged"
-            LostKeyboardFocus="OnTextBoxLostKeyboardFocus">
+            BorderBrush="{DynamicResource ButtonForegroundBrush}"
+            BorderThickness="1"
+            CornerRadius="2">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AcceptsReturn, ElementName=root}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <gslogic:GsTextBox
+                x:Name="PART_TextBox"
+                MinWidth="40"
+                Padding="5,0,5,0"
+                HorizontalAlignment="Stretch"
+                HorizontalScrollBarVisibility="{Binding HorizontalScrollBarVisibility, ElementName=root}"
+                VerticalScrollBarVisibility="{Binding VerticalScrollBarVisibility, ElementName=root}"
+                AcceptsReturn="{Binding AcceptsReturn, ElementName=root}"
+                AcceptsTab="{Binding AcceptsTab, ElementName=root}"
+                Text="{Binding Text, ElementName=root, UpdateSourceTrigger=LostFocus}"
+                TextAlignment="{Binding TextAlignment, ElementName=root}"
+                TextWrapping="{Binding TextWrapping, ElementName=root}"
+                PreviewKeyDown="OnTextBoxPreviewKeyDown"
+                TextChanged="OnTextBoxTextChanged"
+                LostKeyboardFocus="OnTextBoxLostKeyboardFocus">
             <gslogic:GsTextBox.ToolTip>
                 <ToolTip
                     MaxWidth="500"
@@ -62,6 +78,7 @@
                     <Setter Property="Height" Value="Auto" />
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Setter Property="BorderThickness" Value="0" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding AcceptsReturn, ElementName=root}" Value="True">
                             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -77,7 +94,8 @@
                     </Style.Triggers>
                 </Style>
             </gslogic:GsTextBox.Style>
-        </gslogic:GsTextBox>
+            </gslogic:GsTextBox>
+        </Border>
 
         <Popup
             x:Name="PART_CompletionPopup"
