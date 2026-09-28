@@ -11,6 +11,7 @@
 #endregion "copyright"
 
 using NINA.Core.Utility;
+using NINA.Sequencer;
 using NINA.Sequencer.Logic;
 using NINA.Sequencer.SequenceItem;
 using System;
@@ -71,6 +72,15 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 Logger.Warning($"Failed to expand expression: {ex.Message}");
                 return text;
             }
+        }
+
+        /// <summary>
+        /// Expands any symbol expressions contained in <paramref name="text"/> using the failed
+        /// sequence entity for context. Failure triggers are not themselves sequence items, so the
+        /// entity that raised the failure supplies the sequence scope that symbol lookup needs.
+        /// </summary>
+        internal static string ExpandForEntity(string text, ISymbolBroker symbolBroker, ISequenceEntity sequenceEntity) {
+            return Expand(text, symbolBroker, sequenceEntity as ISequenceItem);
         }
 
         /// <summary>

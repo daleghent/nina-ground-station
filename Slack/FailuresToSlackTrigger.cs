@@ -190,6 +190,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
 
             var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.SlackFailureMessage, item.Entity, metadata);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+            message = Utilities.ExpressionUtilities.ExpandForEntity(message, SymbolBroker, item.Entity);
 
             var attempts = 3; // Todo: Make it configurable?
 

@@ -194,6 +194,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToEmailTrigger {
             subject = Utilities.Utilities.ResolveFailureTokens(subject, failedItem);
             body = Utilities.Utilities.ResolveFailureTokens(body, failedItem);
 
+            subject = Utilities.ExpressionUtilities.ExpandForEntity(subject, SymbolBroker, item.Entity);
+            body = Utilities.ExpressionUtilities.ExpandForEntity(body, SymbolBroker, item.Entity);
+
             var attempts = 3; // Todo: Make it configurable?
 
             for (int i = 0; i < attempts; i++) {

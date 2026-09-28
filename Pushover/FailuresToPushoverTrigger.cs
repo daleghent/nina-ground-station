@@ -183,6 +183,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToPushoverTrigger {
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
+            title = Utilities.ExpressionUtilities.ExpandForEntity(title, SymbolBroker, item.Entity);
+            message = Utilities.ExpressionUtilities.ExpandForEntity(message, SymbolBroker, item.Entity);
+
             Logger.Info($"{this.Name}: Sending {title}");
 
             var attempts = 3; // Todo: Make it configurable?

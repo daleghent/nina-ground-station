@@ -28,6 +28,13 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         internal const string RuntimeErrorMessage = "An unspecified failure occurred while running this item. Refer to NINA's log for details.";
         internal const int cancelTimeout = 10; // in seconds
 
+        /// <summary>
+        /// Resolves Ground Station's $$TOKEN$$ message tokens. Tokens that have a N.I.N.A. 3.3 symbol
+        /// equivalent are marked "Deprecated:" below and remain supported for compatibility; new
+        /// messages should use the {Symbol} expression syntax, which is expanded separately by
+        /// <see cref="ExpressionUtilities"/> after this method returns. Tokens without such a marker
+        /// have no symbol equivalent and remain the only way to obtain that value.
+        /// </summary>
         internal static string ResolveTokens(string text, ISequenceEntity sequenceItem = null, IMetadata metadata = null, bool urlEncode = false) {
             IDeepSkyObject target = null;
             CultureInfo culture = CultureInfo.InvariantCulture;
@@ -43,6 +50,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             var datetime = DateTime.Now;
             var datetimeUtc = datetime.ToUniversalTime();
 
+            // Deprecated: use {NINA_TargetName}
             text = !string.IsNullOrEmpty(target?.Name)
                 ? text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, target.Name))
                 : text.Replace(@"$$TARGET_NAME$$", DoUrlEncode(urlEncode, "----"));
@@ -55,10 +63,12 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                 ? text.Replace(@"$$TARGET_DEC$$", DoUrlEncode(urlEncode, target.Coordinates.DecString))
                 : text.Replace(@"$$TARGET_DEC$$", DoUrlEncode(urlEncode, "----"));
 
+            // Deprecated: use {NINA_TargetRAJ2000}, which is unformatted
             text = !string.IsNullOrEmpty(target?.Coordinates.RA.ToString())
                 ? text.Replace(@"$$TARGET_RA_DECIMAL$$", DoUrlEncode(urlEncode, target.Coordinates.RA.ToString("F3", culture)))
                 : text.Replace(@"$$TARGET_RA_DECIMAL$$", DoUrlEncode(urlEncode, "----"));
 
+            // Deprecated: use {NINA_TargetDecJ2000}, which is unformatted
             text = !string.IsNullOrEmpty(target?.Coordinates.Dec.ToString())
                 ? text.Replace(@"$$TARGET_DEC_DECIMAL$$", DoUrlEncode(urlEncode, target.Coordinates.Dec.ToString("F3", culture)))
                 : text.Replace(@"$$TARGET_DEC_DECIMAL$$", DoUrlEncode(urlEncode, "----"));
@@ -108,6 +118,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         DoUrlEncode(urlEncode, camera.Battery.ToString("F", culture)) :
                         DoUrlEncode(urlEncode, "--"));
 
+                // Deprecated: use {Camera_Temperature}, which is unformatted
                 text = text.Replace(@"$$CAMERA_SENSOR_TEMP$$", double.IsNaN(camera.Temperature) ?
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, camera.Temperature.ToString("F", culture)));
@@ -124,8 +135,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                 text = text.Replace(@"$$DOME_IS_HOME$$", DoUrlEncode(urlEncode, dome.AtHome.ToString()));
 
+                // Retained: {Dome_ShutterStatus} yields a numeric constant, not this readable name
                 text = text.Replace(@"$$DOME_SHUTTER$$", DoUrlEncode(urlEncode, dome.ShutterStatus.ToString()));
 
+                // Deprecated: use {Dome_Azimuth}, which is unformatted
                 text = text.Replace(@"$$DOME_AZ_DECIMAL$$", DoUrlEncode(urlEncode, dome.Azimuth.ToString("F3", culture)));
             } else {
                 var pattern = DomeRegex();
@@ -140,6 +153,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         DoUrlEncode(urlEncode, "----") :
                         DoUrlEncode(urlEncode, fwheel.SelectedFilter.Name));
 
+                // Deprecated: use {FilterWheel_CurrentFilterIndex}
                 text = text.Replace(@"$$FWHEEL_FILTER_POS$$", (fwheel.SelectedFilter?.Position ?? -1) < 0 ?
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, fwheel.SelectedFilter.Position.ToString(culture)));
@@ -152,8 +166,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (flat.Connected) {
                 text = text.Replace(@"$$FLAT_NAME$$", DoUrlEncode(urlEncode, flat.Name));
 
+                // Retained: {FlatPanel_CoverState} yields a numeric constant, not this localized text
                 text = text.Replace(@"$$FLAT_COVER_STATUS$$", DoUrlEncode(urlEncode, flat.LocalizedCoverState));
 
+                // Retained: {FlatPanel_LightOn} yields a boolean, not this localized text
                 text = text.Replace(@"$$FLAT_LAMP_STATUS$$", DoUrlEncode(urlEncode, flat.LocalizedLightOnState));
             } else {
                 var pattern = FlatDeviceRegex();
@@ -164,8 +180,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (focuser.Connected) {
                 text = text.Replace(@"$$FOCUSER_NAME$$", DoUrlEncode(urlEncode, focuser.Name));
 
+                // Deprecated: use {Focuser_Position}
                 text = text.Replace(@"$$FOCUSER_POSITION$$", DoUrlEncode(urlEncode, focuser.Position.ToString(culture)));
 
+                // Deprecated: use {Focuser_Temperature}, which is unformatted
                 text = text.Replace(@"$$FOCUSER_TEMP$$", double.IsNaN(focuser.Temperature) ?
                         DoUrlEncode(urlEncode, "--") :
                         DoUrlEncode(urlEncode, focuser.Temperature.ToString("F", culture)));
@@ -178,8 +196,10 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (rotator.Connected) {
                 text = text.Replace(@"$$ROTATOR_NAME$$", DoUrlEncode(urlEncode, rotator.Name));
 
+                // Deprecated: use {Rotator_MechanicalPosition}, which is unformatted
                 text = text.Replace(@"$$ROTATOR_ANGLE$$", DoUrlEncode(urlEncode, rotator.MechanicalPosition.ToString("F", culture)));
 
+                // Deprecated: use {Rotator_Position}, which is unformatted
                 text = text.Replace(@"$$ROTATOR_SKY_ANGLE$$", DoUrlEncode(urlEncode, rotator.Position.ToString("F", culture)));
 
                 text = text.Replace(@"$$ROTATOR_IS_SYNCED$$", DoUrlEncode(urlEncode, rotator.Synced.ToString()));
@@ -192,6 +212,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (safety.Connected) {
                 text = text.Replace(@"$$SAFETY_NAME$$", DoUrlEncode(urlEncode, safety.Name));
 
+                // Deprecated: use {Safety_IsSafe}
                 text = text.Replace(@"$$SAFETY_IS_SAFE$$", DoUrlEncode(urlEncode, safety.IsSafe.ToString()));
             } else {
                 var pattern = SafetyRegex();
@@ -202,26 +223,34 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             if (mount.Connected) {
                 text = text.Replace(@"$$MOUNT_NAME$$", DoUrlEncode(urlEncode, mount.Name));
 
+                // Retained: {Mount_SideOfPier} yields a numeric constant, not this readable name
                 text = text.Replace(@"$$MOUNT_POINTING_STATE$$", DoUrlEncode(urlEncode, mount.SideOfPier.ToString()));
 
                 text = text.Replace(@"$$MOUNT_RA$$", DoUrlEncode(urlEncode, mount.Coordinates.RAString));
 
+                // Not equivalent to {Mount_RightAscensionJ2000}: that symbol is transformed to J2000,
+                // whereas this token reports the mount's native epoch
                 text = text.Replace(@"$$MOUNT_RA_DECIMAL$$", DoUrlEncode(urlEncode, mount.Coordinates.RA.ToString("F3", culture)));
 
                 text = text.Replace(@"$$MOUNT_DEC$$", DoUrlEncode(urlEncode, mount.Coordinates.DecString));
 
+                // Not equivalent to {Mount_DeclinationJ2000}: that symbol is transformed to J2000,
+                // whereas this token reports the mount's native epoch
                 text = text.Replace(@"$$MOUNT_DEC_DECIMAL$$", DoUrlEncode(urlEncode, mount.Coordinates.Dec.ToString("F3", culture)));
 
+                // Deprecated: use {Mount_AtPark}
                 text = text.Replace(@"$$MOUNT_IS_PARKED$$", DoUrlEncode(urlEncode, mount.AtPark.ToString()));
 
                 text = text.Replace(@"$$MOUNT_IS_HOME$$", DoUrlEncode(urlEncode, mount.AtHome.ToString()));
 
                 text = text.Replace(@"$$MOUNT_ALT$$", DoUrlEncode(urlEncode, mount.AltitudeString));
 
+                // Deprecated: use {Mount_Altitude}, which is unformatted
                 text = text.Replace(@"$$MOUNT_ALT_DECIMAL$$", DoUrlEncode(urlEncode, mount.Altitude.ToString("F3", culture)));
 
                 text = text.Replace(@"$$MOUNT_AZ$$", DoUrlEncode(urlEncode, mount.AzimuthString));
 
+                // Deprecated: use {Mount_Azimuth}, which is unformatted
                 text = text.Replace(@"$$MOUNT_AZ_DECIMAL$$", DoUrlEncode(urlEncode, mount.Azimuth.ToString("F3", culture)));
 
                 text = text.Replace(@"$$MOUNT_TTF$$", DoUrlEncode(urlEncode, mount.TimeToMeridianFlipString));
@@ -231,6 +260,8 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
             }
 
             // Weather info
+            // Deprecated, except $$WX_NAME$$: every $$WX_*$$ token below has an unformatted
+            // {Weather_*} symbol equivalent, eg. $$WX_AMBTEMP$$ -> {Weather_Temperature}
             if (weather.Connected) {
                 text = text.Replace(@"$$WX_NAME$$", DoUrlEncode(urlEncode, weather.Name));
 

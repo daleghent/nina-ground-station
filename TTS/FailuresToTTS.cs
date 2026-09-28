@@ -173,6 +173,7 @@ namespace DaleGhent.NINA.GroundStation.TTS {
             var failedItem = FailedItem.FromEntity(item.Entity, item.Exception);
             var text = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TTSFailureMessage, item.Entity, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
+            text = Utilities.ExpressionUtilities.ExpandForEntity(text, SymbolBroker, item.Entity);
 
             Logger.Info($"{Name}: Speaking \"{text}\"");
             using var tts = new TextToSpeech();

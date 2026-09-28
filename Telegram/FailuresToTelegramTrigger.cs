@@ -174,6 +174,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToTelegramTrigger {
 
             var message = Utilities.Utilities.ResolveTokens(GroundStation.GroundStationConfig.TelegramFailureBodyText, item.Entity, metadata);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
+            message = Utilities.ExpressionUtilities.ExpandForEntity(message, SymbolBroker, item.Entity);
 
             Logger.Info($"{this.Name}: Sending {message}");
 

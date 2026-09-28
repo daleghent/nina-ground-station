@@ -184,6 +184,9 @@ namespace DaleGhent.NINA.GroundStation.FailuresToDiscordWebhookTrigger {
             title = Utilities.Utilities.ResolveFailureTokens(title, failedItem);
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
 
+            title = Utilities.ExpressionUtilities.ExpandForEntity(title, SymbolBroker, item.Entity);
+            message = Utilities.ExpressionUtilities.ExpandForEntity(message, SymbolBroker, item.Entity);
+
             var edgeColor = GroundStation.GroundStationConfig.DiscordFailureMessageEdgeColor;
 
             var embed = new EmbedBuilder {

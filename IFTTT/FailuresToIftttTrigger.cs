@@ -254,6 +254,7 @@ namespace DaleGhent.NINA.GroundStation.FailuresToIftttTrigger {
         private string ResolveAllTokens(string text, FailedItem failedItem, IMetadata metadata) {
             text = Utilities.Utilities.ResolveTokens(text, this.Parent, metadata);
             text = Utilities.Utilities.ResolveFailureTokens(text, failedItem);
+            text = Utilities.ExpressionUtilities.ExpandForEntity(text, SymbolBroker, this.Parent);
 
             return text;
         }

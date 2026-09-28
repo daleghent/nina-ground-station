@@ -181,6 +181,10 @@ namespace DaleGhent.NINA.GroundStation.NtfySh {
             message = Utilities.Utilities.ResolveFailureTokens(message, failedItem);
             tags = Utilities.Utilities.ResolveFailureTokens(tags, failedItem);
 
+            title = Utilities.ExpressionUtilities.ExpandForEntity(title, SymbolBroker, item.Entity);
+            message = Utilities.ExpressionUtilities.ExpandForEntity(message, SymbolBroker, item.Entity);
+            tags = Utilities.ExpressionUtilities.ExpandForEntity(tags, SymbolBroker, item.Entity);
+
             var attempts = 3; // Todo: Make it configurable?
 
             for (int i = 0; i < attempts; i++) {
