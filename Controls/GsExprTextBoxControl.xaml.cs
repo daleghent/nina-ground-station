@@ -172,8 +172,16 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         private ISequenceItem EffectiveSequenceContext
             => SequenceContext ?? DataContext as ISequenceItem;
 
+        /// <summary>
+        /// Recomputes the expanded preview shown in the tooltip. A result that carries no visible
+        /// characters is normalized to null so that the tooltip is suppressed outright: an expression
+        /// that is still being typed commonly expands to nothing, and a whitespace only result would
+        /// otherwise surface as an empty tooltip box.
+        /// </summary>
         private void UpdateProcessedText() {
-            ProcessedText = ExpressionUtilities.Expand(Text, EffectiveSymbolBroker, EffectiveSequenceContext);
+            var expanded = ExpressionUtilities.Expand(Text, EffectiveSymbolBroker, EffectiveSequenceContext);
+
+            ProcessedText = string.IsNullOrWhiteSpace(expanded) ? null : expanded;
         }
 
         #region Symbol autocompletion

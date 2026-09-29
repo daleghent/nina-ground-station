@@ -92,43 +92,19 @@
                 PreviewKeyDown="OnTextBoxPreviewKeyDown"
                 TextChanged="OnTextBoxTextChanged"
                 LostKeyboardFocus="OnTextBoxLostKeyboardFocus">
-            <gslogic:GsTextBox.ToolTip>
-                <ToolTip
-                    MaxWidth="500"
-                    Background="{DynamicResource BackgroundBrush}"
-                    BorderBrush="{DynamicResource BorderBrush}"
-                    BorderThickness="1"
-                    Foreground="{DynamicResource PrimaryBrush}"
-                    Content="{Binding ProcessedText, ElementName=root}"
-                    HasDropShadow="True">
-                    <ToolTip.ContentTemplate>
-                        <DataTemplate>
-                            <TextBlock
-                                Margin="5"
-                                Foreground="{DynamicResource PrimaryBrush}"
-                                Text="{Binding}"
-                                TextWrapping="Wrap" />
-                        </DataTemplate>
-                    </ToolTip.ContentTemplate>
-                </ToolTip>
-            </gslogic:GsTextBox.ToolTip>
             <gslogic:GsTextBox.Style>
                 <Style TargetType="gslogic:GsTextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                     <Setter Property="Height" Value="Auto" />
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
                     <Setter Property="BorderThickness" Value="0" />
+                    <!-- The expression text box never shows a tooltip of its own. -->
+                    <Setter Property="ToolTipService.IsEnabled" Value="False" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding AcceptsReturn, ElementName=root}" Value="True">
                             <Setter Property="VerticalAlignment" Value="Stretch" />
                             <Setter Property="VerticalContentAlignment" Value="Top" />
                             <Setter Property="MinHeight" Value="35" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ProcessedText, ElementName=root}" Value="{x:Null}">
-                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ProcessedText, ElementName=root}" Value="">
-                            <Setter Property="ToolTipService.IsEnabled" Value="False" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
