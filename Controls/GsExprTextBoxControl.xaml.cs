@@ -620,9 +620,14 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             int caretOffset;
 
             if (selected.Kind == CompletionKind.Function) {
-                // Functions take arguments, so park the caret between the parentheses.
                 insertion = $"{selected.Name}()" + closingBrace;
-                caretOffset = selected.Name.Length + 1;
+
+                // A function that takes arguments wants the caret between the parentheses, ready for
+                // the first one. One that takes none is already complete, so move past the whole
+                // expression instead, skipping over a closing brace that was already there.
+                caretOffset = selected.MaxArgs > 0
+                    ? selected.Name.Length + 1
+                    : selected.Name.Length + 3;
             } else {
                 insertion = selected.Name + closingBrace;
                 caretOffset = selected.Name.Length + 1;

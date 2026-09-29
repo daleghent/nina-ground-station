@@ -20,6 +20,45 @@
         <Style x:Key="CompletionItemStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
             <Setter Property="Focusable" Value="False" />
         </Style>
+        <!--
+            Functions are annotated with the number of arguments they accept, and carry N.I.N.A.'s
+            own description and usage example as a tooltip. A null ToolTipText yields no tooltip.
+        -->
+        <DataTemplate x:Key="FunctionCompletionTemplate">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding ToolTipText}">
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock
+                    Margin="6,0,0,0"
+                    Foreground="{DynamicResource SecondaryBrush}"
+                    Text="{Binding ArgumentHint}" />
+            </StackPanel>
+        </DataTemplate>
+        <!--
+            Symbols are annotated with the source that publishes them, which many symbols do not
+            declare, so the annotation collapses when it is empty rather than leaving a gap.
+        -->
+        <DataTemplate x:Key="SymbolCompletionTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock
+                    Margin="6,0,0,0"
+                    Foreground="{DynamicResource SecondaryBrush}"
+                    Text="{Binding Category}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Category}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Category}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Border
@@ -131,9 +170,9 @@
                             x:Name="PART_SymbolsList"
                             Background="Transparent"
                             BorderThickness="0"
-                            DisplayMemberPath="Name"
                             Focusable="False"
                             ItemContainerStyle="{StaticResource CompletionItemStyle}"
+                            ItemTemplate="{StaticResource SymbolCompletionTemplate}"
                             Foreground="{DynamicResource PrimaryBrush}"
                             MouseUp="OnCompletionListMouseUp" />
                         <TextBlock
@@ -148,9 +187,9 @@
                             x:Name="PART_FunctionsList"
                             Background="Transparent"
                             BorderThickness="0"
-                            DisplayMemberPath="Name"
                             Focusable="False"
                             ItemContainerStyle="{StaticResource CompletionItemStyle}"
+                            ItemTemplate="{StaticResource FunctionCompletionTemplate}"
                             Foreground="{DynamicResource PrimaryBrush}"
                             MouseUp="OnCompletionListMouseUp" />
                         <TextBlock
