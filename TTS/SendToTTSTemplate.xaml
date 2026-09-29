@@ -19,9 +19,18 @@
     <DataTemplate DataType="{x:Type local:SendToTTS}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="Message" />
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="Message" />
                     <gslogic:GsExprTextBoxControl
+                        Grid.Column="1"
+                        MinWidth="350"
                         MaxHeight="150"
                         Margin="5,3,0,3"
                         HorizontalAlignment="Stretch"
@@ -30,7 +39,7 @@
                         SymbolBroker="{Binding SymbolBroker}"
                         Text="{Binding Message}"
                         VerticalScrollBarVisibility="Auto" />
-                </StackPanel>
+                </Grid>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>

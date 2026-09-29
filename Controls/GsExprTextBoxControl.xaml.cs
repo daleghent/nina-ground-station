@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 
 namespace DaleGhent.NINA.GroundStation.Controls {
     public partial class GsExprTextBoxControl : UserControl {
@@ -261,7 +262,7 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         private void OnTextBoxPreviewKeyDown(object sender, KeyEventArgs e) {
             if (!PART_CompletionPopup.IsOpen) {
                 if (e.Key == Key.Space && Keyboard.Modifiers == ModifierKeys.Control) {
-                    ShowCompletions(force: true);
+                    ShowCompletions();
                     e.Handled = true;
                 }
 
@@ -328,7 +329,7 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             }
         }
 
-        private void ShowCompletions(bool force = false) {
+        private void ShowCompletions() {
             // Ground Station's own $$TOKEN$$ syntax and N.I.N.A.'s {Symbol} syntax are mutually
             // exclusive at any given caret position, so only one of them is ever offered.
             if (IsCaretInsideToken(out var tokenPrefix)) {
@@ -339,11 +340,6 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             var broker = EffectiveSymbolBroker;
 
             if (broker == null || !IsCaretInsideExpression(out var prefix)) {
-                HideCompletions();
-                return;
-            }
-
-            if (string.IsNullOrEmpty(prefix) && !force) {
                 HideCompletions();
                 return;
             }
@@ -376,7 +372,7 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         }
 
         /// <summary>
-        /// Offers Ground Station's message tokens. Unlike the symbol popup, an empty prefix is
+        /// Offers Ground Station's message tokens. As with the symbol popup, an empty prefix is
         /// offered as well, so that typing the opening <c>$$</c> lists everything that is available.
         /// </summary>
         private void ShowTokenCompletions(string prefix) {
@@ -437,7 +433,8 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
         /// <summary>
         /// Moves the selection to <paramref name="index"/> of <paramref name="list"/>, clearing the
-        /// selection of the other list so that only a single entry is ever highlighted.
+        /// selection of the other list so that only a single entry is ever highlighted, and scrolls
+        /// the selected entry into view.
         /// </summary>
         private void SelectInList(ListBox list, int index) {
             foreach (var other in CompletionLists) {
@@ -450,7 +447,30 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
             if (list.SelectedItem != null) {
                 list.ScrollIntoView(list.SelectedItem);
+                BringSelectionIntoView(list);
             }
+        }
+
+        /// <summary>
+        /// The sections are stacked inside a single outer <see cref="ScrollViewer"/>, so the lists
+        /// themselves never scroll and <see cref="ListBox.ScrollIntoView"/> alone cannot reveal an
+        /// entry that lies outside the visible region. Ask the generated container to bring itself
+        /// into view so that the outer viewer follows the selection instead. The container may not
+        /// exist yet when the items source has only just been assigned, in which case the request is
+        /// deferred until layout has run.
+        /// </summary>
+        private void BringSelectionIntoView(ListBox list) {
+            if (list.ItemContainerGenerator.ContainerFromItem(list.SelectedItem) is FrameworkElement container) {
+                container.BringIntoView();
+                return;
+            }
+
+            Dispatcher.BeginInvoke(() => {
+                if (list.SelectedItem != null
+                    && list.ItemContainerGenerator.ContainerFromItem(list.SelectedItem) is FrameworkElement deferred) {
+                    deferred.BringIntoView();
+                }
+            }, DispatcherPriority.Loaded);
         }
 
         /// <summary>
@@ -498,10 +518,30 @@ namespace DaleGhent.NINA.GroundStation.Controls {
                 return false;
             }
 
+            // A backslash escaped brace is emitted literally by ExpressionUtilities.ExpandWithEscapes
+            // and does not open an expression, so it must not open the completion popup either.
+            if (IsEscaped(head, open)) {
+                return false;
+            }
+
             var match = CompletionTokenRegex().Match(head);
             prefix = match.Success ? match.Value : string.Empty;
 
             return true;
+        }
+
+        /// <summary>
+        /// Determines whether the character at <paramref name="index"/> is escaped, that is, preceded
+        /// by an odd number of consecutive backslashes.
+        /// </summary>
+        private static bool IsEscaped(string text, int index) {
+            var backslashes = 0;
+
+            for (var i = index - 1; i >= 0 && text[i] == '\\'; i--) {
+                backslashes++;
+            }
+
+            return backslashes % 2 == 1;
         }
 
         /// <summary>
