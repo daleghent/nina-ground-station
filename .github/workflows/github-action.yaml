@@ -53,7 +53,7 @@ jobs:
         run: |
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.dll" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.dll" -Force
           Copy-Item "bin/Release/${{ env.PLUGIN_DLL_NAME }}.pdb" "packages/${{ env.PLUGIN_NAME }}/${{ env.PLUGIN_DLL_NAME }}.pdb" -Force          
-          Copy-Item "bin/Release/runtimes\win\lib\net8.0\System.Speech.dll" "packages/${{ env.PLUGIN_NAME }}/System.Speech.dll" -Force
+          Copy-Item "bin/Release/runtimes\win\lib\net10.0\System.Speech.dll" "packages/${{ env.PLUGIN_NAME }}/System.Speech.dll" -Force
           Copy-Item "bin/Release/MailKit.dll" "packages/${{ env.PLUGIN_NAME }}/MailKit.dll" -Force
           Copy-Item "bin/Release/MimeKit.dll" "packages/${{ env.PLUGIN_NAME }}/MimeKit.dll" -Force
           Copy-Item "bin/Release/BouncyCastle.Cryptography.dll" "packages/${{ env.PLUGIN_NAME }}/BouncyCastle.Cryptography.dll" -Force
