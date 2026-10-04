@@ -1,5 +1,12 @@
 ﻿# Ground Station
 
+## [BETA] 3.3 - 2026-10
+Ground Station 3.3 is introduced in a beta form to trial support for NINA 3.3's new symbol and function features. Symbols and functions may be used in messages alongside Ground Station's own message token system. Fields that support both systems are outline in your NINA theme's accent color.
+
+A new autocompletion system has been added for trialing. It assists one in composing messages with both message tokens and NINA symbols/functions. I will be looking for feedback on this feature, so please let me know if you have any issues or suggestions.
+
+If you currently use or used the Ground Station integration in the prior Sequencer Powerups or Sequencer+ plugins, you are encouraged to replace those with the normal Ground Station "Send to ..." instrucitons, but using the built-in symbols/functions directly.
+
 ## 3.2.0.0 - 2026-08-10
 * Fixed Ntfy.sh credential storage issue that prevented authentication from occurring with that service.
 * The Play Sound instruction and trigger audio file processing was completely overhauled:
