@@ -22,7 +22,7 @@
       <Version>3.1.2</Version>
     </PackageReference>
     <PackageReference Include="NAudio" Version="2.3.0" />
-    <PackageReference Include="NINA.Plugin" Version="3.3.0.1058-nightly" />
+    <PackageReference Include="NINA.Plugin" Version="3.3.0.1066-nightly" />
     <PackageReference Include="ntfy" Version="0.5.0" />
     <PackageReference Include="SlackNet" Version="0.18.0" />
     <PackageReference Include="System.Speech" Version="10.0.12">
