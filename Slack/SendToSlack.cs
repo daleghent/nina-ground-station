@@ -133,7 +133,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 byte mesgPreviewLen = 50;
 
                 if (!string.IsNullOrEmpty(message)) {
-                    var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
+                    var previewMessage = message;
                     var count = previewMessage.Length > mesgPreviewLen ? mesgPreviewLen : previewMessage.Length;
                     text = previewMessage[..count];
 

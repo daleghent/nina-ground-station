@@ -168,8 +168,8 @@ namespace DaleGhent.NINA.GroundStation.SendToPushover {
                 string text = string.Empty;
                 byte mesgPreviewLen = 50;
 
-                var previewTitle = Utilities.ExpressionUtilities.Expand(title, SymbolBroker, this);
-                var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
+                var previewTitle = title;
+                var previewMessage = message;
 
                 if (!string.IsNullOrEmpty(previewTitle)) {
                     text = previewTitle;

@@ -170,7 +170,7 @@ namespace DaleGhent.NINA.GroundStation.SendToEmail {
                 }
 
                 if (!string.IsNullOrEmpty(subject)) {
-                    var previewSubject = Utilities.ExpressionUtilities.Expand(subject, SymbolBroker, this);
+                    var previewSubject = subject;
                     var count = previewSubject.Length > mesgPreviewLen ? mesgPreviewLen : previewSubject.Length;
                     text += $"; Subject: {previewSubject[..count]}";
 

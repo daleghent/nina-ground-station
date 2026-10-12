@@ -166,7 +166,7 @@ namespace DaleGhent.NINA.GroundStation.SendToMqtt {
                 byte mesgPreviewLen = 50;
 
                 if (!string.IsNullOrEmpty(payload)) {
-                    var previewPayload = Utilities.ExpressionUtilities.ExpandWithEscapes(payload, SymbolBroker, this);
+                    var previewPayload = payload;
                     var count = previewPayload.Length > mesgPreviewLen ? mesgPreviewLen : previewPayload.Length;
                     text = previewPayload[..count];
 

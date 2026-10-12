@@ -167,8 +167,8 @@ namespace DaleGhent.NINA.GroundStation.DiscordWebhook {
                 string text = string.Empty;
                 byte mesgPreviewLen = 50;
 
-                var previewTitle = Utilities.ExpressionUtilities.Expand(embedTitle, SymbolBroker, this);
-                var previewMessage = Utilities.ExpressionUtilities.Expand(message, SymbolBroker, this);
+                var previewTitle = embedTitle;
+                var previewMessage = message;
 
                 if (!string.IsNullOrEmpty(previewTitle)) {
                     text = previewTitle;
