@@ -152,6 +152,23 @@
                             Foreground="{DynamicResource PrimaryBrush}"
                             MouseUp="OnCompletionListMouseUp" />
                         <TextBlock
+                            x:Name="PART_ConstantsHeader"
+                            Margin="5,5,5,2"
+                            Padding="0,3,0,0"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource SecondaryBrush}"
+                            Text="Constants" />
+                        <ListBox
+                            x:Name="PART_ConstantsList"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Focusable="False"
+                            ItemContainerStyle="{StaticResource CompletionItemStyle}"
+                            ItemTemplate="{StaticResource SymbolCompletionTemplate}"
+                            Foreground="{DynamicResource PrimaryBrush}"
+                            MouseUp="OnCompletionListMouseUp" />
+                        <TextBlock
                             x:Name="PART_FunctionsHeader"
                             Margin="5,5,5,2"
                             Padding="0,3,0,0"

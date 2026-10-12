@@ -25,6 +25,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
     /// </summary>
     internal enum CompletionKind {
         Symbol,
+        Constant,
         Function,
         Token,
     }
@@ -241,7 +242,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
                     foreach (var constant in symbol.Constants) {
                         if (!string.IsNullOrEmpty(constant?.Key)) {
-                            items.Add(new CompletionItem($"{symbol.Key}.{constant.Key}", CompletionKind.Symbol) {
+                            items.Add(new CompletionItem($"{symbol.Key}.{constant.Key}", CompletionKind.Constant) {
                                 Category = constant.Category ?? symbol.Category,
                             });
                         }

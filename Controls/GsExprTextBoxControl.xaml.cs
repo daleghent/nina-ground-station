@@ -357,22 +357,25 @@ namespace DaleGhent.NINA.GroundStation.Controls {
                 .ToList();
 
             var symbols = matches.Where(i => i.Kind == CompletionKind.Symbol).ToList();
+            var constants = matches.Where(i => i.Kind == CompletionKind.Constant).ToList();
             var functions = matches.Where(i => i.Kind == CompletionKind.Function).ToList();
 
-            if (symbols.Count == 0 && functions.Count == 0) {
+            if (symbols.Count == 0 && constants.Count == 0 && functions.Count == 0) {
                 HideCompletions();
                 return;
             }
 
             PART_SymbolsList.ItemsSource = symbols.Count > 0 ? symbols : null;
+            PART_ConstantsList.ItemsSource = constants.Count > 0 ? constants : null;
             PART_FunctionsList.ItemsSource = functions.Count > 0 ? functions : null;
             PART_TokensList.ItemsSource = null;
 
             SetSectionVisibility(PART_SymbolsHeader, PART_SymbolsList, symbols.Count > 0);
+            SetSectionVisibility(PART_ConstantsHeader, PART_ConstantsList, constants.Count > 0);
             SetSectionVisibility(PART_FunctionsHeader, PART_FunctionsList, functions.Count > 0);
             SetSectionVisibility(PART_TokensHeader, PART_TokensList, false);
 
-            SelectInList(symbols.Count > 0 ? PART_SymbolsList : PART_FunctionsList, 0);
+            SelectInList(symbols.Count > 0 ? PART_SymbolsList : constants.Count > 0 ? PART_ConstantsList : PART_FunctionsList, 0);
 
             PositionPopupAtCaret();
 
@@ -394,10 +397,12 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             }
 
             PART_SymbolsList.ItemsSource = null;
+            PART_ConstantsList.ItemsSource = null;
             PART_FunctionsList.ItemsSource = null;
             PART_TokensList.ItemsSource = matches;
 
             SetSectionVisibility(PART_SymbolsHeader, PART_SymbolsList, false);
+            SetSectionVisibility(PART_ConstantsHeader, PART_ConstantsList, false);
             SetSectionVisibility(PART_FunctionsHeader, PART_FunctionsList, false);
             SetSectionVisibility(PART_TokensHeader, PART_TokensList, true);
 
@@ -484,7 +489,7 @@ namespace DaleGhent.NINA.GroundStation.Controls {
         /// <summary>
         /// Every completion section, in display order.
         /// </summary>
-        private ListBox[] CompletionLists => [PART_SymbolsList, PART_FunctionsList, PART_TokensList];
+        private ListBox[] CompletionLists => [PART_SymbolsList, PART_ConstantsList, PART_FunctionsList, PART_TokensList];
 
         private CompletionItem SelectedCompletion
             => CompletionLists.Select(l => l.SelectedItem as CompletionItem).FirstOrDefault(i => i != null);
