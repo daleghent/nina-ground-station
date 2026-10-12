@@ -598,6 +598,36 @@ namespace DaleGhent.NINA.GroundStation.Controls {
             return true;
         }
 
+        /// <summary>
+        /// Determines whether the end of <paramref name="head"/> lies within the unclosed parentheses
+        /// of a function call inside the current <c>{ }</c> expression.
+        /// </summary>
+        private static bool IsInsideFunctionArguments(string head) {
+            var open = head.LastIndexOf('{');
+            var depth = 0;
+            char quote = '\0';
+
+            for (var i = open + 1; i < head.Length; i++) {
+                var c = head[i];
+
+                if (quote != '\0') {
+                    if (c == '\\') {
+                        i++;
+                    } else if (c == quote) {
+                        quote = '\0';
+                    }
+                } else if (c == '\'' || c == '"') {
+                    quote = c;
+                } else if (c == '(') {
+                    depth++;
+                } else if (c == ')' && depth > 0) {
+                    depth--;
+                }
+            }
+
+            return depth > 0;
+        }
+
         private void CommitCompletion() {
             if (SelectedCompletion is not CompletionItem selected) {
                 HideCompletions();
@@ -621,8 +651,12 @@ namespace DaleGhent.NINA.GroundStation.Controls {
 
             // Always close the expression. If the text immediately following the caret already
             // terminates it, skip over that brace instead of inserting a duplicate one.
+            // When completing an argument of a function, the expression is not finished yet, so
+            // neither insert nor skip over a closing brace.
+            var insideArguments = IsInsideFunctionArguments(text[..start]);
             var existingBrace = tail.Length > 0 && tail[0] == '}';
-            var closingBrace = existingBrace ? string.Empty : "}";
+            var closingBrace = insideArguments || existingBrace ? string.Empty : "}";
+            var braceSkip = insideArguments ? 0 : 1;
 
             string insertion;
             int caretOffset;
@@ -635,10 +669,10 @@ namespace DaleGhent.NINA.GroundStation.Controls {
                 // expression instead, skipping over a closing brace that was already there.
                 caretOffset = selected.MaxArgs > 0
                     ? selected.Name.Length + 1
-                    : selected.Name.Length + 3;
+                    : selected.Name.Length + 2 + braceSkip;
             } else {
                 insertion = selected.Name + closingBrace;
-                caretOffset = selected.Name.Length + 1;
+                caretOffset = selected.Name.Length + braceSkip;
             }
 
             suppressCompletion = true;

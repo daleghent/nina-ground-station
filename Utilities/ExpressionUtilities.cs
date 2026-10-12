@@ -185,7 +185,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         continue;
                     }
 
-                    names.Add(symbol.Key);
+                    names.Add(GetQualifiedName(symbol));
 
                     if (symbol.Constants == null) {
                         continue;
@@ -233,9 +233,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
                         continue;
                     }
 
-                    items.Add(new CompletionItem(symbol.Key, CompletionKind.Symbol) {
-                        Category = symbol.Category,
-                    });
+                    items.Add(new CompletionItem(GetQualifiedName(symbol), CompletionKind.Symbol));
 
                     if (symbol.Constants == null) {
                         continue;
@@ -271,7 +269,16 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         /// <summary>
-        /// Returns Ground Station's own $$TOKEN$$ message tokens, for use in autocompletion. Names
+        /// Returns the name a symbol is referenced by in an expression. Symbols that belong to a
+        /// namespace are returned in the dotted form, eg. <c>Weather.Connected</c>, which takes
+        /// precedence over the legacy <c>Weather_Connected</c> form that N.I.N.A. still accepts.
+        /// </summary>
+        private static string GetQualifiedName(Symbol symbol) {
+            return string.IsNullOrEmpty(symbol.Category) ? symbol.Key : $"{symbol.Category}.{symbol.Key}";
+        }
+
+        /// <summary>
+        /// Returns Ground Station's own $$TOKEN$$
         /// are returned bare, without the surrounding <c>$$</c> delimiters, matching how the caret
         /// context is detected in the text box.
         /// </summary>
