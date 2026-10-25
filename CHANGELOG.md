@@ -1,5 +1,9 @@
 ﻿# Ground Station
 
+## 3.2.1.0 - 2026-10-25
+* Reworked the message queue worker processing to be more robust and eliminate some possible race conditions.
+* Guard against a possible null reference if another plugin strips a DSO container's target object.
+
 ## 3.2.0.0 - 2026-08-10
 * Fixed Ntfy.sh credential storage issue that prevented authentication from occurring with that service.
 * The Play Sound instruction and trigger audio file processing was completely overhauled:
