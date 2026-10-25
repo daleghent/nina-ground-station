@@ -132,7 +132,7 @@ namespace DaleGhent.NINA.GroundStation.Slack {
             GC.SuppressFinalize(this);
         }
 
-        public async override void AfterParentChanged() {
+        public override void AfterParentChanged() {
             var root = ItemUtility.GetRootContainer(this.Parent);
             if (root == null && failureHook != null) {
                 // When trigger is removed from sequence, unregister event handler
@@ -140,11 +140,17 @@ namespace DaleGhent.NINA.GroundStation.Slack {
                 failureHook.FailureEvent -= Root_FailureEvent;
                 failureHook = null;
             } else if (root != null && root != failureHook && this.Parent.Status == SequenceEntityStatus.RUNNING) {
-                await queueWorker.Stop();
                 // When dragging the item into the sequence while the sequence is already running
-                // Make sure to register the event handler as "SequenceBlockInitialized" is already done
+                // Make sure to register the event handler as "SequenceBlockInitialized" is already done.
+                // This is done synchronously so it cannot race with SequenceBlockTeardown
+                if (failureHook != null) {
+                    failureHook.FailureEvent -= Root_FailureEvent;
+                }
+
                 failureHook = root;
                 failureHook.FailureEvent += Root_FailureEvent;
+
+                // Start() leaves any prior worker to drain its queue in the background
                 queueWorker.Start();
             }
             base.AfterParentChanged();
