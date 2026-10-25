@@ -19,9 +19,8 @@ using System.Threading.Tasks;
 namespace DaleGhent.NINA.GroundStation.Utilities {
 
     internal class BackgroundQueueWorker<T> : IDisposable {
-        private CancellationTokenSource workerCts;
-        private AsyncProducerConsumerQueue<T> messageQueue;
-        private Task workerTask;
+        // Queue, CTS, and worker task are swapped as one unit so Start(), Stop(), and Dispose() never see a mix of old and new state
+        private WorkerState state;
         private readonly Func<T, CancellationToken, Task> workerFn;
 
         public BackgroundQueueWorker(Func<T, CancellationToken, Task> workerFn) {
@@ -29,59 +28,42 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         public async Task Enqueue(T item) {
-            var localCopy = Volatile.Read(ref messageQueue);
-            if (localCopy == null) { return; }
+            var localState = Volatile.Read(ref state);
+            if (localState == null) { return; }
 
             try {
-                await localCopy.EnqueueAsync(item);
+                await localState.Queue.EnqueueAsync(item);
             } catch (InvalidOperationException) {
                 // Queue was completed between the null check and EnqueueAsync
             }
         }
 
         public async Task Stop() {
-            // Atomically capture and clear all state so a concurrent Start() won't conflict
-            var localQueue = Interlocked.Exchange(ref messageQueue, null);
-            var localCts = Interlocked.Exchange(ref workerCts, null);
-            var localTask = Interlocked.Exchange(ref workerTask, null);
+            var localState = Volatile.Read(ref state);
+            if (localState == null) { return; }
 
-            try {
-                // Wait a little for any last items to be enqueued, such as at the very end of a sequence
-                await Task.Delay(TimeSpan.FromSeconds(5));
+            // Wait a little for any last items to be enqueued, such as at the very end of a sequence.
+            // The queue is left in place during this time so those items are still accepted.
+            await Task.Delay(TimeSpan.FromSeconds(5));
 
-                Logger.Trace("Complete adding to queue");
-                localQueue?.CompleteAdding();
+            // If a concurrent Start() or Stop() has already swapped out this state, that caller owns its shutdown
+            if (Interlocked.CompareExchange(ref state, null, localState) != localState) { return; }
 
-                // Allow the worker to drain remaining items before cancelling
-                if (localTask != null) {
-                    await Task.WhenAny(localTask, Task.Delay(TimeSpan.FromSeconds(10)));
-                }
-            } catch (Exception) {
-            } finally {
-                try {
-                    localCts?.Cancel();
-                    localCts?.Dispose();
-                } catch {
-                }
-            }
+            await localState.Shutdown();
         }
 
         public void Start() {
-            var newCts = new CancellationTokenSource();
-            var newQueue = new AsyncProducerConsumerQueue<T>(1000);
+            var queue = new AsyncProducerConsumerQueue<T>(1000);
+            var cts = new CancellationTokenSource();
 
-            // Atomically swap in the new state, capturing any prior state for cleanup
-            var oldCts = Interlocked.Exchange(ref workerCts, newCts);
-            var oldQueue = Interlocked.Exchange(ref messageQueue, newQueue);
+            // Start the work in background. The inside method uses local copies of the state to prevent race conditions
+            var newState = new WorkerState(queue, cts, DoWork(queue, cts.Token));
 
-            try { oldQueue?.CompleteAdding(); } catch { }
-            try {
-                oldCts?.Cancel();
-                oldCts?.Dispose();
-            } catch { }
-
-            // Start the work in background. The inside method uses local copies of the class fields to prevent race conditions
-            workerTask = DoWork(newQueue, newCts.Token);
+            // Atomically swap in the new state. Any prior worker is left to drain its queue in the background
+            var oldState = Interlocked.Exchange(ref state, newState);
+            if (oldState != null) {
+                _ = oldState.Shutdown();
+            }
         }
 
         private async Task DoWork(AsyncProducerConsumerQueue<T> queue, CancellationToken token) {
@@ -105,15 +87,37 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
         }
 
         public void Dispose() {
+            var localState = Interlocked.Exchange(ref state, null);
+
             try {
-                var cts = Interlocked.Exchange(ref workerCts, null);
-                Interlocked.Exchange(ref messageQueue, null)?.CompleteAdding();
-                Interlocked.Exchange(ref workerTask, null);
-                cts?.Cancel();
-                cts?.Dispose();
+                localState?.Queue.CompleteAdding();
+                localState?.Cts.Cancel();
+                localState?.Cts.Dispose();
             } catch { }
 
             GC.SuppressFinalize(this);
+        }
+
+        private sealed class WorkerState(AsyncProducerConsumerQueue<T> queue, CancellationTokenSource cts, Task workerTask) {
+            public AsyncProducerConsumerQueue<T> Queue { get; } = queue;
+            public CancellationTokenSource Cts { get; } = cts;
+
+            public async Task Shutdown() {
+                try {
+                    Logger.Trace("Complete adding to queue");
+                    Queue.CompleteAdding();
+
+                    // Allow the worker to drain remaining items before cancelling
+                    await Task.WhenAny(workerTask, Task.Delay(TimeSpan.FromSeconds(10)));
+                } catch (Exception) {
+                } finally {
+                    try {
+                        Cts.Cancel();
+                        Cts.Dispose();
+                    } catch {
+                    }
+                }
+            }
         }
     }
 }
