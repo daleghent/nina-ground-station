@@ -122,7 +122,7 @@ namespace DaleGhent.NINA.GroundStation.Utilities {
 
             while (acontainer != null) {
                 if (acontainer is IDeepSkyObjectContainer dsoContainer) {
-                    if (dsoContainer.Target.DeepSkyObject != null) {
+                    if (dsoContainer.Target?.DeepSkyObject != null) {
                         target = dsoContainer.Target.DeepSkyObject;
                         break;
                     }
